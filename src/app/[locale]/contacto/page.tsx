@@ -64,7 +64,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
           <div className="flex flex-col gap-8 justify-center">
             {info.map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex items-start gap-5">
-                <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.1)' }}>
+                <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(240,148,34,0.1)' }}>
                   <Icon size={20} style={{ color: 'var(--accent)' }} />
                 </div>
                 <div>

@@ -7,7 +7,7 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
   const t = await getTranslations({ locale, namespace: 'support' });
 
   const cards = [
-    { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: '#', accent: '#00d4ff', iconBg: 'rgba(0,212,255,0.12)' },
+    { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: '#', accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
     { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: `/${locale}/contacto`, accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)' },
     { icon: Users, title: t('community'), desc: t('community_desc'), href: '#', accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)' },
     { icon: Activity, title: t('status'), desc: t('status_desc'), href: '#', accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)' },
@@ -35,7 +35,7 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
                 <Icon size={28} style={{ color: accent }} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white transition-colors group-hover:text-[#00d4ff]">{title}</h3>
+                <h3 className="text-xl font-bold text-white transition-colors group-hover:text-[#F09422]">{title}</h3>
                 <p className="mt-2 text-slate-400 leading-relaxed">{desc}</p>
               </div>
             </Link>
