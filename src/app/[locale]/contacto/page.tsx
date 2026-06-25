@@ -14,16 +14,17 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
 
   return (
     <div>
-      <div className="bg-gradient-to-r from-indigo-900 to-purple-800 text-white py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)' }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
+        <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
-          <p className="mt-3 text-indigo-200 text-lg">{t('subtitle')}</p>
+          <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Form */}
-          <div className="bg-gray-50 rounded-2xl p-10 border border-gray-100">
+          <div className="rounded-2xl p-10 border" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
             <form className="flex flex-col gap-5">
               {[
                 { id: 'name', label: t('name'), type: 'text' },
@@ -31,25 +32,28 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
                 { id: 'company', label: t('company'), type: 'text' },
               ].map(({ id, label, type }) => (
                 <div key={id} className="flex flex-col gap-1.5">
-                  <label htmlFor={id} className="text-sm font-medium text-gray-700">{label}</label>
+                  <label htmlFor={id} className="text-sm font-medium text-slate-300">{label}</label>
                   <input
                     id={id}
                     type={type}
-                    className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                    className="rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 border"
+                    style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--border)', '--tw-ring-color': 'var(--accent)' } as React.CSSProperties}
                   />
                 </div>
               ))}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="message" className="text-sm font-medium text-gray-700">{t('message')}</label>
+                <label htmlFor="message" className="text-sm font-medium text-slate-300">{t('message')}</label>
                 <textarea
                   id="message"
                   rows={5}
-                  className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white resize-none"
+                  className="rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 border resize-none"
+                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--border)', '--tw-ring-color': 'var(--accent)' } as React.CSSProperties}
                 />
               </div>
               <button
                 type="submit"
-                className="bg-indigo-700 text-white font-semibold py-3 rounded-xl hover:bg-indigo-800 transition-colors mt-2"
+                className="font-semibold py-3 rounded-xl transition-all mt-2 glow-cyan-sm hover:glow-cyan"
+                style={{ background: 'var(--accent)', color: '#060d2e' }}
               >
                 {t('send')}
               </button>
@@ -60,12 +64,12 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
           <div className="flex flex-col gap-8 justify-center">
             {info.map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex items-start gap-5">
-                <div className="shrink-0 w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                  <Icon size={20} className="text-indigo-600" />
+                <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.1)' }}>
+                  <Icon size={20} style={{ color: 'var(--accent)' }} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">{label}</p>
-                  <p className="text-gray-900 font-semibold mt-0.5">{value}</p>
+                  <p className="text-sm font-medium text-slate-400">{label}</p>
+                  <p className="text-white font-semibold mt-0.5">{value}</p>
                 </div>
               </div>
             ))}

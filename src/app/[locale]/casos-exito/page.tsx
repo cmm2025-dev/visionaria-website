@@ -3,12 +3,12 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const cases = [
-  { company: 'RetailCorp', industry: 'Retail', result: '+40% eficiencia operacional', color: 'bg-indigo-600' },
-  { company: 'FinBank', industry: 'Banca', result: '-60% tiempo de procesos', color: 'bg-purple-600' },
-  { company: 'LogisPro', industry: 'Logística', result: '+30% visibilidad en cadena de suministro', color: 'bg-blue-600' },
-  { company: 'HealthTech', industry: 'Salud', result: 'ISO 27001 en 6 meses', color: 'bg-emerald-600' },
-  { company: 'EduLearn', industry: 'Educación', result: '3x más estudiantes activos', color: 'bg-orange-500' },
-  { company: 'ManuCo', industry: 'Manufactura', result: '-25% costos de producción', color: 'bg-rose-600' },
+  { company: 'RetailCorp', industry: 'Retail', result: '+40% eficiencia operacional', accent: '#00d4ff' },
+  { company: 'FinBank', industry: 'Banca', result: '-60% tiempo de procesos', accent: '#a78bfa' },
+  { company: 'LogisPro', industry: 'Logística', result: '+30% visibilidad en cadena de suministro', accent: '#3b82f6' },
+  { company: 'HealthTech', industry: 'Salud', result: 'ISO 27001 en 6 meses', accent: '#34d399' },
+  { company: 'EduLearn', industry: 'Educación', result: '3x más estudiantes activos', accent: '#fb923c' },
+  { company: 'ManuCo', industry: 'Manufactura', result: '-25% costos de producción', accent: '#f43f5e' },
 ];
 
 export default async function CasosPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -17,25 +17,30 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div>
-      <div className="bg-gradient-to-r from-purple-900 to-indigo-700 text-white py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)' }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
+        <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
-          <p className="mt-3 text-indigo-200 text-lg">{t('subtitle')}</p>
+          <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {cases.map(({ company, industry, result, color }) => (
-            <div key={company} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div className={`${color} h-2`} />
+          {cases.map(({ company, industry, result, accent }) => (
+            <div
+              key={company}
+              className="rounded-2xl overflow-hidden border transition-all hover:glow-cyan-sm"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+            >
+              <div className="h-1" style={{ background: accent }} />
               <div className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">{company}</h3>
-                  <span className="text-xs font-medium bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{industry}</span>
+                  <h3 className="text-xl font-bold text-white">{company}</h3>
+                  <span className="text-xs font-medium px-3 py-1 rounded-full text-slate-300" style={{ background: 'rgba(255,255,255,0.08)' }}>{industry}</span>
                 </div>
-                <p className="text-sm text-gray-500 mb-1">{t('result')}</p>
-                <p className="text-indigo-700 font-semibold">{result}</p>
-                <Link href={`/${locale}/contacto`} className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800">
+                <p className="text-sm text-slate-400 mb-1">{t('result')}</p>
+                <p className="font-semibold" style={{ color: accent }}>{result}</p>
+                <Link href={`/${locale}/contacto`} className="mt-6 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:brightness-125" style={{ color: 'var(--accent)' }}>
                   {t('read_more')} <ArrowRight size={14} />
                 </Link>
               </div>
