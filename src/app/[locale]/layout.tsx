@@ -31,7 +31,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={geist.variable}>
-      <body className="min-h-screen flex flex-col font-sans antialiased bg-white text-gray-900">
+      <body className="min-h-screen flex flex-col font-sans antialiased" style={{background: 'var(--background)', color: 'var(--foreground)'}}>
         <Navbar locale={locale} t={nav as Parameters<typeof Navbar>[0]['t']} />
         <main className="flex-1">{children}</main>
         <Footer locale={locale} tagline={footer.tagline} rights={footer.rights} nav={nav} />

@@ -10,16 +10,16 @@ interface FooterProps {
 export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
   const year = 2025;
   return (
-    <footer className="bg-gray-900 text-gray-400 mt-auto">
+    <footer className="mt-auto border-t" style={{ background: 'rgba(6,13,46,0.95)', borderColor: 'var(--border)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <span className="text-white text-xl font-bold tracking-tight">Visionaria</span>
-            <p className="mt-3 text-sm leading-relaxed">{tagline}</p>
+            <span className="text-xl font-bold tracking-tight text-glow-cyan" style={{ color: 'var(--accent)' }}>Visionaria</span>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">{tagline}</p>
           </div>
           <div>
             <p className="text-white font-semibold mb-4">Links</p>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm text-slate-400">
               {[
                 { href: `/${locale}`, label: nav.brand },
                 { href: `/${locale}/productos`, label: nav.products },
@@ -27,7 +27,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
                 { href: `/${locale}/innovacion`, label: nav.innovation },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="hover:text-white transition-colors">
+                  <Link href={href} className="hover:text-[#00d4ff] transition-colors">
                     {label}
                   </Link>
                 </li>
@@ -36,14 +36,14 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
           </div>
           <div>
             <p className="text-white font-semibold mb-4">Recursos</p>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm text-slate-400">
               {[
                 { href: `/${locale}/noticias`, label: nav.news },
                 { href: `/${locale}/soporte`, label: nav.support },
                 { href: `/${locale}/contacto`, label: nav.contact },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="hover:text-white transition-colors">
+                  <Link href={href} className="hover:text-[#00d4ff] transition-colors">
                     {label}
                   </Link>
                 </li>
@@ -51,7 +51,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
             </ul>
           </div>
         </div>
-        <div className="mt-10 pt-6 border-t border-gray-800 text-sm text-center">
+        <div className="mt-10 pt-6 border-t text-sm text-center text-slate-500" style={{ borderColor: 'var(--border)' }}>
           © {year} Visionaria. {rights}
         </div>
       </div>

@@ -29,10 +29,10 @@ export default function Navbar({ locale, t }: NavbarProps) {
   const switchPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
+    <header className="sticky top-0 z-50 border-b backdrop-blur-md" style={{ background: 'rgba(6,13,46,0.85)', borderColor: 'var(--border)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <span className="text-xl font-bold text-indigo-700 tracking-tight">Visionaria</span>
+          <span className="text-xl font-bold tracking-tight text-glow-cyan" style={{ color: 'var(--accent)' }}>Visionaria</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
@@ -45,8 +45,8 @@ export default function Navbar({ locale, t }: NavbarProps) {
                 href={fullHref}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   active
-                    ? 'text-indigo-700 bg-indigo-50'
-                    : 'text-gray-600 hover:text-indigo-700 hover:bg-indigo-50'
+                    ? 'text-[#00d4ff] bg-[rgba(0,212,255,0.1)]'
+                    : 'text-slate-300 hover:text-[#00d4ff] hover:bg-[rgba(0,212,255,0.08)]'
                 }`}
               >
                 {t[key]}
@@ -58,12 +58,13 @@ export default function Navbar({ locale, t }: NavbarProps) {
         <div className="flex items-center gap-3">
           <Link
             href={switchPath}
-            className="text-sm font-medium text-gray-500 hover:text-indigo-700 border border-gray-200 rounded-md px-3 py-1.5 transition-colors"
+            className="text-sm font-medium text-slate-300 hover:text-[#00d4ff] rounded-md px-3 py-1.5 transition-colors border"
+            style={{ borderColor: 'var(--border)' }}
           >
             {otherLocale.toUpperCase()}
           </Link>
           <button
-            className="lg:hidden p-2 rounded-md text-gray-600 hover:text-indigo-700"
+            className="lg:hidden p-2 rounded-md text-slate-300 hover:text-[#00d4ff]"
             onClick={() => setOpen(!open)}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -72,13 +73,13 @@ export default function Navbar({ locale, t }: NavbarProps) {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-gray-100 bg-white px-4 pb-4">
+        <div className="lg:hidden border-t px-4 pb-4" style={{ borderColor: 'var(--border)', background: 'rgba(6,13,46,0.97)' }}>
           {links.map(({ href, key }) => (
             <Link
               key={key}
               href={`/${locale}${href}`}
               onClick={() => setOpen(false)}
-              className="block py-2.5 text-sm font-medium text-gray-700 hover:text-indigo-700"
+              className="block py-2.5 text-sm font-medium text-slate-300 hover:text-[#00d4ff]"
             >
               {t[key]}
             </Link>
