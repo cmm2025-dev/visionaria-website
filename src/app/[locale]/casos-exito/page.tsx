@@ -3,12 +3,42 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const cases = [
-  { company: 'RetailCorp', industry: 'Retail', result: '+40% eficiencia operacional', accent: '#F09422' },
-  { company: 'FinBank', industry: 'Banca', result: '-60% tiempo de procesos', accent: '#a78bfa' },
-  { company: 'LogisPro', industry: 'Logística', result: '+30% visibilidad en cadena de suministro', accent: '#3b82f6' },
-  { company: 'HealthTech', industry: 'Salud', result: 'ISO 27001 en 6 meses', accent: '#34d399' },
-  { company: 'EduLearn', industry: 'Educación', result: '3x más estudiantes activos', accent: '#fb923c' },
-  { company: 'ManuCo', industry: 'Manufactura', result: '-25% costos de producción', accent: '#f43f5e' },
+  {
+    company: 'GORE Región Metropolitana',
+    industry: 'Smart City',
+    result: '303 cámaras · 23 comunas · Proyecto más grande en Chile',
+    accent: '#F09422',
+  },
+  {
+    company: 'Municipalidad de La Reina',
+    industry: 'Televigilancia',
+    result: '91 cámaras HD + pórticos LPR + reconocimiento facial PDI',
+    accent: '#a78bfa',
+  },
+  {
+    company: 'Ruta de La Araucanía',
+    industry: 'Seguridad Vial',
+    result: '71 cámaras térmicas militares + analítica antiterrorismo',
+    accent: '#3b82f6',
+  },
+  {
+    company: 'Codelco Salvador',
+    industry: 'Minería',
+    result: 'Plataforma unificada video-intrusión-acceso · enlaces 80km',
+    accent: '#34d399',
+  },
+  {
+    company: 'Santiago Smart City – Alameda',
+    industry: 'Ciudad Inteligente',
+    result: 'Integración multisistémica con Carabineros y UOCT',
+    accent: '#fb923c',
+  },
+  {
+    company: 'Red Municipal Chile',
+    industry: 'Seguridad Pública',
+    result: '+40 municipalidades · cobertura Arica a Punta Arenas',
+    accent: '#f43f5e',
+  },
 ];
 
 export default async function CasosPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -35,11 +65,11 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
               <div className="h-1" style={{ background: accent }} />
               <div className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-white">{company}</h3>
-                  <span className="text-xs font-medium px-3 py-1 rounded-full text-slate-300" style={{ background: 'rgba(255,255,255,0.08)' }}>{industry}</span>
+                  <h3 className="text-lg font-bold text-white leading-snug">{company}</h3>
+                  <span className="text-xs font-medium px-3 py-1 rounded-full text-slate-300 shrink-0 ml-2" style={{ background: 'rgba(255,255,255,0.08)' }}>{industry}</span>
                 </div>
                 <p className="text-sm text-slate-400 mb-1">{t('result')}</p>
-                <p className="font-semibold" style={{ color: accent }}>{result}</p>
+                <p className="font-semibold text-sm leading-snug" style={{ color: accent }}>{result}</p>
                 <Link href={`/${locale}/contacto`} className="mt-6 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:brightness-125" style={{ color: 'var(--accent)' }}>
                   {t('read_more')} <ArrowRight size={14} />
                 </Link>

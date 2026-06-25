@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import { ArrowRight, Zap, HeadphonesIcon, TrendingUp } from 'lucide-react';
+import { ArrowRight, Zap, HeadphonesIcon, TrendingUp, AlertTriangle, Radio, Plane, Monitor, CheckCircle2 } from 'lucide-react';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -8,10 +8,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const n = await getTranslations({ locale, namespace: 'nav' });
 
   const stats = [
-    { value: '500+', label: t('stats_clients') },
-    { value: '1.200+', label: t('stats_projects') },
-    { value: '18', label: t('stats_countries') },
-    { value: '10+', label: t('stats_years') },
+    { value: '40+', label: t('stats_clients') },
+    { value: '+3.700', label: t('stats_projects') },
+    { value: '20+', label: t('stats_countries') },
+    { value: '+60%', label: t('stats_years') },
   ];
 
   const features = [
@@ -83,6 +83,33 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               <h3 className="text-xl font-semibold text-white">{title}</h3>
               <p className="text-slate-400 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Flujo operacional */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <h2 className="text-3xl font-bold text-center text-white mb-4">Flujo Operacional Integrado</h2>
+        <p className="text-center text-slate-400 mb-16 max-w-2xl mx-auto">Desde la detección automática hasta la resolución del incidente, nuestra plataforma unificada gestiona todo el ciclo en tiempo real.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 relative">
+          {[
+            { icon: AlertTriangle, step: '01', label: 'Detección', desc: 'Alerta automática por analítica de video o sensor', color: '#F09422' },
+            { icon: Radio, step: '02', label: 'Despacho', desc: 'Asignación inmediata de unidades desde plataforma central', color: '#a78bfa' },
+            { icon: Plane, step: '03', label: 'Despliegue', desc: 'Drones y unidades en terreno con coordinación en tiempo real', color: '#3b82f6' },
+            { icon: Monitor, step: '04', label: 'Monitoreo', desc: 'Seguimiento continuo con cámaras y analítica de situación', color: '#34d399' },
+            { icon: CheckCircle2, step: '05', label: 'Resolución', desc: 'Cierre del incidente con informe y trazabilidad completa', color: '#fb923c' },
+          ].map(({ icon: Icon, step, label, desc, color }, i) => (
+            <div key={step} className="relative flex flex-col items-center text-center gap-3">
+              {i < 4 && (
+                <div className="hidden sm:block absolute top-8 left-[60%] w-full h-px" style={{ background: `linear-gradient(90deg, ${color}40, transparent)` }} />
+              )}
+              <div className="w-16 h-16 rounded-full flex items-center justify-center z-10 border-2" style={{ background: 'var(--card-bg)', borderColor: color }}>
+                <Icon size={24} style={{ color }} />
+              </div>
+              <span className="text-xs font-bold tracking-widest" style={{ color }}>{step}</span>
+              <h4 className="text-white font-bold">{label}</h4>
+              <p className="text-slate-400 text-xs leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
