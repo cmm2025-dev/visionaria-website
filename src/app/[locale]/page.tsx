@@ -4,6 +4,9 @@ import { ArrowRight, Zap, HeadphonesIcon, TrendingUp } from 'lucide-react';
 import OperationalFlow from '@/components/OperationalFlow';
 import ResponseFlow from '@/components/ResponseFlow';
 import Manifesto from '@/components/Manifesto';
+import PartnerStrip from '@/components/PartnerStrip';
+import HeroCinematic from '@/components/HeroCinematic';
+import VideoDemo from '@/components/VideoDemo';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -27,6 +30,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       {/* Hero */}
       <section className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 50%, #0d1a5e 100%)' }}>
+        {/* Cinematic animated background */}
+        <HeroCinematic />
+
         {/* Decorative glowing orbs */}
         <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
@@ -58,6 +64,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       </section>
+
+      {/* Partner strip */}
+      <PartnerStrip />
 
       {/* Manifesto */}
       <Manifesto />
@@ -93,6 +102,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           ))}
         </div>
       </section>
+
+      {/* Video demo */}
+      <VideoDemo videoSrc="/demo.mp4" locale={locale} />
 
       {/* Flujo Operacional */}
       <OperationalFlow />
