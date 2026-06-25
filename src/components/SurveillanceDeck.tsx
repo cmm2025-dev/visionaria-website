@@ -69,7 +69,6 @@ function RadarCanvas() {
       ctx.beginPath(); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
 
       // sweep gradient
-      const grad = ctx.createConicalGradient ? undefined : null;
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(angle);
