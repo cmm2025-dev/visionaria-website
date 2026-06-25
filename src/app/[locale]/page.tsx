@@ -104,7 +104,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Video demo */}
-      <VideoDemo videoSrc="/demo.mp4" locale={locale} />
+      <VideoDemo videoSrc="IfCDJXEi-w4" locale={locale} />
 
       {/* Flujo Operacional */}
       <OperationalFlow />
