@@ -12,7 +12,7 @@ const newsItems = [
 ];
 
 const tagStyles: Record<string, { color: string; bg: string }> = {
-  Producto: { color: '#00d4ff', bg: 'rgba(0,212,255,0.12)' },
+  Producto: { color: '#F09422', bg: 'rgba(240,148,34,0.12)' },
   Empresa: { color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
   Evento: { color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
   Partner: { color: '#34d399', bg: 'rgba(52,211,153,0.12)' },

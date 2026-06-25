@@ -6,7 +6,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
   const t = await getTranslations({ locale, namespace: 'innovation' });
 
   const pillars = [
-    { icon: FlaskConical, title: t('rd_title'), desc: t('rd_desc'), accent: '#00d4ff', iconBg: 'rgba(0,212,255,0.12)' },
+    { icon: FlaskConical, title: t('rd_title'), desc: t('rd_desc'), accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
     { icon: BrainCircuit, title: t('ai_title'), desc: t('ai_desc'), accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)' },
     { icon: Cloud, title: t('cloud_title'), desc: t('cloud_desc'), accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)' },
   ];
@@ -37,7 +37,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
           ))}
         </div>
 
-        <div className="mt-20 rounded-3xl p-10 text-white text-center border glow-cyan-sm" style={{ background: 'linear-gradient(135deg, #0d1a5e 0%, #1e1065 100%)', borderColor: 'rgba(0,212,255,0.2)' }}>
+        <div className="mt-20 rounded-3xl p-10 text-white text-center border glow-cyan-sm" style={{ background: 'linear-gradient(135deg, #0d1a5e 0%, #1e1065 100%)', borderColor: 'rgba(240,148,34,0.2)' }}>
           <p className="text-5xl font-extrabold text-glow-cyan" style={{ color: 'var(--accent)' }}>20%</p>
           <p className="mt-3 text-lg text-slate-300">{t('rd_desc')}</p>
         </div>

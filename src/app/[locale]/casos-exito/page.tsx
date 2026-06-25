@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const cases = [
-  { company: 'RetailCorp', industry: 'Retail', result: '+40% eficiencia operacional', accent: '#00d4ff' },
+  { company: 'RetailCorp', industry: 'Retail', result: '+40% eficiencia operacional', accent: '#F09422' },
   { company: 'FinBank', industry: 'Banca', result: '-60% tiempo de procesos', accent: '#a78bfa' },
   { company: 'LogisPro', industry: 'Logística', result: '+30% visibilidad en cadena de suministro', accent: '#3b82f6' },
   { company: 'HealthTech', industry: 'Salud', result: 'ISO 27001 en 6 meses', accent: '#34d399' },

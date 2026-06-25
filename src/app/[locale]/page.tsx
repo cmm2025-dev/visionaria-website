@@ -57,7 +57,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Stats */}
-      <section className="border-b" style={{ background: 'rgba(0,212,255,0.05)', borderColor: 'var(--border)' }}>
+      <section className="border-b" style={{ background: 'rgba(240,148,34,0.05)', borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           {stats.map(({ value, label }) => (
             <div key={label}>
@@ -78,7 +78,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               className="flex flex-col items-start gap-4 p-8 rounded-2xl border transition-all hover:glow-cyan-sm"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
             >
-              <div className="p-3 rounded-xl" style={{ background: 'rgba(0,212,255,0.1)' }}>
+              <div className="p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.1)' }}>
                 <Icon size={24} style={{ color: 'var(--accent)' }} />
               </div>
               <h3 className="text-xl font-semibold text-white">{title}</h3>
@@ -89,7 +89,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* CTA band */}
-      <section className="border-t border-b" style={{ background: 'rgba(0,212,255,0.04)', borderColor: 'var(--border)' }}>
+      <section className="border-t border-b" style={{ background: 'rgba(240,148,34,0.04)', borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-2xl font-bold text-white">{t('hero_title')}</h3>
