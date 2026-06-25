@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, Zap, HeadphonesIcon, TrendingUp } from 'lucide-react';
 import OperationalFlow from '@/components/OperationalFlow';
 import ResponseFlow from '@/components/ResponseFlow';
+import Manifesto from '@/components/Manifesto';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -57,6 +58,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       </section>
+
+      {/* Manifesto */}
+      <Manifesto />
 
       {/* Stats */}
       <section className="border-b" style={{ background: 'rgba(240,148,34,0.05)', borderColor: 'var(--border)' }}>
