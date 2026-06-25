@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { ArrowRight, Zap, HeadphonesIcon, TrendingUp } from 'lucide-react';
 import OperationalFlow from '@/components/OperationalFlow';
+import ResponseFlow from '@/components/ResponseFlow';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -91,6 +92,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Flujo Operacional */}
       <OperationalFlow />
+
+      {/* Tiempos de respuesta */}
+      <ResponseFlow />
 
       {/* CTA band */}
       <section className="border-t border-b" style={{ background: 'rgba(240,148,34,0.04)', borderColor: 'var(--border)' }}>
