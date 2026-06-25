@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "brand": "Brand",
+    "products": "Products",
+    "cases": "Success Stories",
+    "innovation": "Innovation",
+    "news": "News",
+    "support": "Support",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero_title": "Technology that transforms the future",
+    "hero_subtitle": "Innovative solutions for companies that want to lead their industry",
+    "hero_cta": "Explore our products",
+    "hero_cta2": "Success stories",
+    "stats_clients": "Active clients",
+    "stats_projects": "Completed projects",
+    "stats_countries": "Countries",
+    "stats_years": "Years of experience",
+    "featured_title": "Why choose Visionaria",
+    "featured_innovation": "Constant innovation",
+    "featured_innovation_desc": "We develop cutting-edge technology to keep you one step ahead.",
+    "featured_support": "24/7 Support",
+    "featured_support_desc": "Our team is available to help you at any time.",
+    "featured_results": "Proven results",
+    "featured_results_desc": "More than 500 companies have transformed their operations with our solutions."
+  },
+  "products": {
+    "title": "Our Products",
+    "subtitle": "Solutions designed for every business need",
+    "p1_name": "Visionaria Core",
+    "p1_desc": "Central business management and automation platform.",
+    "p2_name": "Visionaria Analytics",
+    "p2_desc": "Real-time data intelligence for better decision-making.",
+    "p3_name": "Visionaria Connect",
+    "p3_desc": "Seamless integration with your current systems and tools.",
+    "p4_name": "Visionaria Shield",
+    "p4_desc": "Advanced enterprise security to protect your digital assets.",
+    "learn_more": "Learn more"
+  },
+  "cases": {
+    "title": "Success Stories",
+    "subtitle": "Companies that have already transformed their business with Visionaria",
+    "result": "Result",
+    "read_more": "Read full case"
+  },
+  "innovation": {
+    "title": "Innovation",
+    "subtitle": "Building the future, today",
+    "rd_title": "Continuous R&D",
+    "rd_desc": "We invest 20% of our revenue in research and development.",
+    "ai_title": "Artificial Intelligence",
+    "ai_desc": "Our products incorporate state-of-the-art AI models.",
+    "cloud_title": "Cloud Native",
+    "cloud_desc": "Architecture designed to scale without limits in the cloud."
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "The latest from Visionaria and the tech world",
+    "read_more": "Read more"
+  },
+  "support": {
+    "title": "Support",
+    "subtitle": "We are here to help you",
+    "docs": "Documentation",
+    "docs_desc": "Complete guides and technical references.",
+    "ticket": "Open a ticket",
+    "ticket_desc": "Report an issue and we'll respond in less than 4 hours.",
+    "community": "Community",
+    "community_desc": "Visionaria users and developers forum.",
+    "status": "System status",
+    "status_desc": "Check the real-time status of all our services."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Reach us through your preferred channel",
+    "name": "Name",
+    "email": "Email",
+    "company": "Company",
+    "message": "Message",
+    "send": "Send message",
+    "phone_title": "Phone",
+    "email_title": "Email",
+    "address_title": "Address",
+    "hours_title": "Business hours",
+    "hours_value": "Mon–Fri, 9:00–18:00"
+  },
+  "footer": {
+    "tagline": "Technology that transforms the future.",
+    "rights": "All rights reserved."
+  }
+}

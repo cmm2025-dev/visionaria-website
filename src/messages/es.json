@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "brand": "Marca",
+    "products": "Productos",
+    "cases": "Casos de Éxito",
+    "innovation": "Innovación",
+    "news": "Noticias",
+    "support": "Soporte",
+    "contact": "Contacto"
+  },
+  "home": {
+    "hero_title": "Tecnología que transforma el futuro",
+    "hero_subtitle": "Soluciones innovadoras para empresas que quieren liderar su industria",
+    "hero_cta": "Conoce nuestros productos",
+    "hero_cta2": "Casos de éxito",
+    "stats_clients": "Clientes activos",
+    "stats_projects": "Proyectos completados",
+    "stats_countries": "Países",
+    "stats_years": "Años de experiencia",
+    "featured_title": "Por qué elegir Visionaria",
+    "featured_innovation": "Innovación constante",
+    "featured_innovation_desc": "Desarrollamos tecnología de vanguardia para mantenerte siempre un paso adelante.",
+    "featured_support": "Soporte 24/7",
+    "featured_support_desc": "Nuestro equipo está disponible para ayudarte en cualquier momento.",
+    "featured_results": "Resultados comprobados",
+    "featured_results_desc": "Más de 500 empresas han transformado su operación con nuestras soluciones."
+  },
+  "products": {
+    "title": "Nuestros Productos",
+    "subtitle": "Soluciones diseñadas para cada necesidad de tu negocio",
+    "p1_name": "Visionaria Core",
+    "p1_desc": "Plataforma central de gestión y automatización empresarial.",
+    "p2_name": "Visionaria Analytics",
+    "p2_desc": "Inteligencia de datos en tiempo real para tomar mejores decisiones.",
+    "p3_name": "Visionaria Connect",
+    "p3_desc": "Integración seamless con tus sistemas y herramientas actuales.",
+    "p4_name": "Visionaria Shield",
+    "p4_desc": "Seguridad empresarial avanzada para proteger tus activos digitales.",
+    "learn_more": "Saber más"
+  },
+  "cases": {
+    "title": "Casos de Éxito",
+    "subtitle": "Empresas que ya transformaron su negocio con Visionaria",
+    "result": "Resultado",
+    "read_more": "Leer caso completo"
+  },
+  "innovation": {
+    "title": "Innovación",
+    "subtitle": "Construyendo el futuro, hoy",
+    "rd_title": "I+D continuo",
+    "rd_desc": "Invertimos el 20% de nuestros ingresos en investigación y desarrollo.",
+    "ai_title": "Inteligencia Artificial",
+    "ai_desc": "Nuestros productos incorporan modelos de IA de última generación.",
+    "cloud_title": "Cloud Native",
+    "cloud_desc": "Arquitectura diseñada para escalar sin límites en la nube."
+  },
+  "news": {
+    "title": "Noticias",
+    "subtitle": "Lo último de Visionaria y el mundo tech",
+    "read_more": "Leer más"
+  },
+  "support": {
+    "title": "Soporte",
+    "subtitle": "Estamos aquí para ayudarte",
+    "docs": "Documentación",
+    "docs_desc": "Guías completas y referencias técnicas.",
+    "ticket": "Abrir ticket",
+    "ticket_desc": "Reporta un problema y te respondemos en menos de 4 horas.",
+    "community": "Comunidad",
+    "community_desc": "Foro de usuarios y desarrolladores Visionaria.",
+    "status": "Estado del sistema",
+    "status_desc": "Revisa el estado en tiempo real de todos nuestros servicios."
+  },
+  "contact": {
+    "title": "Canal de Atención",
+    "subtitle": "Contáctanos por el medio que prefieras",
+    "name": "Nombre",
+    "email": "Email",
+    "company": "Empresa",
+    "message": "Mensaje",
+    "send": "Enviar mensaje",
+    "phone_title": "Teléfono",
+    "email_title": "Email",
+    "address_title": "Dirección",
+    "hours_title": "Horario de atención",
+    "hours_value": "Lun–Vie, 9:00–18:00"
+  },
+  "footer": {
+    "tagline": "Tecnología que transforma el futuro.",
+    "rights": "Todos los derechos reservados."
+  }
+}
