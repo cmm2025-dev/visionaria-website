@@ -26,17 +26,22 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
     // Texto entra
     timers.push(setTimeout(() => setPhase('text-visible'), 800));
 
-    // Texto sale → arranca video
+    // Texto sale → arranca video (tras 700ms de transición de salida)
     timers.push(setTimeout(() => {
       setPhase('text-out');
       setTimeout(() => {
         setPhase('video');
-        videoRef.current?.play().catch(() => {});
-      }, 700); // espera que termine la transición de salida
+        if (videoRef.current) {
+          videoRef.current.playbackRate = 1.2;
+          videoRef.current.play().catch(() => {});
+        }
+      }, 700);
     }, 5500));
 
     return () => timers.forEach(clearTimeout);
   }, []);
+
+  // onEnded se dispara al terminar el video (50s a 1.2x) — sin necesidad de timeouts adicionales
 
   const handleVideoEnded = () => {
     // Video terminó → fade out
