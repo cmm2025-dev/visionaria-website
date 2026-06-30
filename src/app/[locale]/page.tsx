@@ -36,14 +36,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.50 }}
+          style={{ opacity: 0.75 }}
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
 
         {/* Dark gradient overlay — mantiene legibilidad del texto */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'linear-gradient(135deg, rgba(6,13,46,0.85) 0%, rgba(6,13,46,0.65) 50%, rgba(6,13,46,0.80) 100%)'
+          background: 'linear-gradient(135deg, rgba(6,13,46,0.60) 0%, rgba(6,13,46,0.40) 50%, rgba(6,13,46,0.55) 100%)'
         }} />
 
         {/* Íconos flotantes animados encima del video */}
