@@ -20,8 +20,8 @@ export default function HeroText({ title, subtitle, cta, cta2, locale }: HeroTex
     const t1 = setTimeout(() => setPhase('enter'),   100);   // entra
     const t2 = setTimeout(() => setPhase('visible'),  900);   // visible pleno
     const t3 = setTimeout(() => setPhase('exit'),    5500);   // desaparece a los 5.5s
-    const t4 = setTimeout(() => setPhase('enter'),  54000);   // reaparece a los 54s
-    const t5 = setTimeout(() => setPhase('visible'), 54800);  // visible pleno de nuevo
+    const t4 = setTimeout(() => setPhase('enter'),  60000);   // reaparece al segundo 60
+    const t5 = setTimeout(() => setPhase('visible'), 60800);  // visible pleno de nuevo
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5); };
   }, []);
 
