@@ -30,8 +30,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 50%, #0d1a5e 100%)' }}>
-        {/* Cinematic animated background */}
+      <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
+        {/* Video background */}
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.35 }}
+        >
+          <source src="/hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark gradient overlay — mantiene legibilidad del texto */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'linear-gradient(135deg, rgba(6,13,46,0.85) 0%, rgba(6,13,46,0.65) 50%, rgba(6,13,46,0.80) 100%)'
+        }} />
+
+        {/* Íconos flotantes animados encima del video */}
         <HeroCinematic />
 
         {/* Decorative glowing orbs */}
