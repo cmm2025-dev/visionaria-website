@@ -34,7 +34,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
         {/* Video background */}
         <video
-          autoPlay muted loop playsInline
+          autoPlay muted playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: 0.75 }}
         >
