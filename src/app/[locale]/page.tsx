@@ -5,8 +5,7 @@ import OperationalFlow from '@/components/OperationalFlow';
 import ResponseFlow from '@/components/ResponseFlow';
 import Manifesto from '@/components/Manifesto';
 import PartnerStrip from '@/components/PartnerStrip';
-import HeroBackground from '@/components/HeroBackground';
-import HeroText from '@/components/HeroText';
+import HeroSection from '@/components/HeroSection';
 import VideoDemo from '@/components/VideoDemo';
 import SurveillanceDeck from '@/components/SurveillanceDeck';
 
@@ -32,23 +31,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       {/* Hero */}
       <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
-        {/* Video + canvas de partículas — gestionados por HeroBackground */}
-        <HeroBackground />
-
-        {/* Decorative glowing orbs */}
-        <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
-        <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 relative">
-          <HeroText
-            title={t('hero_title')}
-            subtitle={t('hero_subtitle')}
-            cta={t('hero_cta')}
-            cta2={t('hero_cta2')}
-            locale={locale}
-            contact={n('contact')}
-          />
-        </div>
+        <HeroSection
+          title={t('hero_title')}
+          subtitle={t('hero_subtitle')}
+          cta={t('hero_cta')}
+          cta2={t('hero_cta2')}
+          locale={locale}
+          contact={n('contact')}
+        />
       </section>
 
       {/* Partner strip */}
