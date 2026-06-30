@@ -36,7 +36,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.20 }}
+          style={{ opacity: 0.50 }}
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
