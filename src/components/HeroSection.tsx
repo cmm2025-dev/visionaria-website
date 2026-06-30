@@ -31,7 +31,10 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
       setPhase('text-out');
       setTimeout(() => {
         setPhase('video');
-        videoRef.current?.play().catch(() => {});
+        if (videoRef.current) {
+          videoRef.current.playbackRate = 1.2;
+          videoRef.current.play().catch(() => {});
+        }
       }, 700); // espera que termine la transición de salida
     }, 5500));
 
