@@ -5,7 +5,7 @@ import OperationalFlow from '@/components/OperationalFlow';
 import ResponseFlow from '@/components/ResponseFlow';
 import Manifesto from '@/components/Manifesto';
 import PartnerStrip from '@/components/PartnerStrip';
-import HeroCinematic from '@/components/HeroCinematic';
+import HeroBackground from '@/components/HeroBackground';
 import HeroText from '@/components/HeroText';
 import VideoDemo from '@/components/VideoDemo';
 import SurveillanceDeck from '@/components/SurveillanceDeck';
@@ -32,22 +32,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       {/* Hero */}
       <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
-        {/* Video background */}
-        <video
-          autoPlay muted playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.75 }}
-        >
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
-
-        {/* Dark gradient overlay — mantiene legibilidad del texto */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'linear-gradient(135deg, rgba(6,13,46,0.60) 0%, rgba(6,13,46,0.40) 50%, rgba(6,13,46,0.55) 100%)'
-        }} />
-
-        {/* Íconos flotantes animados encima del video */}
-        <HeroCinematic />
+        {/* Video + canvas de partículas — gestionados por HeroBackground */}
+        <HeroBackground />
 
         {/* Decorative glowing orbs */}
         <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
