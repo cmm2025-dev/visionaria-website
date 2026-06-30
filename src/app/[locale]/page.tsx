@@ -6,6 +6,7 @@ import ResponseFlow from '@/components/ResponseFlow';
 import Manifesto from '@/components/Manifesto';
 import PartnerStrip from '@/components/PartnerStrip';
 import HeroCinematic from '@/components/HeroCinematic';
+import HeroText from '@/components/HeroText';
 import VideoDemo from '@/components/VideoDemo';
 import SurveillanceDeck from '@/components/SurveillanceDeck';
 
@@ -33,16 +34,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
         {/* Video background */}
         <video
-          autoPlay muted loop playsInline
+          autoPlay muted playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0.35 }}
+          style={{ opacity: 0.75 }}
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
 
         {/* Dark gradient overlay — mantiene legibilidad del texto */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'linear-gradient(135deg, rgba(6,13,46,0.85) 0%, rgba(6,13,46,0.65) 50%, rgba(6,13,46,0.80) 100%)'
+          background: 'linear-gradient(135deg, rgba(6,13,46,0.60) 0%, rgba(6,13,46,0.40) 50%, rgba(6,13,46,0.55) 100%)'
         }} />
 
         {/* Íconos flotantes animados encima del video */}
@@ -53,30 +54,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 relative">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
-              {t('hero_title')}
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl max-w-xl text-slate-300">
-              {t('hero_subtitle')}
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link
-                href={`/${locale}/productos`}
-                className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
-                style={{ background: 'var(--accent)', color: '#060d2e' }}
-              >
-                {t('hero_cta')} <ArrowRight size={16} />
-              </Link>
-              <Link
-                href={`/${locale}/casos-exito`}
-                className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-colors text-white border hover:bg-white/5"
-                style={{ borderColor: 'var(--border)' }}
-              >
-                {t('hero_cta2')}
-              </Link>
-            </div>
-          </div>
+          <HeroText
+            title={t('hero_title')}
+            subtitle={t('hero_subtitle')}
+            cta={t('hero_cta')}
+            cta2={t('hero_cta2')}
+            locale={locale}
+            contact={n('contact')}
+          />
         </div>
       </section>
 
