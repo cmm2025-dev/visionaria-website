@@ -15,7 +15,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <Image src="/logo.svg" alt="Visionaria" width={130} height={40} />
+            <Image src="/logo.png" alt="Visionaria" width={150} height={47} />
             <p className="mt-3 text-sm leading-relaxed text-slate-400">{tagline}</p>
           </div>
           <div>
