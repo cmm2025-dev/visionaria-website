@@ -7,9 +7,10 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
   const t = await getTranslations({ locale, namespace: 'contact' });
 
   const info = [
-    { icon: Phone, label: t('phone_title'), value: '+56 2 2345 6789' },
-    { icon: Mail, label: t('email_title'), value: 'contacto@visionaria.cl' },
-    { icon: MapPin, label: t('address_title'), value: 'Av. Apoquindo 4700, Las Condes, Santiago' },
+    { icon: Phone, label: t('phone_title'), value: '+56 2 2925 4140' },
+    { icon: Mail, label: t('email_title'), value: 'info@visionaria.cl' },
+    { icon: MapPin, label: t('address_commercial'), value: 'Europa 2144, Providencia, Santiago' },
+    { icon: MapPin, label: t('address_admin'), value: 'Europa 2066, Providencia, Santiago' },
     { icon: Clock, label: t('hours_title'), value: t('hours_value') },
   ];
 

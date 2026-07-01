@@ -85,7 +85,9 @@
     "hours_title": "Operational support",
     "hours_value": "7×24×365 — Continuous support guaranteed",
     "success": "Message sent. We will get back to you soon.",
-    "error_sending": "There was an error sending. Please try again."
+    "error_sending": "There was an error sending. Please try again.",
+    "address_commercial": "Commercial Address",
+    "address_admin": "Administration & Management"
   },
   "footer": {
     "tagline": "Security and Technology Systems SpA — 100% Chilean company, founded in 2002.",
