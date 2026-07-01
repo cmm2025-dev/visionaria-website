@@ -172,123 +172,79 @@ function FaceScanPanel() {
   );
 }
 
-/* ─── LPR carousel panel (datos reales Genetec) ─── */
+/* ─── LPR carousel panel (imágenes reales Genetec) ─── */
 const LPR_CAPTURES = [
-  { cam: 'LPR Las Industrias - Gandarillas',         plate: 'PS·JZ·93',  ts: '12:20:22', scene: 'road-day'   },
-  { cam: 'LPR Departamental - Santa Rosa',           plate: 'JZ·YP·61',  ts: '12:20:21', scene: 'road-night' },
-  { cam: 'LPR - 02 Carlos Valdovinos - Santa Rosa',  plate: 'SV·YK·46',  ts: '12:20:17', scene: 'road-dust'  },
-  { cam: 'LPR - 02 Carlos Valdovinos - Santa Rosa',  plate: 'VP·KK·93',  ts: '12:20:05', scene: 'road-dust'  },
-  { cam: 'LPR Celia Solar - Vicuña Mackenna',        plate: 'DC·SF·25',  ts: '12:25:41', scene: 'road-day'   },
+  { img: '/feeds/lpr-las-industrias.png',    plate: 'PS·JZ·93', ts: '01-07-2026 12:20:22' },
+  { img: '/feeds/lpr-departamental.png',     plate: 'JZ·YP·61', ts: '01-07-2026 12:20:21' },
+  { img: '/feeds/lpr-carlos-valdovinos.png', plate: 'SV·YK·46', ts: '01-07-2026 12:20:17' },
+  { img: '/feeds/lpr-celia-solar.png',       plate: 'DC·SF·25', ts: '01-07-2026 12:25:41' },
 ];
 
-function LPRCameraView({ scene }: { scene: string }) {
-  const palettes: Record<string, { sky: string; road: string; lane: string; fog: string }> = {
-    'road-day':   { sky: '#6b7280', road: '#4b5563', lane: '#9ca3af', fog: 'rgba(200,200,200,0.08)' },
-    'road-night': { sky: '#1f2937', road: '#111827', lane: '#374151', fog: 'rgba(0,0,0,0.3)'        },
-    'road-dust':  { sky: '#78716c', road: '#57534e', lane: '#a8a29e', fog: 'rgba(180,160,120,0.18)' },
-  };
-  const p = palettes[scene] ?? palettes['road-day'];
-  return (
-    <svg viewBox="0 0 280 150" className="w-full h-full" style={{ display: 'block' }}>
-      {/* Sky / background */}
-      <rect x="0" y="0" width="280" height="80" fill={p.sky} opacity="0.7"/>
-      {/* Road surface */}
-      <rect x="0" y="60" width="280" height="90" fill={p.road} opacity="0.9"/>
-      {/* Lane markings */}
-      <line x1="140" y1="80" x2="140" y2="150" stroke={p.lane} strokeWidth="2" strokeDasharray="12 8" opacity="0.4"/>
-      <line x1="70"  y1="90" x2="60"  y2="150" stroke={p.lane} strokeWidth="1.5" opacity="0.2"/>
-      <line x1="210" y1="90" x2="220" y2="150" stroke={p.lane} strokeWidth="1.5" opacity="0.2"/>
-      {/* Fog/dust overlay */}
-      <rect x="0" y="0" width="280" height="150" fill={p.fog}/>
-      {/* Vehicle silhouette */}
-      <g transform="translate(95,72)">
-        <rect x="0" y="10" width="90" height="40" rx="4" fill="#374151" opacity="0.85"/>
-        <rect x="10" y="2"  width="70" height="20" rx="3" fill="#4b5563" opacity="0.8"/>
-        <rect x="2"  y="44" width="18" height="10" rx="3" fill="#1f2937" opacity="0.9"/>
-        <rect x="70" y="44" width="18" height="10" rx="3" fill="#1f2937" opacity="0.9"/>
-        {/* Headlights glow */}
-        <ellipse cx="8"  cy="30" rx="6" ry="4" fill="rgba(255,240,180,0.35)"/>
-        <ellipse cx="82" cy="30" rx="6" ry="4" fill="rgba(255,240,180,0.35)"/>
-        {/* Plate zone highlight */}
-        <rect x="28" y="48" width="34" height="8" rx="1" fill="rgba(255,255,220,0.25)" stroke="rgba(255,255,200,0.5)" strokeWidth="0.8"/>
-      </g>
-      {/* Scan beam sweeping down */}
-      <rect x="0" y="0" width="280" height="20" fill="rgba(240,148,34,0.06)" opacity="0.7">
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,130;0,0" dur="3s" repeatCount="indefinite"/>
-      </rect>
-      {/* Corner brackets */}
-      <path d="M4,4 L4,18 M4,4 L18,4"   stroke="#F09422" strokeWidth="1.5" fill="none" opacity="0.7"/>
-      <path d="M276,4 L276,18 M276,4 L262,4" stroke="#F09422" strokeWidth="1.5" fill="none" opacity="0.7"/>
-      <path d="M4,146 L4,132 M4,146 L18,146"  stroke="#F09422" strokeWidth="1.5" fill="none" opacity="0.7"/>
-      <path d="M276,146 L276,132 M276,146 L262,146" stroke="#F09422" strokeWidth="1.5" fill="none" opacity="0.7"/>
-      {/* "License plate read" badge */}
-      <text x="276" y="10" textAnchor="end" fontSize="7" fontFamily="monospace" fill="rgba(255,255,255,0.5)">License plate read</text>
-    </svg>
-  );
-}
-
 function LPRPanel() {
-  const [idx, setIdx]         = useState(0);
-  const [fade, setFade]       = useState(true);
+  const [idx, setIdx]           = useState(0);
+  const [visible, setVisible]   = useState(true);
   const [scanning, setScanning] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => {
-      setFade(false);
+      setVisible(false);
       setScanning(true);
       setTimeout(() => {
         setIdx(i => (i + 1) % LPR_CAPTURES.length);
-        setFade(true);
-        setTimeout(() => setScanning(false), 800);
-      }, 600);
-    }, 3200);
+        setVisible(true);
+        setTimeout(() => setScanning(false), 700);
+      }, 500);
+    }, 3500);
     return () => clearInterval(t);
   }, []);
 
   const cap = LPR_CAPTURES[idx];
 
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0a0f1e' }}>
-      {/* Genetec-style sub-header */}
-      <div className="flex items-center justify-between px-2 py-0.5 text-xs font-mono shrink-0"
-        style={{ background: '#0d1528', borderBottom: '1px solid rgba(240,148,34,0.15)', color: 'rgba(255,255,255,0.45)' }}>
-        <span className="truncate" style={{ maxWidth: '70%' }}>{cap.cam}</span>
-        <span style={{ color: '#F09422', opacity: 0.7 }}>License plate read</span>
-      </div>
-
-      {/* Camera view */}
+    <div className="w-full h-full flex flex-col overflow-hidden" style={{ background: '#050a18' }}>
+      {/* Real Genetec screenshot — fills the panel */}
       <div className="relative flex-1 overflow-hidden"
-        style={{ opacity: fade ? 1 : 0, transition: 'opacity 0.5s ease' }}>
-        <LPRCameraView scene={cap.scene} />
-        {/* Scan flash */}
+        style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.45s ease' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={cap.img}
+          alt={cap.plate}
+          className="w-full h-full object-cover"
+        />
+        {/* Scanline overlay para efecto CCTV */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)' }}/>
+        {/* Flash de lectura */}
         {scanning && (
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'rgba(240,148,34,0.08)', animation: 'lprflash 0.6s ease-out' }}/>
+            style={{ background: 'rgba(240,148,34,0.12)', animation: 'lprflash 0.5s ease-out' }}/>
         )}
+        {/* Corner brackets */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M2,2 L2,12 M2,2 L12,2"      stroke="#F09422" strokeWidth="0.8" fill="none" opacity="0.8" vectorEffect="non-scaling-stroke"/>
+          <path d="M98,2 L98,12 M98,2 L88,2"    stroke="#F09422" strokeWidth="0.8" fill="none" opacity="0.8" vectorEffect="non-scaling-stroke"/>
+          <path d="M2,98 L2,88 M2,98 L12,98"    stroke="#F09422" strokeWidth="0.8" fill="none" opacity="0.8" vectorEffect="non-scaling-stroke"/>
+          <path d="M98,98 L98,88 M98,98 L88,98" stroke="#F09422" strokeWidth="0.8" fill="none" opacity="0.8" vectorEffect="non-scaling-stroke"/>
+        </svg>
+        {/* Status badge */}
+        <div className="absolute top-1 right-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono"
+          style={{ background: 'rgba(0,0,0,0.6)', color: scanning ? '#F09422' : '#34d399' }}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: scanning ? '#F09422' : '#34d399' }}/>
+          {scanning ? 'LEYENDO...' : '✓ REGISTRADO'}
+        </div>
       </div>
 
-      {/* Plate + timestamp row — estilo Genetec */}
-      <div className="flex items-center gap-2 px-2 py-1.5 shrink-0"
-        style={{ background: '#060b18', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        {/* Plate box — B&W style */}
-        <div className="flex items-center justify-center font-mono font-black tracking-widest rounded px-2"
-          style={{
-            background: '#111', border: '2px solid #ccc', color: '#fff',
-            fontSize: 13, minWidth: 88, letterSpacing: '0.15em',
-            textShadow: '0 0 6px rgba(255,255,255,0.4)',
-            opacity: fade ? 1 : 0, transition: 'opacity 0.5s ease',
-          }}>
+      {/* Plate strip */}
+      <div className="flex items-center gap-2 px-2 py-1 shrink-0"
+        style={{ background: '#02060f', borderTop: '1px solid rgba(255,255,255,0.07)',
+          opacity: visible ? 1 : 0, transition: 'opacity 0.45s ease' }}>
+        <div className="font-mono font-black tracking-widest px-2 py-0.5 rounded"
+          style={{ background: '#111', border: '1.5px solid #bbb', color: '#fff', fontSize: 12, letterSpacing: '0.15em' }}>
           {cap.plate}
         </div>
-        {/* Metadata */}
-        <div className="flex flex-col font-mono leading-tight" style={{ opacity: fade ? 1 : 0, transition: 'opacity 0.5s ease' }}>
-          <span className="text-xs font-bold" style={{ color: '#F09422' }}>{cap.plate.replace('·', '')}</span>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>-, 01-07-2026 {cap.ts}</span>
-        </div>
-        <div className="ml-auto flex gap-1.5">
-          <span className="text-xs font-mono" style={{ color: scanning ? '#F09422' : '#34d399' }}>
-            {scanning ? 'LEYENDO...' : '✓ OK'}
-          </span>
+        <div className="flex flex-col font-mono leading-none">
+          <span className="text-xs font-bold" style={{ color: '#F09422' }}>{cap.plate.replace(/·/g, '')}, -</span>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>{cap.ts}</span>
         </div>
       </div>
     </div>
