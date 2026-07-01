@@ -4,6 +4,11 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY not set');
+    return NextResponse.json({ error: 'API key no configurada.', detail: 'RESEND_API_KEY missing' }, { status: 500 });
+  }
+
   const { name, email, company, message } = await req.json();
 
   if (!name || !email || !message) {
@@ -31,8 +36,8 @@ export async function POST(req: Request) {
   });
 
   if (error) {
-    console.error('Resend error:', error);
-    return NextResponse.json({ error: 'Error al enviar el mensaje.' }, { status: 500 });
+    console.error('Resend error:', JSON.stringify(error));
+    return NextResponse.json({ error: 'Error al enviar el mensaje.', detail: error }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });
