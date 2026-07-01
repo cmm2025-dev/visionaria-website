@@ -11,8 +11,8 @@ export async function POST(req: Request) {
   }
 
   const { error } = await resend.emails.send({
-    from: 'Formulario Web <no-reply@visionaria.cl>',
-    to: ['info@visionaria.cl'],
+    from: 'Formulario Web <onboarding@resend.dev>',
+    to: ['cmejias@visionaria.cl'],
     replyTo: email,
     subject: `Nuevo contacto: ${name}${company ? ` — ${company}` : ''}`,
     text: `Nombre: ${name}\nEmail: ${email}\nEmpresa: ${company || '—'}\n\n${message}`,
