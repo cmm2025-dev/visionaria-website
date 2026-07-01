@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import ContactForm from '@/components/ContactForm';
 
 export default async function ContactoPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -11,6 +12,16 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
     { icon: MapPin, label: t('address_title'), value: 'Av. Apoquindo 4700, Las Condes, Santiago' },
     { icon: Clock, label: t('hours_title'), value: t('hours_value') },
   ];
+
+  const formLabels = {
+    name: t('name'),
+    email: t('email'),
+    company: t('company'),
+    message: t('message'),
+    send: t('send'),
+    success: t('success'),
+    error: t('error_sending'),
+  };
 
   return (
     <div>
@@ -25,39 +36,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Form */}
           <div className="rounded-2xl p-10 border" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
-            <form className="flex flex-col gap-5">
-              {[
-                { id: 'name', label: t('name'), type: 'text' },
-                { id: 'email', label: t('email'), type: 'email' },
-                { id: 'company', label: t('company'), type: 'text' },
-              ].map(({ id, label, type }) => (
-                <div key={id} className="flex flex-col gap-1.5">
-                  <label htmlFor={id} className="text-sm font-medium text-slate-300">{label}</label>
-                  <input
-                    id={id}
-                    type={type}
-                    className="rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 border"
-                    style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--border)', '--tw-ring-color': 'var(--accent)' } as React.CSSProperties}
-                  />
-                </div>
-              ))}
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="message" className="text-sm font-medium text-slate-300">{t('message')}</label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  className="rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 border resize-none"
-                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--border)', '--tw-ring-color': 'var(--accent)' } as React.CSSProperties}
-                />
-              </div>
-              <button
-                type="submit"
-                className="font-semibold py-3 rounded-xl transition-all mt-2 glow-cyan-sm hover:glow-cyan"
-                style={{ background: 'var(--accent)', color: '#060d2e' }}
-              >
-                {t('send')}
-              </button>
-            </form>
+            <ContactForm labels={formLabels} />
           </div>
 
           {/* Info */}

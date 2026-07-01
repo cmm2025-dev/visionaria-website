@@ -83,7 +83,9 @@
     "email_title": "Email",
     "address_title": "Dirección",
     "hours_title": "Soporte operacional",
-    "hours_value": "7×24×365 — Soporte continuo garantizado"
+    "hours_value": "7×24×365 — Soporte continuo garantizado",
+    "success": "Mensaje enviado. Nos pondremos en contacto pronto.",
+    "error_sending": "Hubo un error al enviar. Por favor intenta nuevamente."
   },
   "footer": {
     "tagline": "Sistemas de Seguridad y Tecnología SpA — Empresa 100% chilena, fundada el 2002.",
