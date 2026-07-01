@@ -21,22 +21,25 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
   const [phase, setPhase] = useState<Phase>('text-in');
 
   useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
     const timers: ReturnType<typeof setTimeout>[] = [];
 
     // Texto entra
     timers.push(setTimeout(() => setPhase('text-visible'), 800));
 
-    // Texto sale → arranca video (tras 700ms de transición de salida)
-    timers.push(setTimeout(() => {
-      setPhase('text-out');
-      setTimeout(() => {
-        setPhase('video');
-        if (videoRef.current) {
-          videoRef.current.playbackRate = 1.2;
-          videoRef.current.play().catch(() => {});
-        }
-      }, 700);
-    }, 5500));
+    if (!isMobile) {
+      // Texto sale → arranca video (tras 700ms de transición de salida)
+      timers.push(setTimeout(() => {
+        setPhase('text-out');
+        setTimeout(() => {
+          setPhase('video');
+          if (videoRef.current) {
+            videoRef.current.playbackRate = 1.2;
+            videoRef.current.play().catch(() => {});
+          }
+        }, 700);
+      }, 5500));
+    }
 
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -73,14 +76,14 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
       {/* Canvas de partículas — siempre presente en segundo plano */}
       <HeroCinematic />
 
-      {/* Video — solo visible durante fase 'video' y 'video-fade' */}
+      {/* Video — solo visible en desktop durante fase 'video' y 'video-fade' */}
       <video
         ref={videoRef}
         muted
         playsInline
-        preload="auto"
+        preload="none"
         onEnded={handleVideoEnded}
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        className="hidden md:block absolute inset-0 w-full h-full object-cover pointer-events-none"
         style={{
           opacity: videoOpacity,
           transition: phase === 'video-fade' ? 'opacity 1.5s ease-out' : 'none',
