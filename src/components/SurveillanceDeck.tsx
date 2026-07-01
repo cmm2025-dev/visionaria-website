@@ -350,13 +350,24 @@ export default function SurveillanceDeck() {
             <ScanlineOverlay />
           </div>
 
-          {/* Feed 2 — Drone tracking (large) */}
+          {/* Feed 2 — Drone UAV video real */}
           <div className="col-span-12 sm:col-span-5 rounded-xl border overflow-hidden relative"
             style={{ background: '#04091f', borderColor: 'rgba(240,148,34,0.15)', height: 204 }}>
-            <FeedHeader label="UAV-01" sublabel="DRONE DJI — TRACKING" color="#F09422" />
-            <div className="h-full pt-7">
-              <DronePanel />
-            </div>
+            <FeedHeader label="UAV-01" sublabel="DRONE DJI — VIDEO EN VIVO" color="#F09422" />
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)' }}
+            >
+              <source src="/feeds/uav-drone.mp4" type="video/mp4" />
+            </video>
+            {/* Corner brackets overlay */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ top: 28 }} viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M2,2 L2,12 M2,2 L12,2"      stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
+              <path d="M98,2 L98,12 M98,2 L88,2"    stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
+              <path d="M2,98 L2,88 M2,98 L12,98"    stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
+              <path d="M98,98 L98,88 M98,98 L88,98" stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
+            </svg>
             <ScanlineOverlay color="rgba(240,148,34,0.03)" />
           </div>
 
