@@ -360,11 +360,22 @@ export default function SurveillanceDeck() {
             <ScanlineOverlay color="rgba(240,148,34,0.03)" />
           </div>
 
-          {/* Feed 3 — Radar */}
+          {/* Feed 3 — Radar + PTZ video */}
           <div className="col-span-12 sm:col-span-3 rounded-xl border overflow-hidden relative"
             style={{ background: '#04091f', borderColor: 'rgba(240,148,34,0.12)', height: 204 }}>
-            <FeedHeader label="RAD-01" sublabel="RADAR PERIMETRAL" color="#F09422" />
-            <div className="h-full pt-7">
+            <FeedHeader label="RAD-01" sublabel="RADAR PERIMETRAL · PTZ" color="#F09422" />
+            {/* PTZ video — fondo real de la cámara */}
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)', opacity: 0.45 }}
+            >
+              <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
+            </video>
+            {/* Overlay oscuro para que el radar resalte */}
+            <div className="absolute inset-0 pointer-events-none" style={{ top: 28, background: 'rgba(4,9,31,0.35)' }}/>
+            {/* Radar encima del video */}
+            <div className="absolute inset-0 pt-7">
               <RadarCanvas />
             </div>
             <ScanlineOverlay color="rgba(240,148,34,0.03)" />
