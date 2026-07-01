@@ -33,7 +33,7 @@ export default function Navbar({ locale, t }: NavbarProps) {
     <header className="sticky top-0 z-50 border-b backdrop-blur-md" style={{ background: 'rgba(6,13,46,0.85)', borderColor: 'var(--border)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Visionaria" width={140} height={44} priority />
+          <Image src="/logo.png" alt="Visionaria" width={160} height={50} priority />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
