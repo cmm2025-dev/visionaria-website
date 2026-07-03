@@ -126,38 +126,13 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
               </div>
             </div>
 
-            {/* City image placeholder — reemplazar con imagen real */}
-            <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/10', borderColor: 'rgba(0,212,255,0.2)', background: 'linear-gradient(135deg, #0d1a5e, #040d20)' }}>
-              {/* Decorative city grid SVG */}
-              <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice">
-                <defs>
-                  <radialGradient id="glow" cx="50%" cy="60%" r="50%">
-                    <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.4"/>
-                    <stop offset="100%" stopColor="#00d4ff" stopOpacity="0"/>
-                  </radialGradient>
-                </defs>
-                <rect width="400" height="250" fill="url(#glow)"/>
-                {/* Grid lines */}
-                {[0,40,80,120,160,200,240,280,320,360,400].map(x => (
-                  <line key={x} x1={x} y1="0" x2={x} y2="250" stroke="#00d4ff" strokeWidth="0.3" opacity="0.4"/>
-                ))}
-                {[0,30,60,90,120,150,180,210,240].map(y => (
-                  <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#00d4ff" strokeWidth="0.3" opacity="0.4"/>
-                ))}
-                {/* Buildings */}
-                {[[80,140,30,110],[120,100,25,150],[160,80,35,170],[200,60,30,190],[240,90,28,160],[280,110,32,140],[320,130,26,120]].map(([x,h,w,y],i) => (
-                  <rect key={i} x={x} y={y} width={w} height={h} fill="#00d4ff" opacity="0.15" stroke="#00d4ff" strokeWidth="0.5" strokeOpacity="0.4"/>
-                ))}
-                {/* Data pulses */}
-                <circle cx="200" cy="125" r="40" fill="none" stroke="#00d4ff" strokeWidth="0.8" opacity="0.5"/>
-                <circle cx="200" cy="125" r="70" fill="none" stroke="#00d4ff" strokeWidth="0.4" opacity="0.3"/>
-                <circle cx="200" cy="125" r="100" fill="none" stroke="#00d4ff" strokeWidth="0.2" opacity="0.15"/>
-                <circle cx="200" cy="125" r="5" fill="#F09422"/>
-              </svg>
-              <div className="absolute inset-0 flex items-end p-6">
-                <div className="text-xs font-mono" style={{ color: 'rgba(0,212,255,0.6)' }}>
-                  SANTIAGO · SMART CITY PLATFORM · LIVE
-                </div>
+            {/* Santiago hero image */}
+            <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/10', borderColor: 'rgba(0,212,255,0.2)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/feeds/sc-hero.jpg" alt="Santiago de Chile — ciudad inteligente" className="absolute inset-0 w-full h-full object-cover object-center" />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(4,13,32,0.7) 0%, transparent 50%)' }} />
+              <div className="absolute bottom-0 left-0 p-5">
+                <p className="text-xs font-mono font-bold tracking-widest" style={{ color: 'rgba(0,212,255,0.8)' }}>SANTIAGO DE CHILE · SMART CITY PLATFORM</p>
               </div>
             </div>
           </div>
@@ -218,27 +193,36 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             <p className="mt-3 text-slate-400">Cada módulo opera de forma autónoma o integrado con los demás</p>
           </div>
           <div className="flex flex-col gap-12">
-            {modules.map(({ icon: Icon, color, bg, title, desc, bullets }, i) => (
-              <div key={title} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:flex lg:flex-row-reverse' : ''}`}>
-                <div className="rounded-2xl p-8 border flex flex-col gap-5" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style={{ background: bg }}>
-                      <Icon size={28} style={{ color }} />
+            {modules.map(({ icon: Icon, color, bg, title, desc, bullets }, i) => {
+              const isTrafico = title === 'Gestión de Tránsito';
+              return (
+                <div key={title} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:[direction:rtl]' : ''}`} style={{ direction: 'ltr' }}>
+                  <div className="rounded-2xl p-8 border flex flex-col gap-5" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style={{ background: bg }}>
+                        <Icon size={28} style={{ color }} />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white">{title}</h3>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">{title}</h3>
+                    <p className="text-slate-400 leading-relaxed">{desc}</p>
+                    {isTrafico && (
+                      <div className="rounded-xl overflow-hidden mt-2" style={{ aspectRatio: '16/9' }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/feeds/sc-trafico.jpg" alt="Gestión de tránsito Santiago" className="w-full h-full object-cover" />
+                      </div>
+                    )}
                   </div>
-                  <p className="text-slate-400 leading-relaxed">{desc}</p>
+                  <div className="flex flex-col gap-3">
+                    {bullets.map(b => (
+                      <div key={b} className="flex items-start gap-3 rounded-xl px-5 py-3.5 border" style={{ background: 'rgba(4,13,32,0.6)', borderColor: 'rgba(255,255,255,0.06)' }}>
+                        <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: color }} />
+                        <p className="text-slate-300 text-sm leading-relaxed">{b}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-col gap-3">
-                  {bullets.map(b => (
-                    <div key={b} className="flex items-start gap-3 rounded-xl px-5 py-3.5 border" style={{ background: 'rgba(4,13,32,0.6)', borderColor: 'rgba(255,255,255,0.06)' }}>
-                      <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: color }} />
-                      <p className="text-slate-300 text-sm leading-relaxed">{b}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
