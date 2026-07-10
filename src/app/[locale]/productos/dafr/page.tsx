@@ -190,6 +190,35 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* Accesorios DJI Dock 3 */}
+      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(167,139,250,0.1)', borderBottom: '1px solid rgba(167,139,250,0.1)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#a78bfa' }}>Ecosistema DJI</p>
+            <h2 className="text-3xl font-extrabold text-white">Accesorios compatibles con DJI Dock 3</h2>
+            <p className="mt-3 text-slate-400">Amplía las capacidades operativas según las necesidades de cada despliegue</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { color: '#a78bfa', title: 'D-RTK 3 Versión Relé Fijo', desc: 'Mejora del alcance y la calidad de la transmisión de señal RTK en entornos urbanos complejos.' },
+              { color: '#00d4ff', title: 'AS1 Altavoz en Tiempo Real', desc: 'Alcance de emisión de hasta 300 metros. Permite comunicación directa desde el dron al área del incidente.' },
+              { color: '#F09422', title: 'AL1 Foco con Seguimiento Estabilizado', desc: 'Iluminación potente a 100 metros de distancia con seguimiento automático de objetivos.' },
+              { color: '#34d399', title: 'RC Plus 2 Enterprise', desc: 'Control remoto profesional para vuelo manual del M4D/M4TD con pantalla integrada de alta visibilidad.' },
+              { color: '#f87171', title: 'Módulo de Detección de Obstáculos', desc: 'Garantiza la seguridad operativa en entornos con obstáculos, evitando colisiones durante el vuelo autónomo.' },
+              { color: '#a78bfa', title: 'Kit de Montaje en Vehículo', desc: 'Listo para despliegue móvil. Diseño antivibraciones y calibración RTK automática en movimiento.' },
+            ].map(({ color, title, desc }) => (
+              <div key={title} className="rounded-2xl p-6 border flex gap-4" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
+                <div className="w-2 rounded-full shrink-0" style={{ background: color, minHeight: '40px' }} />
+                <div>
+                  <h3 className="font-bold text-white text-sm mb-2">{title}</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* DJI Dock 3 — Especificaciones */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
