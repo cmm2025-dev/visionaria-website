@@ -34,8 +34,8 @@
     "p2_desc": "Multi-system management software integrating video, access control, intrusion and dispatch into a single operations console.",
     "p3_name": "LPR License Plate Reading",
     "p3_desc": "Intelligent portals for automatic plate recognition with direct integration to Carabineros databases and national vehicle registry.",
-    "p4_name": "Facial Recognition",
-    "p4_desc": "Real-time biometric identification systems integrated with PDI databases and law enforcement agencies.",
+    "p4_name": "DAFR — Drones",
+    "p4_desc": "Drone as First Responder (DAFR): autonomous units deployed in under 90 seconds to any alarm, streaming live video to the command center.",
     "learn_more": "View solution"
   },
   "cases": {
