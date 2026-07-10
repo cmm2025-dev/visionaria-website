@@ -190,6 +190,175 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* DJI Dock 3 — Especificaciones */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>Hardware</p>
+          <h2 className="text-3xl font-extrabold text-white">DJI Dock 3 — Preparado para cualquier reto</h2>
+          <p className="mt-3 text-slate-400 max-w-2xl mx-auto">Estación de despliegue autónomo con inteligencia integrada FlightHub2, certificación EU C6 y operación en condiciones extremas.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[
+            {
+              color: '#a78bfa',
+              title: 'Alto Cumplimiento Regulatorio',
+              items: ['Marcado de Clase EU C6', 'Dock 3 plantillas de documentación', 'Funciones listas para BVLOS'],
+            },
+            {
+              color: '#F09422',
+              title: 'Rendimiento Superior',
+              items: ['Tiempo de vuelo máximo 54 min', 'Telémetro láser para localización precisa', '10s para despegar', 'Seguimiento del terreno en tiempo real'],
+            },
+            {
+              color: '#00d4ff',
+              title: 'Seguridad de Datos Reforzada',
+              items: ['ISO27001 + ISO27701', 'Versión local de FlightHub 2', 'Informe sobre seguridad de datos'],
+            },
+            {
+              color: '#34d399',
+              title: 'Robustez y Fiabilidad',
+              items: ['Resistencia al viento 12 m/s en despegue', 'Temperatura de operación -30 a 50°C', 'Clasificación IP56+IP55'],
+            },
+            {
+              color: '#a78bfa',
+              title: 'Múltiples Accesorios',
+              items: ['Kit de montaje en vehículos', 'D-RTK3 Versión de relé de despliegue fijo', 'Módulo de detección de obstáculos'],
+            },
+            {
+              color: '#F09422',
+              title: 'Inteligencia con FlightHub2',
+              items: ['Detección IA en tiempo real', 'Seguimiento inteligente', 'Detección de cambios', 'Rutas automatizadas'],
+            },
+          ].map(({ color, title, items }) => (
+            <div key={title} className="rounded-2xl p-6 border flex flex-col gap-3" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
+              <h3 className="font-bold text-white text-sm">{title}</h3>
+              <ul className="flex flex-col gap-2">
+                {items.map(item => (
+                  <li key={item} className="flex items-start gap-2 text-slate-400 text-xs leading-relaxed">
+                    <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Implementación en cualquier lugar */}
+      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(0,212,255,0.08)', borderBottom: '1px solid rgba(0,212,255,0.08)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#00d4ff' }}>Despliegue</p>
+            <h2 className="text-3xl font-extrabold text-white">Implementación en cualquier lugar</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                color: '#F09422',
+                title: 'Preparado para despliegue en vehículos',
+                desc: 'Diseño antivibraciones garantiza la fiabilidad del Dock. La calibración RTK basada en la nube y la detección del ángulo de inclinación optimizan la operación móvil y la seguridad.',
+              },
+              {
+                color: '#00d4ff',
+                title: 'Configuración RTK sencilla con D-RTK3',
+                desc: 'La unión con D-RTK 3 permite una mejor adquisición de la señal RTK, superando las limitaciones de despliegue en entornos urbanos (colocando Dock3 cerca de edificios y D-RTK 3 en tejados).',
+              },
+              {
+                color: '#34d399',
+                title: 'Rendimiento mejorado de la señal RTK',
+                desc: 'Módulo RTK externo con capacidad de recepción de señal incrementada en 2 dB, permite una convergencia RTK más rápida y fiable.',
+              },
+              {
+                color: '#a78bfa',
+                title: 'Técnicas de aterrizaje preciso',
+                desc: 'Combinación de SLAM (localización y mapeo simultáneos) y reconocimiento de marcas, garantiza un aterrizaje preciso incluso en entornos de despliegue complicados.',
+              },
+            ].map(({ color, title, desc }) => (
+              <div key={title} className="flex gap-4 rounded-2xl p-6 border" style={{ background: 'rgba(4,13,32,0.7)', borderColor: `${color}20` }}>
+                <div className="w-1 rounded-full shrink-0" style={{ background: color }} />
+                <div>
+                  <h3 className="font-bold text-white mb-2">{title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Rutas automatizadas */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#a78bfa' }}>FlightHub2</p>
+            <h2 className="text-3xl font-extrabold text-white mb-4">Integra la Inteligencia</h2>
+            <p className="text-slate-400 leading-relaxed mb-6">El DJI Dock 3 con FlightHub2 es más inteligente que nunca. Detecta, sigue y actúa de forma autónoma en tiempo real.</p>
+            <div className="flex flex-col gap-4">
+              {[
+                { color: '#00d4ff', title: 'Detección IA en tiempo real', desc: 'Reconocimiento de personas, vehículos y embarcaciones con umbrales configurables de alerta.' },
+                { color: '#a78bfa', title: 'Seguimiento inteligente', desc: 'El dron sigue automáticamente objetivos en movimiento sin intervención del operador.' },
+                { color: '#34d399', title: 'Detección de cambios', desc: 'Compara imágenes de rutas recurrentes e identifica anomalías o cambios en el entorno.' },
+                { color: '#F09422', title: 'Rutas automatizadas con reconocimiento', desc: 'Función de reconocimiento inteligente en waypoints: detección, aviso y captura de datos al encontrar un objetivo. Acciones: Foto, Video y vuelo estacionario.' },
+              ].map(({ color, title, desc }) => (
+                <div key={title} className="flex gap-3 rounded-xl px-5 py-4 border" style={{ background: 'rgba(4,13,32,0.7)', borderColor: `${color}20` }}>
+                  <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
+                  <div>
+                    <p className="text-white font-semibold text-sm">{title}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mt-1">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {['DETECCIÓN IA EN TIEMPO REAL', 'DETECCIÓN DE CAMBIOS', 'SEGUIMIENTO INTELIGENTE', 'RUTAS AUTOMATIZADAS'].map((label, i) => {
+              const colors = ['#00d4ff', '#34d399', '#a78bfa', '#F09422'];
+              return (
+                <div key={label} className="rounded-2xl p-6 flex items-center justify-center text-center border min-h-[100px]"
+                  style={{ background: `radial-gradient(ellipse at center, ${colors[i]}15 0%, rgba(4,13,32,0.9) 70%)`, borderColor: `${colors[i]}30` }}>
+                  <p className="text-xs font-bold tracking-widest" style={{ color: colors[i] }}>{label}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Seguridad de datos */}
+      <section style={{ background: 'rgba(0,0,0,0.4)', borderTop: '1px solid rgba(240,148,34,0.08)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>Privacidad</p>
+            <h2 className="text-3xl font-extrabold text-white">¿Cómo protege el sistema sus datos?</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {[
+              {
+                flag: '🇺🇸',
+                title: 'Servidor AWS con sede en EE.UU.',
+                desc: 'DJI emplea Amazon AWS como proveedor de servicios en la nube, reconocido por sus cualificaciones en materia de seguridad y alta fiabilidad. AWS cuenta con certificaciones ISO 27001/27017/27018.',
+                color: '#00d4ff',
+              },
+              {
+                flag: '🇪🇺',
+                title: 'Servidor AWS con sede en la UE',
+                desc: 'DJI está desplegando FlightHub 2 en Amazon AWS Frankfurt, Alemania. Todos los datos de usuarios de la UE permanecen dentro del territorio europeo, cumpliendo con las normas GDPR.',
+                color: '#a78bfa',
+              },
+            ].map(({ flag, title, desc, color }) => (
+              <div key={title} className="rounded-2xl p-8 border flex gap-5" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
+                <div className="text-4xl shrink-0">{flag}</div>
+                <div>
+                  <h3 className="font-bold text-white mb-3" style={{ color }}>{title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <h2 className="text-3xl font-extrabold text-white">¿Tu municipio está listo para el DAFR?</h2>
