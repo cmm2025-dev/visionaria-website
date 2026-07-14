@@ -8,14 +8,14 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
 
   const cards = [
     { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: '#', accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
-    { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: `/${locale}/contacto`, accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)' },
-    { icon: Users, title: t('community'), desc: t('community_desc'), href: '#', accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)' },
+    { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: `/${locale}/contacto`, accent: '#3D8A82', iconBg: 'rgba(61,138,130,0.12)' },
+    { icon: Users, title: t('community'), desc: t('community_desc'), href: '#', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)' },
     { icon: Activity, title: t('status'), desc: t('status_desc'), href: '#', accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)' },
   ];
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#34d399' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

@@ -13,13 +13,13 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
     },
     {
       icon: Video,
-      color: '#00d4ff',
+      color: '#3D8A82',
       title: 'Video en vivo al centro de mando',
       desc: 'Transmisión Full HD en tiempo real al operador. El equipo de respuesta ve el incidente antes de llegar, mejorando la toma de decisiones y la seguridad del personal.',
     },
     {
       icon: Radio,
-      color: '#a78bfa',
+      color: '#C4A882',
       title: 'Despacho automático integrado',
       desc: 'La Central Táctica de Drones (CTD) recibe la alarma y despacha el dron automáticamente, sin intervención humana. Compatible con Genetec, Milestone y sistemas de despacho policial.',
     },
@@ -33,17 +33,17 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
 
   const steps = [
     { label: 'ALARMA', time: 'T = 0s', color: '#F09422', desc: 'Sensor, cámara o botón de pánico activa la alerta en el sistema.' },
-    { label: 'DESPACHO', time: 'T = 5s', color: '#00d4ff', desc: 'CTD recibe la alarma y ordena el despegue automático del dron más cercano.' },
-    { label: 'DESPEGUE', time: 'T = 30s', color: '#00d4ff', desc: 'El dron sale de la estación DJI Dock y navega autónomamente al punto del evento.' },
+    { label: 'DESPACHO', time: 'T = 5s', color: '#3D8A82', desc: 'CTD recibe la alarma y ordena el despegue automático del dron más cercano.' },
+    { label: 'DESPEGUE', time: 'T = 30s', color: '#3D8A82', desc: 'El dron sale de la estación DJI Dock y navega autónomamente al punto del evento.' },
     { label: 'VIDEO EN VIVO', time: 'T = 90s', color: '#F09422', desc: 'El dron llega y transmite video Full HD en tiempo real al centro de mando.' },
     { label: 'DECISIÓN', time: '< 2 min', color: '#34d399', desc: 'El operador evalúa la situación y despacha la respuesta terrestre con información real.' },
   ];
 
   return (
-    <div style={{ background: '#040d20', minHeight: '100vh' }}>
+    <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <div className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 60%, #040d20 100%)' }}>
+      <div className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 60%, #221E18 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(ellipse at 60% 40%, rgba(240,148,34,0.07) 0%, transparent 60%)' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
@@ -62,7 +62,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               <Link
                 href={`/${locale}/contacto`}
                 className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all"
-                style={{ background: '#F09422', color: '#040d20' }}
+                style={{ background: '#F09422', color: '#1E1B18' }}
               >
                 Solicitar demo <ArrowRight size={16} />
               </Link>
@@ -106,7 +106,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="relative">
             {/* Connecting line */}
-            <div className="absolute left-6 top-6 bottom-6 w-px hidden lg:block" style={{ background: 'linear-gradient(to bottom, #F09422, #00d4ff, #34d399)' }} />
+            <div className="absolute left-6 top-6 bottom-6 w-px hidden lg:block" style={{ background: 'linear-gradient(to bottom, #F09422, #3D8A82, #34d399)' }} />
             <div className="flex flex-col gap-6 lg:pl-16">
               {steps.map(({ label, time, color, desc }) => (
                 <div key={label} className="flex items-start gap-5">
@@ -176,8 +176,8 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             <div className="grid grid-cols-2 gap-4">
               {[
                 { val: '< 90s', label: 'Tiempo de respuesta', color: '#F09422' },
-                { val: '24/7', label: 'Operación continua', color: '#00d4ff' },
-                { val: 'Full HD', label: 'Video en vivo', color: '#a78bfa' },
+                { val: '24/7', label: 'Operación continua', color: '#3D8A82' },
+                { val: 'Full HD', label: 'Video en vivo', color: '#C4A882' },
                 { val: '0', label: 'Operadores en sitio requeridos', color: '#34d399' },
               ].map(({ val, label, color }) => (
                 <div key={label} className="rounded-2xl p-6 border text-center" style={{ background: 'rgba(4,13,32,0.9)', borderColor: `${color}30` }}>
@@ -194,18 +194,18 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
       <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(167,139,250,0.1)', borderBottom: '1px solid rgba(167,139,250,0.1)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#a78bfa' }}>Ecosistema DJI</p>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#C4A882' }}>Ecosistema DJI</p>
             <h2 className="text-3xl font-extrabold text-white">Accesorios compatibles con DJI Dock 3</h2>
             <p className="mt-3 text-slate-400">Amplía las capacidades operativas según las necesidades de cada despliegue</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              { color: '#a78bfa', title: 'D-RTK 3 Versión Relé Fijo', desc: 'Mejora del alcance y la calidad de la transmisión de señal RTK en entornos urbanos complejos.' },
-              { color: '#00d4ff', title: 'AS1 Altavoz en Tiempo Real', desc: 'Alcance de emisión de hasta 300 metros. Permite comunicación directa desde el dron al área del incidente.' },
+              { color: '#C4A882', title: 'D-RTK 3 Versión Relé Fijo', desc: 'Mejora del alcance y la calidad de la transmisión de señal RTK en entornos urbanos complejos.' },
+              { color: '#3D8A82', title: 'AS1 Altavoz en Tiempo Real', desc: 'Alcance de emisión de hasta 300 metros. Permite comunicación directa desde el dron al área del incidente.' },
               { color: '#F09422', title: 'AL1 Foco con Seguimiento Estabilizado', desc: 'Iluminación potente a 100 metros de distancia con seguimiento automático de objetivos.' },
               { color: '#34d399', title: 'RC Plus 2 Enterprise', desc: 'Control remoto profesional para vuelo manual del M4D/M4TD con pantalla integrada de alta visibilidad.' },
               { color: '#f87171', title: 'Módulo de Detección de Obstáculos', desc: 'Garantiza la seguridad operativa en entornos con obstáculos, evitando colisiones durante el vuelo autónomo.' },
-              { color: '#a78bfa', title: 'Kit de Montaje en Vehículo', desc: 'Listo para despliegue móvil. Diseño antivibraciones y calibración RTK automática en movimiento.' },
+              { color: '#C4A882', title: 'Kit de Montaje en Vehículo', desc: 'Listo para despliegue móvil. Diseño antivibraciones y calibración RTK automática en movimiento.' },
             ].map(({ color, title, desc }) => (
               <div key={title} className="rounded-2xl p-6 border flex gap-4" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
                 <div className="w-2 rounded-full shrink-0" style={{ background: color, minHeight: '40px' }} />
@@ -229,7 +229,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
             {
-              color: '#a78bfa',
+              color: '#C4A882',
               title: 'Alto Cumplimiento Regulatorio',
               items: ['Marcado de Clase EU C6', 'Dock 3 plantillas de documentación', 'Funciones listas para BVLOS'],
             },
@@ -239,7 +239,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               items: ['Tiempo de vuelo máximo 54 min', 'Telémetro láser para localización precisa', '10s para despegar', 'Seguimiento del terreno en tiempo real'],
             },
             {
-              color: '#00d4ff',
+              color: '#3D8A82',
               title: 'Seguridad de Datos Reforzada',
               items: ['ISO27001 + ISO27701', 'Versión local de FlightHub 2', 'Informe sobre seguridad de datos'],
             },
@@ -249,7 +249,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               items: ['Resistencia al viento 12 m/s en despegue', 'Temperatura de operación -30 a 50°C', 'Clasificación IP56+IP55'],
             },
             {
-              color: '#a78bfa',
+              color: '#C4A882',
               title: 'Múltiples Accesorios',
               items: ['Kit de montaje en vehículos', 'D-RTK3 Versión de relé de despliegue fijo', 'Módulo de detección de obstáculos'],
             },
@@ -275,10 +275,10 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Implementación en cualquier lugar */}
-      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(0,212,255,0.08)', borderBottom: '1px solid rgba(0,212,255,0.08)' }}>
+      <section style={{ background: 'rgba(0,0,0,0.2)', borderTop: '1px solid rgba(61,138,130,0.08)', borderBottom: '1px solid rgba(61,138,130,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#00d4ff' }}>Despliegue</p>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#3D8A82' }}>Despliegue</p>
             <h2 className="text-3xl font-extrabold text-white">Implementación en cualquier lugar</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -289,7 +289,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
                 desc: 'Diseño antivibraciones garantiza la fiabilidad del Dock. La calibración RTK basada en la nube y la detección del ángulo de inclinación optimizan la operación móvil y la seguridad.',
               },
               {
-                color: '#00d4ff',
+                color: '#3D8A82',
                 title: 'Configuración RTK sencilla con D-RTK3',
                 desc: 'La unión con D-RTK 3 permite una mejor adquisición de la señal RTK, superando las limitaciones de despliegue en entornos urbanos (colocando Dock3 cerca de edificios y D-RTK 3 en tejados).',
               },
@@ -299,7 +299,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
                 desc: 'Módulo RTK externo con capacidad de recepción de señal incrementada en 2 dB, permite una convergencia RTK más rápida y fiable.',
               },
               {
-                color: '#a78bfa',
+                color: '#C4A882',
                 title: 'Técnicas de aterrizaje preciso',
                 desc: 'Combinación de SLAM (localización y mapeo simultáneos) y reconocimiento de marcas, garantiza un aterrizaje preciso incluso en entornos de despliegue complicados.',
               },
@@ -320,13 +320,13 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#a78bfa' }}>FlightHub2</p>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#C4A882' }}>FlightHub2</p>
             <h2 className="text-3xl font-extrabold text-white mb-4">Integra la Inteligencia</h2>
             <p className="text-slate-400 leading-relaxed mb-6">El DJI Dock 3 con FlightHub2 es más inteligente que nunca. Detecta, sigue y actúa de forma autónoma en tiempo real.</p>
             <div className="flex flex-col gap-4">
               {[
-                { color: '#00d4ff', title: 'Detección IA en tiempo real', desc: 'Reconocimiento de personas, vehículos y embarcaciones con umbrales configurables de alerta.' },
-                { color: '#a78bfa', title: 'Seguimiento inteligente', desc: 'El dron sigue automáticamente objetivos en movimiento sin intervención del operador.' },
+                { color: '#3D8A82', title: 'Detección IA en tiempo real', desc: 'Reconocimiento de personas, vehículos y embarcaciones con umbrales configurables de alerta.' },
+                { color: '#C4A882', title: 'Seguimiento inteligente', desc: 'El dron sigue automáticamente objetivos en movimiento sin intervención del operador.' },
                 { color: '#34d399', title: 'Detección de cambios', desc: 'Compara imágenes de rutas recurrentes e identifica anomalías o cambios en el entorno.' },
                 { color: '#F09422', title: 'Rutas automatizadas con reconocimiento', desc: 'Función de reconocimiento inteligente en waypoints: detección, aviso y captura de datos al encontrar un objetivo. Acciones: Foto, Video y vuelo estacionario.' },
               ].map(({ color, title, desc }) => (
@@ -342,7 +342,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="grid grid-cols-2 gap-3">
             {['DETECCIÓN IA EN TIEMPO REAL', 'DETECCIÓN DE CAMBIOS', 'SEGUIMIENTO INTELIGENTE', 'RUTAS AUTOMATIZADAS'].map((label, i) => {
-              const colors = ['#00d4ff', '#34d399', '#a78bfa', '#F09422'];
+              const colors = ['#3D8A82', '#34d399', '#C4A882', '#F09422'];
               return (
                 <div key={label} className="rounded-2xl p-6 flex items-center justify-center text-center border min-h-[100px]"
                   style={{ background: `radial-gradient(ellipse at center, ${colors[i]}15 0%, rgba(4,13,32,0.9) 70%)`, borderColor: `${colors[i]}30` }}>
@@ -367,13 +367,13 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
                 flag: '🇺🇸',
                 title: 'Servidor AWS con sede en EE.UU.',
                 desc: 'DJI emplea Amazon AWS como proveedor de servicios en la nube, reconocido por sus cualificaciones en materia de seguridad y alta fiabilidad. AWS cuenta con certificaciones ISO 27001/27017/27018.',
-                color: '#00d4ff',
+                color: '#3D8A82',
               },
               {
                 flag: '🇪🇺',
                 title: 'Servidor AWS con sede en la UE',
                 desc: 'DJI está desplegando FlightHub 2 en Amazon AWS Frankfurt, Alemania. Todos los datos de usuarios de la UE permanecen dentro del territorio europeo, cumpliendo con las normas GDPR.',
-                color: '#a78bfa',
+                color: '#C4A882',
               },
             ].map(({ flag, title, desc, color }) => (
               <div key={title} className="rounded-2xl p-8 border flex gap-5" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
@@ -398,7 +398,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           <Link
             href={`/${locale}/contacto`}
             className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full transition-all"
-            style={{ background: '#F09422', color: '#040d20' }}
+            style={{ background: '#F09422', color: '#1E1B18' }}
           >
             Hablar con un especialista <ArrowRight size={16} />
           </Link>

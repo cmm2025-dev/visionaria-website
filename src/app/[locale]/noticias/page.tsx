@@ -13,8 +13,8 @@ const newsItems = [
 
 const tagStyles: Record<string, { color: string; bg: string }> = {
   'Smart City': { color: '#F09422', bg: 'rgba(240,148,34,0.12)' },
-  Tecnología: { color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  Proyecto: { color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+  Tecnología: { color: '#3D8A82', bg: 'rgba(61,138,130,0.12)' },
+  Proyecto: { color: '#C4A882', bg: 'rgba(196,168,130,0.12)' },
   Industria: { color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
   Innovación: { color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
   Empresa: { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
@@ -26,7 +26,7 @@ export default async function NoticiasPage({ params }: { params: Promise<{ local
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

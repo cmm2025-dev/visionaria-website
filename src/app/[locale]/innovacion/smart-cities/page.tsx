@@ -20,8 +20,8 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
     },
     {
       icon: Camera,
-      color: '#00d4ff',
-      bg: 'rgba(0,212,255,0.10)',
+      color: '#3D8A82',
+      bg: 'rgba(61,138,130,0.10)',
       title: 'Televigilancia Inteligente',
       desc: 'Red de cámaras IP de alta resolución con analítica de video basada en inteligencia artificial. Detecta eventos en tiempo real sin intervención humana constante, optimizando los recursos operacionales de cada municipio.',
       bullets: [
@@ -87,22 +87,22 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
   ];
 
   return (
-    <div style={{ background: '#040d20', minHeight: '100vh' }}>
+    <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 60%, #040d20 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 60%, #221E18 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(0,212,255,0.08) 0%, transparent 60%)',
+          backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(61,138,130,0.08) 0%, transparent 60%)',
         }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#00d4ff' }}>
+              <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#3D8A82' }}>
                 Innovación · Smart Cities
               </p>
               <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-tight">
                 La solución de<br />
-                <span style={{ color: '#00d4ff' }}>Ciudad Inteligente</span><br />
+                <span style={{ color: '#3D8A82' }}>Ciudad Inteligente</span><br />
                 para Chile
               </h1>
               <p className="mt-6 text-lg text-slate-300 leading-relaxed">
@@ -112,7 +112,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
                 <Link
                   href={`/${locale}/contacto`}
                   className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
-                  style={{ background: '#00d4ff', color: '#040d20' }}
+                  style={{ background: '#3D8A82', color: '#1E1B18' }}
                 >
                   Solicitar demo <ArrowRight size={16} />
                 </Link>
@@ -127,12 +127,12 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
 
             {/* Santiago hero image */}
-            <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/10', borderColor: 'rgba(0,212,255,0.2)' }}>
+            <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/10', borderColor: 'rgba(61,138,130,0.2)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/feeds/sc-hero.jpg" alt="Santiago de Chile — ciudad inteligente" className="absolute inset-0 w-full h-full object-cover object-center" />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(4,13,32,0.7) 0%, transparent 50%)' }} />
               <div className="absolute bottom-0 left-0 p-5">
-                <p className="text-xs font-mono font-bold tracking-widest" style={{ color: 'rgba(0,212,255,0.8)' }}>SANTIAGO DE CHILE · SMART CITY PLATFORM</p>
+                <p className="text-xs font-mono font-bold tracking-widest" style={{ color: 'rgba(61,138,130,0.8)' }}>SANTIAGO DE CHILE · SMART CITY PLATFORM</p>
               </div>
             </div>
           </div>
@@ -158,13 +158,13 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
                 'Coordinación fragmentada entre organismos de seguridad',
               ].map(item => (
                 <li key={item} className="flex items-start gap-3 text-slate-300">
-                  <CheckCircle size={18} className="shrink-0 mt-0.5" style={{ color: '#00d4ff' }} />
+                  <CheckCircle size={18} className="shrink-0 mt-0.5" style={{ color: '#3D8A82' }} />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded-2xl p-8 border" style={{ background: 'rgba(0,212,255,0.04)', borderColor: 'rgba(0,212,255,0.15)' }}>
+          <div className="rounded-2xl p-8 border" style={{ background: 'rgba(61,138,130,0.04)', borderColor: 'rgba(61,138,130,0.15)' }}>
             <p className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: '#F09422' }}>La respuesta de Visionaria</p>
             <p className="text-white text-lg font-semibold leading-relaxed">
               Un ecosistema integrado que conecta cámaras, sensores, drones, control de acceso y comunicaciones en una plataforma única de gestión.
@@ -174,8 +174,8 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </p>
             <div className="mt-6 grid grid-cols-3 gap-4 text-center">
               {[['&lt; 90s', 'Tiempo respuesta DFR'], ['24/7', 'Monitoreo continuo'], ['80 km', 'Alcance de red']].map(([val, label]) => (
-                <div key={label} className="rounded-xl p-4 border" style={{ background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(0,212,255,0.1)' }}>
-                  <p className="text-xl font-extrabold" style={{ color: '#00d4ff' }} dangerouslySetInnerHTML={{ __html: val }} />
+                <div key={label} className="rounded-xl p-4 border" style={{ background: 'rgba(0,0,0,0.2)', borderColor: 'rgba(61,138,130,0.1)' }}>
+                  <p className="text-xl font-extrabold" style={{ color: '#3D8A82' }} dangerouslySetInnerHTML={{ __html: val }} />
                   <p className="text-[10px] text-slate-400 mt-1 leading-tight">{label}</p>
                 </div>
               ))}
@@ -185,10 +185,10 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
       </section>
 
       {/* Módulos */}
-      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(0,212,255,0.08)', borderBottom: '1px solid rgba(0,212,255,0.08)' }}>
+      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(61,138,130,0.08)', borderBottom: '1px solid rgba(61,138,130,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#00d4ff' }}>Capacidades</p>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#3D8A82' }}>Capacidades</p>
             <h2 className="text-3xl font-extrabold text-white">Módulos del ecosistema Smart Cities</h2>
             <p className="mt-3 text-slate-400">Cada módulo opera de forma autónoma o integrado con los demás</p>
           </div>
@@ -230,7 +230,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
       {/* Beneficios */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-14">
-          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#00d4ff' }}>Resultados</p>
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#3D8A82' }}>Resultados</p>
           <h2 className="text-3xl font-extrabold text-white">¿Qué beneficios obtendrás?</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -244,7 +244,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             {
               title: 'Servicios públicos e infraestructuras eficientes',
               desc: 'La integración de datos en tiempo real optimiza la operación de servicios críticos: alumbrado inteligente, gestión de residuos, tránsito y emergencias — reduciendo costos y mejorando la calidad del servicio.',
-              color: '#00d4ff',
+              color: '#3D8A82',
               icon: '🏙️',
             },
             {
@@ -276,7 +276,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
           <Link
             href={`/${locale}/contacto`}
             className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
-            style={{ background: '#00d4ff', color: '#040d20' }}
+            style={{ background: '#3D8A82', color: '#1E1B18' }}
           >
             Contactar a un especialista <ArrowRight size={16} />
           </Link>
