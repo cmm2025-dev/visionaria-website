@@ -305,11 +305,11 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
           <p className="text-slate-400 mb-8">Diseñamos el alcance a la medida de tu territorio, sobre la infraestructura que ya tienes.</p>
           <div className="rounded-2xl p-8 border flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between" style={{ background: 'rgba(167,139,250,0.06)', borderColor: 'rgba(167,139,250,0.3)' }}>
             <div>
-              <p className="text-white font-bold text-xl">César Mejías M.</p>
-              <p className="text-slate-400 mb-3">Gerente de Ingeniería Comercial · Visionaria</p>
+              <p className="text-white font-bold text-xl">Visionaria</p>
+              <p className="text-slate-400 mb-3">Integradores de tecnología para seguridad pública</p>
               <p className="text-slate-300 text-sm leading-loose">
-                <a href="mailto:cmejias@visionaria.cl" className="hover:underline" style={{ color: '#a78bfa' }}>cmejias@visionaria.cl</a><br />
-                +56 9 6844 4580 · +56 22 925 4140
+                <a href="mailto:info@visionaria.cl" className="hover:underline" style={{ color: '#a78bfa' }}>info@visionaria.cl</a><br />
+                +56 2 2925 4140
               </p>
             </div>
             <Link href={`/${locale}/contacto`} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white whitespace-nowrap transition-all hover:brightness-110" style={{ background: '#a78bfa' }}>
