@@ -11,7 +11,7 @@ interface FooterProps {
 export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
   const year = 2025;
   return (
-    <footer className="mt-auto border-t" style={{ background: 'rgba(6,13,46,0.95)', borderColor: 'var(--border)' }}>
+    <footer className="mt-auto border-t" style={{ background: 'linear-gradient(180deg, #181510 0%, #131109 100%)', borderColor: 'var(--border)', boxShadow: '0 -1px 0 rgba(240,148,34,0.06)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
@@ -28,7 +28,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
                 { href: `/${locale}/innovacion`, label: nav.innovation },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="hover:text-[#00d4ff] transition-colors">
+                  <Link href={href} className="hover:text-[#C4A882] transition-colors">
                     {label}
                   </Link>
                 </li>
@@ -44,7 +44,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
                 { href: `/${locale}/contacto`, label: nav.contact },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="hover:text-[#00d4ff] transition-colors">
+                  <Link href={href} className="hover:text-[#C4A882] transition-colors">
                     {label}
                   </Link>
                 </li>

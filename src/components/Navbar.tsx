@@ -30,7 +30,7 @@ export default function Navbar({ locale, t }: NavbarProps) {
   const switchPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   return (
-    <header className="sticky top-0 z-50 border-b backdrop-blur-md" style={{ background: 'rgba(6,13,46,0.85)', borderColor: 'var(--border)' }}>
+    <header className="sticky top-0 z-50 border-b backdrop-blur-md" style={{ background: 'rgba(20,18,15,0.97)', borderColor: 'var(--border)', boxShadow: '0 1px 0 rgba(240,148,34,0.07)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link href={`/${locale}`} className="flex items-center gap-2">
           <Image src="/logo.png" alt="Visionaria" width={160} height={50} priority />
@@ -74,7 +74,7 @@ export default function Navbar({ locale, t }: NavbarProps) {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t px-4 pb-4" style={{ borderColor: 'var(--border)', background: 'rgba(6,13,46,0.97)' }}>
+        <div className="lg:hidden border-t px-4 pb-4" style={{ borderColor: 'var(--border)', background: 'rgba(20,18,15,0.99)' }}>
           {links.map(({ href, key }) => (
             <Link
               key={key}

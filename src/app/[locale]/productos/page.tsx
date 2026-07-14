@@ -15,7 +15,7 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #2A2218 0%, #1E1B18 60%, #221F1A 100%)', borderLeft: '4px solid var(--accent)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

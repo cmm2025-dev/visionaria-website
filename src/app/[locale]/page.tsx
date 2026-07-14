@@ -30,7 +30,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
+      <section className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(145deg, #2A2218 0%, #1E1B18 50%, #221F1A 100%)', borderLeft: '4px solid var(--accent)' }}>
         <HeroSection
           title={t('hero_title')}
           subtitle={t('hero_subtitle')}
@@ -92,16 +92,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <ResponseFlow />
 
       {/* CTA band */}
-      <section className="border-t border-b" style={{ background: 'rgba(240,148,34,0.04)', borderColor: 'var(--border)' }}>
+      <section className="border-t border-b" style={{ background: 'linear-gradient(135deg, #38301E 0%, #28221A 60%, #22201C 100%)', borderColor: 'var(--border)', borderLeft: '4px solid var(--accent)', boxShadow: 'inset 0 0 80px rgba(240,148,34,0.07), inset 4px 0 20px rgba(240,148,34,0.10)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-2xl font-bold text-white">{t('hero_title')}</h3>
-            <p className="text-slate-400 mt-1">{t('hero_subtitle')}</p>
+            <p className="mt-1" style={{ color: 'var(--sub)' }}>{t('hero_subtitle')}</p>
           </div>
           <Link
             href={`/${locale}/contacto`}
-            className="shrink-0 inline-flex items-center gap-2 font-semibold px-7 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
-            style={{ background: 'var(--accent)', color: '#060d2e' }}
+            className="shrink-0 inline-flex items-center gap-2 font-semibold px-7 py-3 rounded-lg shadow-lg transition-all hover:brightness-110"
+            style={{ background: 'var(--accent)', color: '#1E1B18' }}
           >
             {n('contact')} <ArrowRight size={16} />
           </Link>

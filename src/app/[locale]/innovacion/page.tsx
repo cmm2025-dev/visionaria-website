@@ -14,8 +14,8 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #1E2820 0%, #1E1B18 60%, #1E2018 100%)', borderLeft: '4px solid var(--teal)' }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: 'var(--teal)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
