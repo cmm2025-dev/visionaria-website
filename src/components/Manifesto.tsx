@@ -96,9 +96,9 @@ export default function Manifesto() {
         <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { value: '+3.700', label: 'Cámaras en operación', sub: 'en tiempo real' },
-            { value: '+60%', label: 'Participación de mercado', sub: 'seguridad pública Chile' },
-            { value: '< 2 min', label: 'Tiempo de respuesta', sub: 'detección a despliegue' },
-            { value: '40+', label: 'Municipalidades', sub: 'de Arica a Punta Arenas' },
+            { value: '80+', label: 'Municipios', sub: 'de Arica a Punta Arenas' },
+            { value: '10/16', label: 'Regiones cubiertas', sub: 'presencia directa' },
+            { value: '320+', label: 'Proyectos ejecutados', sub: 'desde 2002' },
           ].map(({ value, label, sub }) => (
             <div key={label} className="text-center p-6 rounded-2xl border" style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.07)' }}>
               <p className="text-3xl font-extrabold mb-1" style={{ color: '#F09422' }}>{value}</p>

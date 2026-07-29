@@ -15,9 +15,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const n = await getTranslations({ locale, namespace: 'nav' });
 
   const stats = [
-    { value: '40+', label: t('stats_clients') },
+    { value: '80+', label: t('stats_clients') },
     { value: '+3.700', label: t('stats_projects') },
-    { value: '20+', label: t('stats_countries') },
+    { value: '22', label: t('stats_countries') },
     { value: '+60%', label: t('stats_years') },
   ];
 
