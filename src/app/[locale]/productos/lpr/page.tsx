@@ -212,6 +212,51 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
         </div>
       </div>
 
+      {/* Ley CATI — sección destacada */}
+      <section
+        className="border-y"
+        style={{ background: 'linear-gradient(135deg, #2A2018 0%, #1E1B18 100%)', borderColor: 'rgba(240,148,34,0.15)' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="flex flex-col lg:flex-row gap-10 items-center">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-5"
+                style={{ background: 'rgba(240,148,34,0.10)', border: '1px solid rgba(240,148,34,0.30)', color: '#F09422' }}>
+                Nuevo · Ley CATI
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                Fiscalización electrónica de tránsito<br />
+                <span className="text-slate-300 font-semibold text-xl">Velocidad · Semáforo en rojo · Carriles exclusivos · Conducción inversa</span>
+              </h2>
+              <p className="mt-4 text-slate-300 leading-relaxed max-w-xl">
+                La Ley CATI exige enforcement automatizado con evidencia fotográfica homologada. Activamos estas capacidades sobre la infraestructura LPR existente o con nuevos puntos — sin que municipios y servicios tengan que partir desde cero.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                {['Exceso de velocidad', 'Luz roja', 'Carril exclusivo', 'Sentido contrario', 'Sin patente'].map(tag => (
+                  <span key={tag} className="text-xs font-semibold px-3 py-1 rounded-full border"
+                    style={{ borderColor: 'rgba(240,148,34,0.30)', color: '#F09422', background: 'rgba(240,148,34,0.07)' }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-4 lg:w-72">
+              <div className="rounded-xl p-5 border flex-1" style={{ background: 'var(--card-bg)', borderColor: 'rgba(240,148,34,0.20)' }}>
+                <p className="text-2xl font-extrabold" style={{ color: '#F09422' }}>2 modelos</p>
+                <p className="text-sm text-slate-400 mt-1">Vías urbanas (2 carriles, 160 km/h) o vías expresas (3 carriles, 4K)</p>
+              </div>
+              <Link
+                href={`/${locale}/productos/lpr/cati`}
+                className="inline-flex items-center justify-center gap-2 font-semibold px-6 py-4 rounded-xl transition-all hover:brightness-110 text-center"
+                style={{ background: 'var(--accent)', color: '#1E1B18' }}
+              >
+                Ver solución CATI completa <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Proyecto emblemático: SPD Región Metropolitana */}
       <section
         className="border-y"
