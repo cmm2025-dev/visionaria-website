@@ -5,6 +5,7 @@ import {
   Building2, Network, Camera, ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
+import LprHeroVisual from '@/components/LprHeroVisual';
 
 export default async function LprPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -131,49 +132,59 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
         style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)', borderLeft: '6px solid #C4A882' }}
       >
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#C4A882' }} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
-          <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#C4A882' }}>
-            Portafolio de soluciones · Control vehicular
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight max-w-3xl">
-            Plataforma LPR / ANPR
-            <span className="block text-2xl sm:text-3xl font-semibold mt-2 text-slate-300">
-              Lectura automática de patentes con integración institucional
-            </span>
-          </h1>
-          <p className="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed">
-            Reconocimiento vehicular en tiempo real, conectado con las bases de búsqueda de Carabineros (SEBV) y la plataforma de investigación del Ministerio del Interior (SITIA) — en menos de medio segundo por lectura.
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: text */}
+            <div>
+              <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#C4A882' }}>
+                Portafolio de soluciones · Control vehicular
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
+                Plataforma LPR / ANPR
+                <span className="block text-2xl sm:text-3xl font-semibold mt-2 text-slate-300">
+                  Lectura automática de patentes con integración institucional
+                </span>
+              </h1>
+              <p className="mt-6 text-lg text-slate-300 leading-relaxed">
+                Reconocimiento vehicular en tiempo real, conectado con las bases de búsqueda de Carabineros (SEBV) y la plataforma de investigación del Ministerio del Interior (SITIA) — en menos de medio segundo por lectura.
+              </p>
 
-          {/* Hero stats */}
-          <div className="mt-10 flex flex-wrap gap-8">
-            {[
-              { value: '303', label: 'cámaras activas en RM' },
-              { value: '23', label: 'comunas integradas' },
-              { value: '<500ms', label: 'matching vs. SEBV/SITIA' },
-            ].map(({ value, label }) => (
-              <div key={label}>
-                <p className="text-3xl font-extrabold" style={{ color: '#C4A882' }}>{value}</p>
-                <p className="text-sm text-slate-400 mt-0.5">{label}</p>
+              {/* Hero stats */}
+              <div className="mt-10 flex flex-wrap gap-8">
+                {[
+                  { value: '303', label: 'cámaras activas en RM' },
+                  { value: '23', label: 'comunas integradas' },
+                  { value: '<500ms', label: 'matching vs. SEBV/SITIA' },
+                ].map(({ value, label }) => (
+                  <div key={label}>
+                    <p className="text-3xl font-extrabold" style={{ color: '#C4A882' }}>{value}</p>
+                    <p className="text-sm text-slate-400 mt-0.5">{label}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href={`/${locale}/contacto`}
-              className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
-              style={{ background: 'var(--accent)', color: '#1E1B18' }}
-            >
-              Solicitar evaluación <ArrowRight size={16} />
-            </Link>
-            <Link
-              href={`/${locale}/casos-exito`}
-              className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full border transition-all hover:bg-white/5"
-              style={{ borderColor: 'rgba(196,168,130,0.4)', color: '#C4A882' }}
-            >
-              Ver proyectos ejecutados <ChevronRight size={16} />
-            </Link>
+              <div className="mt-10 flex flex-wrap gap-4">
+                <Link
+                  href={`/${locale}/contacto`}
+                  className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
+                  style={{ background: 'var(--accent)', color: '#1E1B18' }}
+                >
+                  Solicitar evaluación <ArrowRight size={16} />
+                </Link>
+                <Link
+                  href={`/${locale}/casos-exito`}
+                  className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full border transition-all hover:bg-white/5"
+                  style={{ borderColor: 'rgba(196,168,130,0.4)', color: '#C4A882' }}
+                >
+                  Ver proyectos ejecutados <ChevronRight size={16} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: animated LPR simulation */}
+            <div className="hidden lg:block">
+              <LprHeroVisual />
+            </div>
           </div>
         </div>
       </div>
