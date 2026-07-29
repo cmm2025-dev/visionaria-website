@@ -8,8 +8,8 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
 
   const products = [
     { icon: Layers, nameKey: 'p1_name', descKey: 'p1_desc', accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
-    { icon: BarChart2, nameKey: 'p2_name', descKey: 'p2_desc', accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', href: `/${locale}/productos/cad-psim` },
-    { icon: Link2, nameKey: 'p3_name', descKey: 'p3_desc', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', href: null },
+    { icon: BarChart2, nameKey: 'p2_name', descKey: 'p2_desc', accent: '#3D8A82', iconBg: 'rgba(61,138,130,0.12)', href: `/${locale}/productos/cad-psim` },
+    { icon: Link2, nameKey: 'p3_name', descKey: 'p3_desc', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', href: `/${locale}/productos/lpr` },
     { icon: Plane, nameKey: 'p4_name', descKey: 'p4_desc', accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)', href: `/${locale}/productos/dafr` },
   ] as const;
 
