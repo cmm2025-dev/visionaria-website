@@ -47,10 +47,10 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
   return (
     <div>
       {/* Hero */}
-      <div className="text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)', borderLeft: '6px solid #a78bfa' }}>
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#a78bfa' }} />
+      <div className="text-white relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)', borderLeft: '6px solid #3D8A82' }}>
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3D8A82' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
-          <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#a78bfa' }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#3D8A82' }}>
             Portafolio de soluciones · Protección ciudadana
           </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight max-w-2xl">
@@ -61,7 +61,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             Unificamos los recursos de seguridad de todo un territorio —videovigilancia, alarmas, control de acceso, telefonía de emergencia y más— en una sola plataforma que coordina la operación y acorta los tiempos de respuesta.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link href={`/${locale}/contacto`} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all hover:brightness-110" style={{ background: '#a78bfa' }}>
+            <Link href={`/${locale}/contacto`} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all hover:brightness-110" style={{ background: '#3D8A82' }}>
               Conversemos sobre tu territorio <ArrowRight size={16} />
             </Link>
             <a href="#capacidades" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold border border-white/30 text-white hover:bg-white/10 transition-all">
@@ -73,8 +73,8 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
       {/* Manifesto */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#a78bfa' }}>Nuestra mirada</p>
-        <blockquote className="text-3xl sm:text-4xl font-bold text-white leading-snug max-w-3xl border-l-4 pl-6 mb-8" style={{ borderColor: '#a78bfa' }}>
+        <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#3D8A82' }}>Nuestra mirada</p>
+        <blockquote className="text-3xl sm:text-4xl font-bold text-white leading-snug max-w-3xl border-l-4 pl-6 mb-8" style={{ borderColor: '#3D8A82' }}>
           Ver no es lo mismo que responder.
         </blockquote>
         <p className="text-slate-300 text-lg max-w-3xl leading-relaxed mb-10">
@@ -86,8 +86,8 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             <h3 className="text-white font-bold text-lg mb-2">Una sala de televigilancia</h3>
             <p className="text-slate-400 text-sm">Observa, registra y disuade; aporta evidencia. Pero no coordina la respuesta ni gestiona el caso.</p>
           </div>
-          <div className="rounded-xl p-6 border" style={{ background: 'var(--card-bg)', borderColor: '#a78bfa40' }}>
-            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: '#a78bfa' }}>Actuar</p>
+          <div className="rounded-xl p-6 border" style={{ background: 'var(--card-bg)', borderColor: '#3D8A8240' }}>
+            <p className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: '#3D8A82' }}>Actuar</p>
             <h3 className="text-white font-bold text-lg mb-2">Una plataforma CAD/PSIM</h3>
             <p className="text-slate-400 text-sm">Integra la información, decide y despacha recursos, y deja trazabilidad completa de cada incidente.</p>
           </div>
@@ -96,9 +96,9 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* El orden correcto */}
-      <section className="py-16 px-4" style={{ background: 'linear-gradient(135deg, #0a0f2e 0%, #0d1a5e 100%)' }}>
+      <section className="py-16 px-4" style={{ background: 'linear-gradient(145deg, #222018 0%, #1E1B18 100%)' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>El orden correcto</p>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>El orden correcto</p>
           <h2 className="text-3xl font-extrabold text-white mb-2">Primero la operación; la tecnología, a su servicio.</h2>
           <p className="text-slate-400 mb-10">Por eso partimos por la operación y la gestión de casos. La tecnología viene después — a potenciarla, no a reemplazarla.</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
@@ -109,7 +109,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
               { n: '4', title: 'Sumar tecnología', desc: 'Cámaras, sensores y analítica al servicio de esa operación.' },
             ].map(s => (
               <div key={s.n}>
-                <p className="text-5xl font-extrabold mb-2" style={{ color: '#a78bfa' }}>{s.n}</p>
+                <p className="text-5xl font-extrabold mb-2" style={{ color: '#3D8A82' }}>{s.n}</p>
                 <h4 className="text-white font-bold mb-1">{s.title}</h4>
                 <p className="text-slate-400 text-sm">{s.desc}</p>
               </div>
@@ -120,7 +120,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
       {/* La solución */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>La solución</p>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>La solución</p>
         <h2 className="text-3xl font-extrabold text-white mb-4">Una sola plataforma para toda la región</h2>
         <p className="text-slate-400 text-lg max-w-3xl mb-8 leading-relaxed">
           La plataforma combina dos capas complementarias. Una <strong className="text-white">capa de integración (PSIM)</strong> reúne en una sola vista los sistemas de seguridad distribuidos —cámaras, analítica, alarmas, control de acceso y sensores—, correlaciona eventos y entrega conciencia situacional. Una <strong className="text-white">capa de despacho asistido (CAD)</strong> gestiona el ciclo completo del incidente: recepción, clasificación, geolocalización, despacho de recursos y trazabilidad.
@@ -134,7 +134,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             { b: 'Operación coordinada', s: 'Centro regional 24/7' },
             { b: 'Plataforma interoperable', s: 'Integra la tecnología existente' },
           ].map(st => (
-            <div key={st.b} className="rounded-xl px-6 py-4 border-l-4 border" style={{ background: 'var(--card-bg)', borderColor: '#a78bfa', borderLeftColor: '#a78bfa' }}>
+            <div key={st.b} className="rounded-xl px-6 py-4 border-l-4 border" style={{ background: 'var(--card-bg)', borderColor: '#3D8A82', borderLeftColor: '#3D8A82' }}>
               <strong className="text-white block">{st.b}</strong>
               <span className="text-slate-400 text-sm">{st.s}</span>
             </div>
@@ -143,22 +143,22 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
         {/* Architecture diagram */}
         <div className="max-w-lg mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: '#a78bfa' }}>Arquitectura · Hub-and-Spoke</p>
-          <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border" style={{ borderColor: '#a78bfa40' }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-4 text-center" style={{ color: '#3D8A82' }}>Arquitectura · Hub-and-Spoke</p>
+          <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border" style={{ borderColor: '#3D8A8240' }}>
             <div className="px-6 py-4 text-center text-white font-bold" style={{ background: 'rgba(167,139,250,0.2)', borderBottom: '1px solid rgba(167,139,250,0.2)' }}>
               Sala de control regional · Operadores
             </div>
-            <div className="text-center text-xl py-2" style={{ color: '#a78bfa' }}>▲</div>
+            <div className="text-center text-xl py-2" style={{ color: '#3D8A82' }}>▲</div>
             <div className="px-6 py-4 text-center border-b" style={{ background: 'var(--card-bg)', borderColor: 'rgba(167,139,250,0.2)' }}>
               <strong className="text-white">Capa CAD — Despacho asistido</strong>
               <p className="text-slate-400 text-sm mt-1">Recepción · Clasificación · Geolocalización · Despacho · Trazabilidad</p>
             </div>
-            <div className="text-center text-xl py-2" style={{ color: '#a78bfa' }}>▲</div>
+            <div className="text-center text-xl py-2" style={{ color: '#3D8A82' }}>▲</div>
             <div className="px-6 py-4 text-center border-b" style={{ background: 'var(--card-bg)', borderColor: 'rgba(167,139,250,0.2)' }}>
               <strong className="text-white">Capa PSIM — Integración</strong>
               <p className="text-slate-400 text-sm mt-1">Conciencia situacional unificada · correlación de eventos</p>
             </div>
-            <div className="text-center text-xl py-2" style={{ color: '#a78bfa' }}>▲</div>
+            <div className="text-center text-xl py-2" style={{ color: '#3D8A82' }}>▲</div>
             <div className="px-6 py-4 text-center" style={{ background: 'rgba(167,139,250,0.05)' }}>
               <strong className="text-slate-300">Fuentes y dispositivos</strong>
               <p className="text-slate-500 text-sm mt-1">Cámaras · Analítica · Alarmas · GPS · Control de acceso · App · Telefonía</p>
@@ -171,16 +171,16 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* Capacidades */}
-      <section id="capacidades" className="py-20 px-4" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
+      <section id="capacidades" className="py-20 px-4" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Capacidades</p>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Capacidades</p>
           <h2 className="text-3xl font-extrabold text-white mb-3">Lo que hace la plataforma</h2>
           <p className="text-slate-400 mb-10">Capacidades centrales que operan de forma coordinada dentro de una misma consola.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {capabilities.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="rounded-2xl p-6 border flex flex-col gap-4 transition-all hover:glow-cyan-sm" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.12)' }}>
-                  <Icon size={20} style={{ color: '#a78bfa' }} />
+                  <Icon size={20} style={{ color: '#3D8A82' }} />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">{title}</h3>
@@ -194,7 +194,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
       {/* Integración tecnológica */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Integración</p>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Integración</p>
         <h2 className="text-3xl font-extrabold text-white mb-3">Tecnologías que se integran</h2>
         <p className="text-slate-400 mb-8">La plataforma incorpora y correlaciona un ecosistema amplio de tecnologías de seguridad y ciudad inteligente.</p>
         <div className="flex flex-wrap gap-3">
@@ -207,16 +207,16 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* Trazabilidad */}
-      <section className="py-20 px-4" style={{ background: 'linear-gradient(135deg, #0a0f2e 0%, #0d1a5e 100%)' }}>
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(145deg, #222018 0%, #1E1B18 100%)' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Trazabilidad y accountability</p>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Trazabilidad y accountability</p>
           <h2 className="text-3xl font-extrabold text-white mb-3">Gestión que se puede medir y auditar</h2>
           <p className="text-slate-400 mb-10 max-w-2xl">En la gestión pública, lo que no se puede medir no se puede mejorar —ni rendir cuentas. Cada incidente queda registrado de principio a fin.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {traceability.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="rounded-2xl p-6 border flex flex-col gap-4" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.12)' }}>
-                  <Icon size={20} style={{ color: '#a78bfa' }} />
+                  <Icon size={20} style={{ color: '#3D8A82' }} />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">{title}</h3>
@@ -230,12 +230,12 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
       {/* Beneficios */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Impacto</p>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Impacto</p>
         <h2 className="text-3xl font-extrabold text-white mb-10">Qué gana el territorio</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {benefits.map(({ title, desc }) => (
             <div key={title} className="flex gap-4">
-              <span className="flex-shrink-0 mt-2 w-3 h-3 rotate-45 rounded-sm" style={{ background: '#a78bfa' }} />
+              <span className="flex-shrink-0 mt-2 w-3 h-3 rotate-45 rounded-sm" style={{ background: '#3D8A82' }} />
               <div>
                 <h3 className="text-white font-bold text-lg mb-1">{title}</h3>
                 <p className="text-slate-400 leading-relaxed">{desc}</p>
@@ -246,9 +246,9 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* Para quién */}
-      <section className="py-16 px-4" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
+      <section className="py-16 px-4" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Para quién</p>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Para quién</p>
           <h2 className="text-3xl font-extrabold text-white mb-8">Pensada para el sector público</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
@@ -267,18 +267,18 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
 
       {/* Financiamiento */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Financiamiento</p>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Financiamiento</p>
         <h2 className="text-3xl font-extrabold text-white mb-3">De la idea al presupuesto</h2>
         <p className="text-slate-400 mb-8 max-w-2xl">Muchas iniciativas de seguridad no avanzan por una sola razón: no está claro con qué recursos se financian. Te ayudamos a identificar la partida adecuada y a formular el proyecto para que sea elegible.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           {financing.map(({ title, desc }) => (
-            <div key={title} className="rounded-2xl p-5 border-l-4" style={{ background: 'var(--card-bg)', borderColor: '#a78bfa' }}>
+            <div key={title} className="rounded-2xl p-5 border-l-4" style={{ background: 'var(--card-bg)', borderColor: '#3D8A82' }}>
               <h3 className="text-white font-bold mb-2">{title}</h3>
               <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
-        <div className="rounded-2xl p-6 border-l-4 mb-4" style={{ background: 'rgba(167,139,250,0.06)', borderColor: '#a78bfa' }}>
+        <div className="rounded-2xl p-6 border-l-4 mb-4" style={{ background: 'rgba(167,139,250,0.06)', borderColor: '#3D8A82' }}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { n: '1 · Formulación', s: 'Estructuramos el proyecto con su justificación técnica y económica.' },
@@ -298,9 +298,9 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4" style={{ background: 'linear-gradient(135deg, #0a0f2e 0%, #0d1a5e 100%)', borderLeft: '6px solid #a78bfa' }}>
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(145deg, #222018 0%, #1E1B18 100%)', borderLeft: '6px solid #3D8A82' }}>
         <div className="max-w-7xl mx-auto">
-          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#a78bfa' }}>Hablemos</p>
+          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#3D8A82' }}>Hablemos</p>
           <h2 className="text-3xl font-extrabold text-white mb-3">Lleva esta plataforma a tu región</h2>
           <p className="text-slate-400 mb-8">Diseñamos el alcance a la medida de tu territorio, sobre la infraestructura que ya tienes.</p>
           <div className="rounded-2xl p-8 border flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between" style={{ background: 'rgba(167,139,250,0.06)', borderColor: 'rgba(167,139,250,0.3)' }}>
@@ -308,11 +308,11 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
               <p className="text-white font-bold text-xl">Visionaria</p>
               <p className="text-slate-400 mb-3">Integradores de tecnología para seguridad pública</p>
               <p className="text-slate-300 text-sm leading-loose">
-                <a href="mailto:info@visionaria.cl" className="hover:underline" style={{ color: '#a78bfa' }}>info@visionaria.cl</a><br />
+                <a href="mailto:info@visionaria.cl" className="hover:underline" style={{ color: '#3D8A82' }}>info@visionaria.cl</a><br />
                 +56 2 2925 4140
               </p>
             </div>
-            <Link href={`/${locale}/contacto`} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white whitespace-nowrap transition-all hover:brightness-110" style={{ background: '#a78bfa' }}>
+            <Link href={`/${locale}/contacto`} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white whitespace-nowrap transition-all hover:brightness-110" style={{ background: '#3D8A82' }}>
               Solicitar una presentación <ArrowRight size={16} />
             </Link>
           </div>

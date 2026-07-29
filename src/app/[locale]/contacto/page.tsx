@@ -26,7 +26,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

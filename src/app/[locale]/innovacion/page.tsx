@@ -9,13 +9,13 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
   const pillars = [
     { icon: FlaskConical, title: t('rd_title'), desc: t('rd_desc'), accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
     { icon: BrainCircuit, title: t('ai_title'), desc: t('ai_desc'), accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', href: `/${locale}/innovacion/smart-cities` },
-    { icon: Cloud, title: t('cloud_title'), desc: t('cloud_desc'), accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)', href: null },
+    { icon: Cloud, title: t('cloud_title'), desc: t('cloud_desc'), accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', href: null },
   ];
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0a1545 100%)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #1E2820 0%, #1E1B18 60%, #1E2018 100%)', borderLeft: '4px solid var(--teal)' }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: 'var(--teal)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
@@ -47,7 +47,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
           })}
         </div>
 
-        <div className="mt-20 rounded-3xl p-10 text-white text-center border glow-cyan-sm" style={{ background: 'linear-gradient(135deg, #0d1a5e 0%, #1e1065 100%)', borderColor: 'rgba(240,148,34,0.2)' }}>
+        <div className="mt-20 rounded-3xl p-10 text-white text-center border glow-cyan-sm" style={{ background: 'linear-gradient(135deg, #282018 0%, #1E1B18 100%)', borderColor: 'rgba(240,148,34,0.2)' }}>
           <p className="text-5xl font-extrabold text-glow-cyan" style={{ color: 'var(--accent)' }}>20%</p>
           <p className="mt-3 text-lg text-slate-300">{t('rd_desc')}</p>
         </div>

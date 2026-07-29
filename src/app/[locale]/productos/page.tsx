@@ -9,13 +9,13 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
   const products = [
     { icon: Layers, nameKey: 'p1_name', descKey: 'p1_desc', accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
     { icon: BarChart2, nameKey: 'p2_name', descKey: 'p2_desc', accent: '#a78bfa', iconBg: 'rgba(167,139,250,0.12)', href: `/${locale}/productos/cad-psim` },
-    { icon: Link2, nameKey: 'p3_name', descKey: 'p3_desc', accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)', href: null },
+    { icon: Link2, nameKey: 'p3_name', descKey: 'p3_desc', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', href: null },
     { icon: Plane, nameKey: 'p4_name', descKey: 'p4_desc', accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)', href: `/${locale}/productos/dafr` },
   ] as const;
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #060d2e 0%, #0d1a5e 100%)' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #2A2218 0%, #1E1B18 60%, #221F1A 100%)', borderLeft: '4px solid var(--accent)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

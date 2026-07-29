@@ -71,7 +71,7 @@ export default function HeroText({ title, subtitle, cta, cta2, locale }: HeroTex
         <Link
           href={`/${locale}/productos`}
           className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
-          style={{ background: 'var(--accent)', color: '#060d2e' }}
+          style={{ background: 'var(--accent)', color: '#1E1B18' }}
         >
           {cta} <ArrowRight size={16} />
         </Link>

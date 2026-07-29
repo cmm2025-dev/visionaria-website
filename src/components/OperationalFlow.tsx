@@ -9,8 +9,8 @@ const SLIDES = [
 
 const STEPS = [
   { label: 'ALARMA',   time: 'T=0s',    color: '#F09422' },
-  { label: 'DESPACHO', time: 'T=5s',    color: '#00d4ff' },
-  { label: 'DESPEGUE', time: 'T=30s',   color: '#00d4ff' },
+  { label: 'DESPACHO', time: 'T=5s',    color: '#3D8A82' },
+  { label: 'DESPEGUE', time: 'T=30s',   color: '#3D8A82' },
   { label: 'VIDEO EN VIVO', time: 'T=90s', color: '#F09422' },
   { label: 'DECISIÓN', time: '< 2 min', color: '#34d399' },
 ];
@@ -32,11 +32,11 @@ export default function OperationalFlow() {
 
   return (
     <section className="w-full overflow-hidden relative"
-      style={{ background: '#040d20', borderTop: '1px solid rgba(0,212,255,0.1)', borderBottom: '1px solid rgba(0,212,255,0.1)' }}>
+      style={{ background: '#1E1B18', borderTop: '1px solid rgba(61,138,130,0.1)', borderBottom: '1px solid rgba(61,138,130,0.1)' }}>
 
       {/* Header bar */}
       <div className="flex items-center justify-between px-6 py-3 border-b"
-        style={{ borderColor: 'rgba(0,212,255,0.12)', background: 'rgba(0,0,0,0.4)', position: 'relative', zIndex: 10 }}>
+        style={{ borderColor: 'rgba(61,138,130,0.12)', background: 'rgba(0,0,0,0.4)', position: 'relative', zIndex: 10 }}>
         {/* DJI */}
         <div className="flex items-center border rounded-lg px-4 py-1.5"
           style={{ borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(0,0,0,0.5)' }}>
@@ -59,9 +59,9 @@ export default function OperationalFlow() {
         <div className="flex items-center border rounded-lg px-4 py-1.5"
           style={{ borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(0,0,0,0.5)' }}>
           <svg viewBox="0 0 90 24" className="h-5 w-auto">
-            <text y="20" fontSize="19" fontWeight="700" fontFamily="Arial" fill="#00aaff">Gene</text>
+            <text y="20" fontSize="19" fontWeight="700" fontFamily="Arial" fill="#3D8A82">Gene</text>
             <text x="46" y="20" fontSize="19" fontWeight="700" fontFamily="Arial" fill="white">tec</text>
-            <text x="82" y="10" fontSize="10" fontFamily="Arial" fill="#00aaff">®</text>
+            <text x="82" y="10" fontSize="10" fontFamily="Arial" fill="#3D8A82">®</text>
           </svg>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function OperationalFlow() {
 
         {/* Bottom gradient to blend into timeline */}
         <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent, rgba(4,13,32,0.95))' }} />
+          style={{ background: 'linear-gradient(to bottom, transparent, rgba(24,21,16,0.95))' }} />
 
         {/* Slide dots */}
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -101,17 +101,17 @@ export default function OperationalFlow() {
       </div>
 
       {/* Timeline bar */}
-      <div className="relative px-0 py-4" style={{ background: 'rgba(4,13,32,0.97)', borderTop: '1px solid rgba(0,212,255,0.08)' }}>
+      <div className="relative px-0 py-4" style={{ background: 'rgba(24,21,16,0.97)', borderTop: '1px solid rgba(61,138,130,0.08)' }}>
         {/* Glowing line */}
         <div className="absolute left-0 right-0 h-px"
-          style={{ top: '28px', background: 'linear-gradient(90deg, transparent 2%, #00d4ff 10%, #00d4ff 90%, transparent 98%)', boxShadow: '0 0 8px #00d4ff, 0 0 16px rgba(0,212,255,0.3)' }} />
+          style={{ top: '28px', background: 'linear-gradient(90deg, transparent 2%, #3D8A82 10%, #3D8A82 90%, transparent 98%)', boxShadow: '0 0 8px #3D8A82, 0 0 16px rgba(61,138,130,0.3)' }} />
 
         <div className="grid grid-cols-5">
           {STEPS.map((step, i) => (
             <div key={step.label} className="flex flex-col items-center gap-1.5">
               {/* Node */}
               <div className="z-10 w-7 h-7 rounded-full border-2 flex items-center justify-center"
-                style={{ background: 'rgba(4,13,32,0.9)', borderColor: step.color, boxShadow: `0 0 10px ${step.color}60` }}>
+                style={{ background: 'rgba(24,21,16,0.9)', borderColor: step.color, boxShadow: `0 0 10px ${step.color}60` }}>
                 <div className="w-2 h-2 rounded-full" style={{ background: step.color }} />
               </div>
               <p className="text-[9px] sm:text-[10px] font-bold tracking-widest text-center" style={{ color: step.color }}>{step.label}</p>

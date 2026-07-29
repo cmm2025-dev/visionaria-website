@@ -34,7 +34,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
   };
 
   return (
-    <section className="w-full py-20 px-4" style={{ background: 'linear-gradient(180deg, #060d2e 0%, #080f38 100%)' }}>
+    <section className="w-full py-20 px-4" style={{ background: 'linear-gradient(180deg, #1E1B18 0%, #221E18 100%)' }}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
         {/* Left: Text */}
@@ -62,7 +62,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
             {[
               { value: '< 2 min', label: 'Tiempo de respuesta' },
               { value: '+3.700', label: 'Cámaras activas' },
-              { value: '40+', label: 'Municipalidades' },
+              { value: '80+', label: 'Municipios' },
             ].map(({ value, label }) => (
               <div key={label}>
                 <p className="text-xl font-extrabold" style={{ color: '#F09422' }}>{value}</p>
@@ -74,7 +74,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
           <Link
             href={`/${locale}/contacto`}
             className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
-            style={{ background: 'var(--accent)', color: '#060d2e' }}
+            style={{ background: 'var(--accent)', color: '#1E1B18' }}
           >
             Solicitar demo presencial <ArrowRight size={16} />
           </Link>
@@ -85,7 +85,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
           {/* Glow halo */}
           <div
             className="absolute -inset-1 rounded-2xl blur-2xl opacity-30 pointer-events-none transition-opacity group-hover:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #F09422, #00d4ff)' }}
+            style={{ background: 'linear-gradient(135deg, #F09422, #3D8A82)' }}
           />
 
           <div
@@ -120,7 +120,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
             {!playing && (
               <div
                 className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer select-none"
-                style={{ background: poster ? 'rgba(6,13,46,0.55)' : 'linear-gradient(135deg, #0a1545 0%, #0d1a5e 100%)' }}
+                style={{ background: poster ? 'rgba(24,21,16,0.55)' : 'linear-gradient(135deg, #28221A 0%, #222018 100%)' }}
                 onClick={handlePlay}
               >
                 {/* Decorative scanner lines */}
@@ -129,7 +129,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
                     <div
                       key={pct}
                       className="absolute w-full h-px"
-                      style={{ top: `${pct}%`, background: 'rgba(0,212,255,0.5)' }}
+                      style={{ top: `${pct}%`, background: 'rgba(61,138,130,0.5)' }}
                     />
                   ))}
                 </div>
@@ -146,11 +146,11 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
                     <rect x="510" y="60"  width="70"  height="140" fill="#F09422"/>
                     <rect x="590" y="110" width="50"  height="90"  fill="#F09422"/>
                     {/* Drone */}
-                    <circle cx="320" cy="80" r="3" fill="#00d4ff" opacity="0.9"/>
-                    <line x1="310" y1="80" x2="330" y2="80" stroke="#00d4ff" strokeWidth="1.5" opacity="0.7"/>
-                    <line x1="320" y1="70" x2="320" y2="90" stroke="#00d4ff" strokeWidth="1.5" opacity="0.7"/>
+                    <circle cx="320" cy="80" r="3" fill="#3D8A82" opacity="0.9"/>
+                    <line x1="310" y1="80" x2="330" y2="80" stroke="#3D8A82" strokeWidth="1.5" opacity="0.7"/>
+                    <line x1="320" y1="70" x2="320" y2="90" stroke="#3D8A82" strokeWidth="1.5" opacity="0.7"/>
                     {/* Scan beam */}
-                    <path d="M315 83 L300 130 L340 130 L325 83Z" fill="rgba(0,212,255,0.08)"/>
+                    <path d="M315 83 L300 130 L340 130 L325 83Z" fill="rgba(61,138,130,0.08)"/>
                   </svg>
                 )}
 
@@ -187,7 +187,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
 
             {/* Live badge */}
             <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold"
-              style={{ background: 'rgba(6,13,46,0.8)', border: '1px solid rgba(240,148,34,0.3)', color: '#F09422' }}>
+              style={{ background: 'rgba(24,21,16,0.8)', border: '1px solid rgba(240,148,34,0.3)', color: '#F09422' }}>
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#F09422' }} />
               DEMO
             </div>

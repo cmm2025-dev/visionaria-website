@@ -96,7 +96,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, rgba(6,13,46,0.45) 0%, rgba(6,13,46,0.25) 50%, rgba(6,13,46,0.40) 100%)',
+          background: 'linear-gradient(135deg, rgba(24,21,16,0.45) 0%, rgba(24,21,16,0.25) 50%, rgba(24,21,16,0.40) 100%)',
           opacity: videoOpacity,
           transition: phase === 'video-fade' ? 'opacity 1.5s ease-out' : 'none',
         }}
@@ -104,7 +104,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
 
       {/* Orbes decorativos */}
       <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
-      <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3b82f6' }} />
+      <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--teal)' }} />
 
       {/* Texto hero */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 relative">
@@ -126,7 +126,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
             <Link
               href={`/${locale}/productos`}
               className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
-              style={{ background: 'var(--accent)', color: '#060d2e' }}
+              style={{ background: 'var(--accent)', color: '#1E1B18' }}
             >
               {cta} <ArrowRight size={16} />
             </Link>

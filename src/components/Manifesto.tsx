@@ -12,8 +12,8 @@ const pillars = [
     icon: Cpu,
     title: 'Integración de Sistemas',
     desc: 'No vendemos tecnología aislada. Conectamos videovigilancia, reconocimiento facial, lectores de patentes, drones y plataformas de despacho en un ecosistema unificado que opera como un solo sistema inteligente.',
-    accent: '#00d4ff',
-    bg: 'rgba(0,212,255,0.08)',
+    accent: '#3D8A82',
+    bg: 'rgba(61,138,130,0.08)',
   },
   {
     icon: BarChart3,
@@ -26,7 +26,7 @@ const pillars = [
 
 export default function Manifesto() {
   return (
-    <section className="w-full py-24 px-4" style={{ background: 'linear-gradient(180deg, #060d2e 0%, #0a1440 50%, #060d2e 100%)' }}>
+    <section className="w-full py-24 px-4" style={{ background: 'linear-gradient(180deg, #1E1B18 0%, #222018 50%, #1E1B18 100%)' }}>
       <div className="max-w-7xl mx-auto">
 
         {/* Headline */}
@@ -48,7 +48,7 @@ export default function Manifesto() {
         {/* Divider line with glow */}
         <div className="relative mb-16">
           <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #F09422, transparent)' }} />
-          <div className="absolute left-1/2 -top-3 -translate-x-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center" style={{ borderColor: '#F09422', background: '#060d2e' }}>
+          <div className="absolute left-1/2 -top-3 -translate-x-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center" style={{ borderColor: '#F09422', background: '#1E1B18' }}>
             <div className="w-2 h-2 rounded-full" style={{ background: '#F09422' }} />
           </div>
         </div>
