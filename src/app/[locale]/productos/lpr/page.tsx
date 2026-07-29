@@ -145,7 +145,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
           className="absolute inset-0"
           style={{
             zIndex: 1,
-            background: 'linear-gradient(135deg, rgba(30,27,24,0.92) 0%, rgba(28,22,18,0.80) 50%, rgba(20,18,14,0.70) 100%)',
+            background: 'linear-gradient(135deg, rgba(20,16,12,0.72) 0%, rgba(20,16,12,0.50) 50%, rgba(20,16,12,0.30) 100%)',
           }}
         />
 
@@ -162,13 +162,13 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
               <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#C4A882' }}>
                 Portafolio de soluciones · Control vehicular
               </p>
-              <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
+              <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
                 Plataforma LPR / ANPR
                 <span className="block text-2xl sm:text-3xl font-semibold mt-2 text-slate-300">
                   Lectura automática de patentes con integración institucional
                 </span>
               </h1>
-              <p className="mt-6 text-lg text-slate-300 leading-relaxed">
+              <p className="mt-6 text-lg text-slate-300 leading-relaxed" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
                 Reconocimiento vehicular en tiempo real, conectado con las bases de búsqueda de Carabineros (SEBV) y la plataforma de investigación del Ministerio del Interior (SITIA) — en menos de medio segundo por lectura.
               </p>
 
