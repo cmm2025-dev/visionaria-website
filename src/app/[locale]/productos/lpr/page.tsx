@@ -127,12 +127,35 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
   return (
     <div>
       {/* Hero */}
-      <div
-        className="text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)', borderLeft: '6px solid #C4A882' }}
-      >
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#C4A882' }} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+      <div className="text-white relative overflow-hidden" style={{ borderLeft: '6px solid #C4A882' }}>
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/lpr-hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Overlay: darkens video so text stays readable, with brand tint */}
+        <div
+          className="absolute inset-0"
+          style={{
+            zIndex: 1,
+            background: 'linear-gradient(135deg, rgba(30,27,24,0.92) 0%, rgba(28,22,18,0.80) 50%, rgba(20,18,14,0.70) 100%)',
+          }}
+        />
+
+        {/* Subtle left-edge gradient to reinforce the border-left accent */}
+        <div
+          className="absolute inset-y-0 left-0 w-32 pointer-events-none"
+          style={{ zIndex: 2, background: 'linear-gradient(to right, rgba(196,168,130,0.08), transparent)' }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative" style={{ zIndex: 3 }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: text */}
             <div>
