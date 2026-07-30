@@ -598,18 +598,15 @@ function EventLog() {
     { time: '20:17:33', msg: 'Placa BKRD·54 alertada — vehículo robado', color: '#ef4444' },
     { time: '20:17:28', msg: 'Drone UAV-01 en ruta — sector Maipú', color: '#F09422' },
     { time: '20:17:21', msg: 'Rostro ID confirmado — base PDI 94.7%', color: '#34d399' },
-    { time: '20:17:15', msg: 'CAM-07 movimiento detectado — zona perimetral', color: '#F09422' },
     { time: '20:17:09', msg: 'Pórtico LPR-03 operativo — 847 vehículos/h', color: '#34d399' },
-    { time: '20:16:58', msg: 'Backup enlace fibra activado — nodo norte', color: '#3D8A82' },
-    { time: '20:16:44', msg: 'Genetec SC sincronizado — 3.712 cámaras OK', color: '#34d399' },
   ];
   return (
-    <div className="mt-7 px-3 pb-2 flex flex-col gap-1 overflow-hidden h-full">
+    <div className="mt-7 px-3 pb-2 flex flex-col gap-1.5 overflow-hidden" style={{ maxHeight: 'calc(100% - 2rem)' }}>
       {events.map((e, i) => (
-        <div key={i} className="flex gap-2 text-xs font-mono leading-tight py-0.5 border-b"
-          style={{ borderColor: 'rgba(255,255,255,0.04)', opacity: 1 - i * 0.1 }}>
+        <div key={i} className="flex gap-2 text-xs font-mono leading-tight py-1 border-b"
+          style={{ borderColor: 'rgba(255,255,255,0.04)', opacity: 1 - i * 0.12 }}>
           <span className="shrink-0 text-slate-600">{e.time}</span>
-          <span style={{ color: e.color }}>{e.msg}</span>
+          <span className="truncate" style={{ color: e.color }}>{e.msg}</span>
         </div>
       ))}
     </div>

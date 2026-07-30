@@ -15,11 +15,50 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #2A2218 0%, #1E1B18 60%, #221F1A 100%)', borderLeft: '4px solid var(--accent)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
-        <div className="max-w-7xl mx-auto relative">
-          <h1 className="text-4xl font-extrabold">{t('title')}</h1>
-          <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
+      {/* Hero con video de fondo */}
+      <div className="relative overflow-hidden text-white" style={{ minHeight: '52vh' }}>
+        {/* Video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/soluciones-hero-bg.mp4" type="video/mp4" />
+          <source src="/hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            zIndex: 1,
+            background: 'linear-gradient(135deg, rgba(20,16,12,0.88) 0%, rgba(20,16,12,0.65) 55%, rgba(20,16,12,0.45) 100%)',
+          }}
+        />
+
+        {/* Acento izquierdo */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 pointer-events-none" style={{ zIndex: 2, background: 'var(--accent)' }} />
+
+        {/* Orbe decorativo */}
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ zIndex: 1, background: 'var(--accent)' }} />
+
+        {/* Contenido */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative" style={{ zIndex: 2 }}>
+          <h1
+            className="text-4xl sm:text-5xl font-extrabold text-white"
+            style={{ textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}
+          >
+            {t('title')}
+          </h1>
+          <p
+            className="mt-3 text-lg text-slate-300 max-w-xl"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.7)' }}
+          >
+            {t('subtitle')}
+          </p>
         </div>
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
