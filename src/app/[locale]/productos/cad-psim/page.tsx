@@ -47,17 +47,37 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
   return (
     <div>
       {/* Hero */}
-      <div className="text-white relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)', borderLeft: '6px solid #3D8A82' }}>
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3D8A82' }} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
-          <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#3D8A82' }}>
+      <div className="text-white relative overflow-hidden" style={{ borderLeft: '6px solid #3D8A82' }}>
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/cad-hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            zIndex: 1,
+            background: 'linear-gradient(135deg, rgba(20,16,12,0.80) 0%, rgba(20,16,12,0.55) 50%, rgba(20,16,12,0.35) 100%)',
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative" style={{ zIndex: 2 }}>
+          <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#3D8A82', textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
             Portafolio de soluciones · Protección ciudadana
           </p>
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight max-w-2xl">
+          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight max-w-2xl" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
             Plataforma CAD/PSIM
             <span className="block text-2xl sm:text-3xl font-semibold mt-2 text-slate-300">Protección ciudadana integrada, a escala regional</span>
           </h1>
-          <p className="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed">
+          <p className="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
             Unificamos los recursos de seguridad de todo un territorio —videovigilancia, alarmas, control de acceso, telefonía de emergencia y más— en una sola plataforma que coordina la operación y acorta los tiempos de respuesta.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
