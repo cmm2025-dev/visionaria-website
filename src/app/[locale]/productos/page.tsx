@@ -25,26 +25,23 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map(({ icon: Icon, nameKey, descKey, accent, iconBg, href }) => (
-            <div
+            <Link
               key={nameKey}
-              className="rounded-2xl p-8 border flex flex-col gap-5 transition-all hover:glow-cyan-sm"
+              href={href ?? `/${locale}/contacto`}
+              className="rounded-2xl p-8 border flex flex-col gap-5 transition-all hover:glow-cyan-sm hover:scale-[1.02] cursor-pointer group"
               style={{ background: 'var(--card-bg)', borderColor: href ? `${accent}40` : 'var(--border)' }}
             >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: iconBg }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: iconBg }}>
                 <Icon size={22} style={{ color: accent }} />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="text-lg font-semibold text-white">{t(nameKey)}</h3>
                 <p className="mt-2 text-slate-400 text-sm leading-relaxed">{t(descKey)}</p>
               </div>
-              <Link
-                href={href ?? `/${locale}/contacto`}
-                className="mt-auto inline-flex items-center gap-1 text-sm font-medium transition-colors hover:brightness-125"
-                style={{ color: accent }}
-              >
+              <div className="mt-auto inline-flex items-center gap-1 text-sm font-semibold transition-all group-hover:gap-2" style={{ color: accent }}>
                 {t('learn_more')} <ArrowRight size={14} />
-              </Link>
-            </div>
+              </div>
+            </Link>
           ))}
         </div>
       </section>

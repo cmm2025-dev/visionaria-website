@@ -1,11 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import HeroCinematic from './HeroCinematic';
-
-type Phase = 'text-in' | 'text-visible' | 'text-out' | 'video' | 'video-fade' | 'canvas' | 'text-return' | 'text-return-visible';
+import { ArrowRight, Play, X } from 'lucide-react';
 
 interface HeroSectionProps {
   title: string;
@@ -17,112 +14,51 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ title, subtitle, cta, cta2, locale }: HeroSectionProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [phase, setPhase] = useState<Phase>('text-in');
-
-  useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-
-    // Texto entra
-    timers.push(setTimeout(() => setPhase('text-visible'), 800));
-
-    if (!isMobile) {
-      // Texto sale → arranca video (tras 700ms de transición de salida)
-      timers.push(setTimeout(() => {
-        setPhase('text-out');
-        setTimeout(() => {
-          setPhase('video');
-          if (videoRef.current) {
-            videoRef.current.playbackRate = 1.2;
-            videoRef.current.play().catch(() => {});
-          }
-        }, 700);
-      }, 5500));
-    }
-
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  // onEnded se dispara al terminar el video (50s a 1.2x) — sin necesidad de timeouts adicionales
-
-  const handleVideoEnded = () => {
-    // Video terminó → fade out
-    setPhase('video-fade');
-    setTimeout(() => {
-      // Canvas limpio
-      setPhase('canvas');
-      setTimeout(() => {
-        // Texto reaparece
-        setPhase('text-return');
-        setTimeout(() => setPhase('text-return-visible'), 800);
-      }, 400); // pequeña pausa para que el canvas se vea limpio
-    }, 1500); // duración del fade out
-  };
-
-  // Opacidad del video
-  const videoOpacity = phase === 'video' ? 1
-    : phase === 'video-fade' ? 0
-    : 0;
-
-  // Visibilidad del texto
-  const textVisible = phase === 'text-in' || phase === 'text-visible' || phase === 'text-return' || phase === 'text-return-visible';
-  const textFullVisible = phase === 'text-visible' || phase === 'text-return-visible';
-  const textTranslate = textFullVisible ? 'translateY(0px)' : 'translateY(30px)';
-  const textOpacity = textVisible ? (textFullVisible ? 1 : 0) : 0;
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <>
-      {/* Canvas de partículas — siempre presente en segundo plano */}
-      <HeroCinematic />
-
-      {/* Video — solo visible en desktop durante fase 'video' y 'video-fade' */}
+      {/* Video de fondo — loop continuo */}
       <video
-        ref={videoRef}
+        autoPlay
         muted
+        loop
         playsInline
-        preload="none"
-        onEnded={handleVideoEnded}
-        className="hidden md:block absolute inset-0 w-full h-full object-cover pointer-events-none"
-        style={{
-          opacity: videoOpacity,
-          transition: phase === 'video-fade' ? 'opacity 1.5s ease-out' : 'none',
-        }}
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        style={{ zIndex: 0 }}
       >
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Overlay oscuro — solo durante el video */}
+      {/* Overlay degradado */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, rgba(24,21,16,0.45) 0%, rgba(24,21,16,0.25) 50%, rgba(24,21,16,0.40) 100%)',
-          opacity: videoOpacity,
-          transition: phase === 'video-fade' ? 'opacity 1.5s ease-out' : 'none',
+          zIndex: 1,
+          background: 'linear-gradient(135deg, rgba(20,16,12,0.82) 0%, rgba(20,16,12,0.60) 55%, rgba(20,16,12,0.40) 100%)',
         }}
       />
 
-      {/* Orbes decorativos */}
-      <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
-      <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--teal)' }} />
+      {/* Orbes de acento */}
+      <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-8 blur-3xl pointer-events-none" style={{ zIndex: 1, background: 'var(--accent)' }} />
+      <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-8 blur-3xl pointer-events-none" style={{ zIndex: 1, background: 'var(--teal)' }} />
 
-      {/* Texto hero */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 relative">
-        <div
-          className="max-w-3xl"
-          style={{
-            opacity: textOpacity,
-            transform: textTranslate,
-            transition: 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out',
-          }}
-        >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
+      {/* Contenido */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-40 relative" style={{ zIndex: 2 }}>
+        <div className="max-w-3xl">
+          <h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white"
+            style={{ textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}
+          >
             {title}
           </h1>
-          <p className="mt-6 text-lg sm:text-xl max-w-xl text-slate-300">
+          <p
+            className="mt-6 text-lg sm:text-xl max-w-xl text-slate-300"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.7)' }}
+          >
             {subtitle}
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href={`/${locale}/productos`}
               className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
@@ -137,9 +73,51 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
             >
               {cta2}
             </Link>
+            {/* Botón ver video completo */}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="inline-flex items-center gap-2 font-semibold px-5 py-3 rounded-full transition-all hover:bg-white/10 text-white border"
+              style={{ borderColor: 'rgba(255,255,255,0.20)' }}
+            >
+              <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(240,148,34,0.20)', border: '1px solid rgba(240,148,34,0.40)' }}>
+                <Play size={12} style={{ color: 'var(--accent)' }} fill="currentColor" />
+              </span>
+              Ver video
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Modal video completo */}
+      {modalOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ zIndex: 9999, background: 'rgba(0,0,0,0.88)' }}
+          onClick={() => setModalOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl rounded-2xl overflow-hidden"
+            style={{ aspectRatio: '16/9' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <video
+              autoPlay
+              controls
+              className="w-full h-full object-cover"
+              style={{ background: '#000' }}
+            >
+              <source src="/hero-bg.mp4" type="video/mp4" />
+            </video>
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:bg-white/20"
+              style={{ background: 'rgba(0,0,0,0.6)' }}
+            >
+              <X size={18} className="text-white" />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

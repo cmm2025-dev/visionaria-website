@@ -8,10 +8,54 @@ import Footer from '@/components/Footer';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' });
 
-export const metadata: Metadata = {
-  title: 'Visionaria',
-  description: 'Tecnología que transforma el futuro',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const isEs = locale === 'es';
+  const baseUrl = 'https://www.visionaria.cl';
+
+  const title = isEs
+    ? 'Visionaria — Integración de Sistemas de Seguridad en Chile'
+    : 'Visionaria — Security Systems Integration in Chile';
+  const description = isEs
+    ? 'Líder en videovigilancia, reconocimiento facial, lectores de patentes LPR y drones de respuesta rápida (DAFR) para municipios y seguridad pública en Chile. Más de 80 municipios y 3.700 proyectos ejecutados.'
+    : 'Leading provider of video surveillance, facial recognition, LPR license plate readers and DAFR drones for public safety in Chile. 80+ municipalities and 3,700+ projects completed.';
+
+  return {
+    title: {
+      default: title,
+      template: `%s | Visionaria`,
+    },
+    description,
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+      languages: { 'es-CL': `${baseUrl}/es`, 'en': `${baseUrl}/en` },
+    },
+    openGraph: {
+      type: 'website',
+      locale: isEs ? 'es_CL' : 'en_US',
+      url: `${baseUrl}/${locale}`,
+      siteName: 'Visionaria',
+      title,
+      description,
+      images: [{ url: `${baseUrl}/og-image.jpg`, width: 1200, height: 630, alt: 'Visionaria — Seguridad Inteligente' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${baseUrl}/og-image.jpg`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+    },
+    keywords: isEs
+      ? ['videovigilancia Chile', 'reconocimiento facial', 'lectura de patentes LPR', 'drones seguridad', 'CAD PSIM', 'municipio seguridad', 'Visionaria Chile', 'DAFR', 'Ley CATI']
+      : ['video surveillance Chile', 'facial recognition', 'LPR license plate reader', 'security drones', 'CAD PSIM', 'Visionaria Chile'],
+  };
+}
 
 const locales = ['es', 'en'];
 

@@ -125,12 +125,13 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {featured.map(({ company, industry, region, result, detail, accent }) => (
-            <div
+            <Link
               key={company}
-              className="rounded-2xl overflow-hidden border transition-all hover:glow-cyan-sm flex flex-col"
+              href={`/${locale}/contacto`}
+              className="rounded-2xl overflow-hidden border transition-all hover:glow-cyan-sm hover:scale-[1.02] flex flex-col cursor-pointer group"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
             >
-              <div className="h-1" style={{ background: accent }} />
+              <div className="h-1 transition-all group-hover:h-1.5" style={{ background: accent }} />
               <div className="p-8 flex flex-col flex-1 gap-3">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="text-base font-bold text-white leading-snug">{company}</h3>
@@ -143,11 +144,11 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
                 <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--muted)' }}>Resultado clave</p>
                 <p className="font-semibold text-sm leading-snug" style={{ color: accent }}>{result}</p>
                 <p className="text-xs text-slate-500 leading-relaxed flex-1">{detail}</p>
-                <Link href={`/${locale}/contacto`} className="mt-2 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:brightness-125" style={{ color: 'var(--accent)' }}>
+                <div className="mt-2 inline-flex items-center gap-1 text-sm font-semibold transition-all group-hover:gap-2" style={{ color: 'var(--accent)' }}>
                   {t('read_more')} <ArrowRight size={14} />
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
