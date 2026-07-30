@@ -59,6 +59,14 @@ const brands = [
     ),
   },
   {
+    name: 'DJI',
+    svg: (
+      <svg viewBox="0 0 80 36" className="h-7 w-auto" aria-label="DJI">
+        <text y="28" fontSize="30" fontWeight="900" fontFamily="Arial Black, Arial, sans-serif" fill="white" letterSpacing="-1">DJI</text>
+      </svg>
+    ),
+  },
+  {
     name: 'RADWIN',
     svg: (
       <svg viewBox="0 0 130 36" className="h-7 w-auto" aria-label="RADWIN">
