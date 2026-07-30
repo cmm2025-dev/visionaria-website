@@ -61,21 +61,15 @@ const brands = [
   {
     name: 'DJI',
     svg: (
-      <svg viewBox="0 0 220 150" className="h-8 w-auto" aria-label="DJI">
-        {/* d — rounded rect with square cutout */}
-        <path
-          d="M 8,4 Q 4,4 4,8 L 4,118 Q 4,142 28,142 L 90,142 L 90,104 L 36,104 Q 28,104 28,96 L 28,54 L 90,54 L 90,4 Z"
-          fill="white"
-        />
-        <rect x="44" y="18" width="46" height="50" fill="black" rx="2" />
-        {/* j — tall center shape with curved bottom */}
-        <path
-          d="M 102,4 L 102,118 Q 102,142 78,142 L 78,126 Q 86,126 86,118 L 86,4 Z"
-          fill="white"
-        />
-        {/* i — two diagonal slash bars */}
-        <path d="M 112,4 L 136,4 L 136,56 L 112,56 Z" fill="white" transform="skewX(-10)" />
-        <path d="M 112,70 L 136,70 L 136,142 L 112,142 Z" fill="white" transform="skewX(-10)" />
+      <svg viewBox="0 0 260 200" className="h-8 w-auto" aria-label="DJI">
+        {/* d — outer shape with inner cutout */}
+        <path d="M 10,10 L 90,10 L 90,60 L 38,60 L 38,140 L 90,140 L 90,190 L 30,190 Q 10,190 10,170 Z" fill="white" />
+        <rect x="50" y="22" width="40" height="36" fill="black" />
+        {/* j — tall bar, curves at bottom */}
+        <path d="M 104,10 L 140,10 L 140,160 Q 140,190 112,190 L 98,190 L 98,176 Q 116,176 116,160 L 116,10 Z" fill="white" />
+        {/* i — two slanted bars */}
+        <rect x="154" y="10" width="36" height="76" fill="white" rx="4" transform="skewX(-8)" />
+        <rect x="154" y="104" width="36" height="76" fill="white" rx="4" transform="skewX(-8)" />
       </svg>
     ),
   },
