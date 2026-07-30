@@ -1,4 +1,5 @@
 import { Shield, Cpu, BarChart3 } from 'lucide-react';
+import ScrollCue from './ScrollCue';
 
 const pillars = [
   {
@@ -108,6 +109,7 @@ export default function Manifesto() {
           ))}
         </div>
 
+      <ScrollCue label="Ver más" />
       </div>
     </section>
   );

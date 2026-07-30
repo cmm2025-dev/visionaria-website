@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import ScrollCue from './ScrollCue';
 
 /* ─── Typewriter hook ─── */
 function useTypewriter(texts: string[], speed = 55, pause = 2200) {
@@ -550,6 +551,8 @@ export default function SurveillanceDeck() {
           <span className="ml-auto" style={{ color: '#F09422' }}>VISIONARIA OPS · SANTIAGO · CL</span>
         </div>
       </div>
+
+      <ScrollCue label="Seguir explorando" />
 
       <style jsx>{`
         @keyframes scanrow {
