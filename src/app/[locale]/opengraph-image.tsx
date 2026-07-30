@@ -33,12 +33,13 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const { locale } = await params;
   const t = COPY[locale === 'en' ? 'en' : 'es'];
 
-  const [regular, bold, mark] = await Promise.all([
+  const [regular, bold, geometric, swoosh] = await Promise.all([
     readFile(join(fontDir, 'Geist-Regular.ttf')),
     readFile(join(fontDir, 'Geist-Bold.ttf')),
-    readFile(join(process.cwd(), 'public/logo-mark.svg'), 'utf8'),
+    readFile(join(fontDir, 'Jost-Regular.ttf')),
+    readFile(join(process.cwd(), 'public/logo-swoosh.svg'), 'utf8'),
   ]);
-  const markSrc = `data:image/svg+xml;base64,${Buffer.from(mark).toString('base64')}`;
+  const swooshSrc = `data:image/svg+xml;base64,${Buffer.from(swoosh).toString('base64')}`;
 
   return new ImageResponse(
     (
@@ -97,10 +98,26 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
           }}
         />
 
-        {/* Wordmark */}
-        <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+        {/* Wordmark: swoosh as an image, name set in a font we control so the
+            letterforms don't depend on whatever the rasterizer finds locally. */}
+        <div style={{ display: 'flex', position: 'relative', width: 430, height: 124 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={markSrc} alt="Visionaria" width={356} height={122} />
+          <img src={swooshSrc} alt="" width={372} height={124} />
+          {/* Wider than the swoosh on purpose — the wordmark overhangs it on the right. */}
+          <div
+            style={{
+              position: 'absolute',
+              left: 40,
+              top: 30,
+              display: 'flex',
+              fontFamily: 'Jost',
+              fontSize: 60,
+              letterSpacing: 2,
+              color: '#FFFFFF',
+            }}
+          >
+            visionaria
+          </div>
         </div>
 
         {/* Headline block */}
@@ -182,6 +199,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
       fonts: [
         { name: 'Geist', data: regular, style: 'normal', weight: 400 },
         { name: 'Geist', data: bold, style: 'normal', weight: 700 },
+        { name: 'Jost', data: geometric, style: 'normal', weight: 400 },
       ],
     },
   );
