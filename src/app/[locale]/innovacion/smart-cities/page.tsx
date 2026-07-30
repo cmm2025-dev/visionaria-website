@@ -173,9 +173,9 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
               Trabajamos con las mejores marcas del mundo — Genetec, DJI, Axis, Hikvision — e integramos cada componente para que los operadores vean todo desde una sola pantalla y respondan en segundos, no en minutos.
             </p>
             <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-              {[['&lt; 90s', 'Tiempo respuesta DFR'], ['24/7', 'Monitoreo continuo'], ['80 km', 'Alcance de red']].map(([val, label]) => (
+              {[['< 90s', 'Tiempo respuesta DFR'], ['24/7', 'Monitoreo continuo'], ['80 km', 'Alcance de red']].map(([val, label]) => (
                 <div key={label} className="rounded-xl p-4 border" style={{ background: 'rgba(0,0,0,0.2)', borderColor: 'rgba(61,138,130,0.1)' }}>
-                  <p className="text-xl font-extrabold" style={{ color: '#3D8A82' }} dangerouslySetInnerHTML={{ __html: val }} />
+                  <p className="text-xl font-extrabold" style={{ color: '#3D8A82' }}>{val}</p>
                   <p className="text-[10px] text-slate-400 mt-1 leading-tight">{label}</p>
                 </div>
               ))}

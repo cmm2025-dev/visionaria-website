@@ -107,9 +107,10 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         </div>
         <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/9', borderColor: 'rgba(240,148,34,0.3)' }}>
           <iframe
-            src="https://www.youtube.com/embed/o_HdKiM1MEE?rel=0&modestbranding=1"
+            src="https://www.youtube-nocookie.com/embed/o_HdKiM1MEE?rel=0&modestbranding=1"
             title="DAFR — Dron como Primera Fuerza de Respuesta"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
             className="absolute inset-0 w-full h-full"
             style={{ border: 'none' }}
