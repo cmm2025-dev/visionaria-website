@@ -80,6 +80,19 @@ const brands = [
     ),
   },
   {
+    name: 'Hanwha',
+    svg: (
+      <svg viewBox="0 0 200 44" className="h-8 w-auto" aria-label="Hanwha Vision">
+        {/* Three overlapping ellipses */}
+        <ellipse cx="22" cy="22" rx="18" ry="13" fill="none" stroke="#E8621A" strokeWidth="3.5" transform="rotate(-30 22 22)" opacity="1" />
+        <ellipse cx="22" cy="22" rx="18" ry="13" fill="none" stroke="#F0956A" strokeWidth="3" transform="rotate(10 22 22)" opacity="0.85" />
+        <ellipse cx="22" cy="22" rx="18" ry="13" fill="none" stroke="#F5B894" strokeWidth="2.5" transform="rotate(50 22 22)" opacity="0.7" />
+        {/* HANWHA text */}
+        <text x="50" y="29" fontSize="20" fontWeight="700" fontFamily="Arial, sans-serif" fill="white" letterSpacing="1.5">HANWHA</text>
+      </svg>
+    ),
+  },
+  {
     name: 'RADWIN',
     svg: (
       <svg viewBox="0 0 130 36" className="h-7 w-auto" aria-label="RADWIN">
