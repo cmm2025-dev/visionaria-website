@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Play, X } from 'lucide-react';
+import { ArrowRight, Play, X, ChevronDown } from 'lucide-react';
 
 interface HeroSectionProps {
   title: string;
@@ -36,7 +36,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Overlay — se aclara al hacer settle */}
+      {/* Overlay */}
       <div
         className="absolute inset-0 pointer-events-none transition-all duration-1000"
         style={{
@@ -47,12 +47,27 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
         }}
       />
 
-      {/* Orbes de acento */}
+      {/* Orbes */}
       <div className="absolute top-20 right-20 w-72 h-72 rounded-full opacity-8 blur-3xl pointer-events-none" style={{ zIndex: 1, background: 'var(--accent)' }} />
       <div className="absolute bottom-0 left-10 w-48 h-48 rounded-full opacity-8 blur-3xl pointer-events-none" style={{ zIndex: 1, background: 'var(--teal)' }} />
 
-      {/* Contenedor que define el alto de la sección */}
-      <div className="relative w-full" style={{ zIndex: 2, minHeight: '88vh' }}>
+      {/* Botón "Ver video" — esquina superior derecha */}
+      <button
+        onClick={() => setModalOpen(true)}
+        className="absolute top-5 right-5 inline-flex items-center gap-2 font-semibold rounded-full transition-all hover:bg-white/10 text-white border"
+        style={{ zIndex: 10, borderColor: 'rgba(255,255,255,0.20)', padding: '0.45rem 1rem', fontSize: '0.8rem' }}
+      >
+        <span
+          className="rounded-full flex items-center justify-center shrink-0"
+          style={{ width: '1.5rem', height: '1.5rem', background: 'rgba(240,148,34,0.20)', border: '1px solid rgba(240,148,34,0.40)' }}
+        >
+          <Play size={10} style={{ color: 'var(--accent)' }} fill="currentColor" />
+        </span>
+        Ver video
+      </button>
+
+      {/* Contenedor que define el alto */}
+      <div className="relative w-full" style={{ zIndex: 2, minHeight: '78vh' }}>
 
         {/* Contenido — transiciona de centro a esquina superior izquierda */}
         <div
@@ -94,7 +109,6 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
               {subtitle}
             </p>
 
-            {/* Fila de CTAs */}
             <div
               className="flex flex-wrap items-center gap-3 transition-all duration-1000"
               style={{ marginTop: settled ? '0.6rem' : '2.5rem' }}
@@ -122,37 +136,35 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
               >
                 {cta2}
               </Link>
-
-              {/* Ver video — extremo derecho */}
-              <button
-                onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 font-semibold rounded-full transition-all hover:bg-white/10 text-white border"
-                style={{
-                  borderColor: 'rgba(255,255,255,0.20)',
-                  padding: settled ? '0.35rem 0.9rem' : '0.75rem 1.25rem',
-                  fontSize: settled ? '0.75rem' : '0.95rem',
-                  marginLeft: 'auto',
-                }}
-              >
-                <span
-                  className="rounded-full flex items-center justify-center shrink-0"
-                  style={{
-                    width: settled ? '1.25rem' : '1.75rem',
-                    height: settled ? '1.25rem' : '1.75rem',
-                    background: 'rgba(240,148,34,0.20)',
-                    border: '1px solid rgba(240,148,34,0.40)',
-                  }}
-                >
-                  <Play size={settled ? 9 : 12} style={{ color: 'var(--accent)' }} fill="currentColor" />
-                </span>
-                Ver video
-              </button>
             </div>
           </div>
         </div>
+
+        {/* Scroll cue — bouncing arrow en la base del hero */}
+        <div
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 transition-opacity duration-700"
+          style={{ opacity: settled ? 0.7 : 0, pointerEvents: 'none' }}
+        >
+          <span className="text-xs tracking-widest uppercase text-slate-400" style={{ fontSize: '0.6rem', letterSpacing: '0.2em' }}>
+            Explorar
+          </span>
+          <ChevronDown
+            size={22}
+            className="text-slate-400"
+            style={{ animation: settled ? 'bounce-cue 1.6s ease-in-out infinite' : 'none' }}
+          />
+        </div>
       </div>
 
-      {/* Modal video completo */}
+      {/* Keyframe para el bounce del scroll cue */}
+      <style>{`
+        @keyframes bounce-cue {
+          0%, 100% { transform: translateY(0); opacity: 0.5; }
+          50%       { transform: translateY(6px); opacity: 1; }
+        }
+      `}</style>
+
+      {/* Modal video */}
       {modalOpen && (
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
@@ -164,12 +176,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
             style={{ aspectRatio: '16/9' }}
             onClick={e => e.stopPropagation()}
           >
-            <video
-              autoPlay
-              controls
-              className="w-full h-full object-cover"
-              style={{ background: '#000' }}
-            >
+            <video autoPlay controls className="w-full h-full object-cover" style={{ background: '#000' }}>
               <source src="/hero-bg.mp4" type="video/mp4" />
             </video>
             <button
