@@ -156,11 +156,8 @@ export async function POST(req: Request) {
     return json({ error: 'Email inválido.' }, 400);
   }
 
-  const to = process.env.CONTACT_TO_EMAIL;
-  if (!to) {
-    console.error('CONTACT_TO_EMAIL not set');
-    return json({ error: 'Servicio no disponible.' }, 500);
-  }
+  // Corporate address as fallback so a missing env var never silently drops leads.
+  const to = process.env.CONTACT_TO_EMAIL ?? 'info@visionaria.cl';
 
   // Constructed per-request: a module-scope `new Resend()` throws at import time when the
   // key is absent, which breaks `next build` during page-data collection.
