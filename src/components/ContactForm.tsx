@@ -101,7 +101,7 @@ export default function ContactForm({ labels }: ContactFormProps) {
         type="submit"
         disabled={status === 'loading'}
         className="flex items-center justify-center gap-2 font-semibold py-3 rounded-xl transition-all mt-2 glow-cyan-sm hover:glow-cyan disabled:opacity-60 disabled:cursor-not-allowed"
-        style={{ background: 'var(--accent)', color: '#060d2e' }}
+        style={{ background: 'var(--accent)', color: '#1E1B18' }}
       >
         {status === 'loading'
           ? <><Loader2 size={16} className="animate-spin" /> Enviando…</>

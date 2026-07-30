@@ -15,9 +15,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const n = await getTranslations({ locale, namespace: 'nav' });
 
   const stats = [
-    { value: '40+', label: t('stats_clients') },
+    { value: '80+', label: t('stats_clients') },
     { value: '+3.700', label: t('stats_projects') },
-    { value: '20+', label: t('stats_countries') },
+    { value: '22', label: t('stats_countries') },
     { value: '+60%', label: t('stats_years') },
   ];
 
@@ -30,7 +30,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden text-white" style={{ background: '#060d2e' }}>
+      <section className="relative overflow-hidden text-white" style={{ background: '#1E1B18' }}>
         <HeroSection
           title={t('hero_title')}
           subtitle={t('hero_subtitle')}
@@ -101,7 +101,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <Link
             href={`/${locale}/contacto`}
             className="shrink-0 inline-flex items-center gap-2 font-semibold px-7 py-3 rounded-full shadow-lg transition-all glow-cyan-sm hover:glow-cyan"
-            style={{ background: 'var(--accent)', color: '#060d2e' }}
+            style={{ background: 'var(--accent)', color: '#1E1B18' }}
           >
             {n('contact')} <ArrowRight size={16} />
           </Link>

@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060d2e;
+  --background: #1E1B18;
   --foreground: #ffffff;
-  --card-bg: #0d1542;
-  --border: rgba(0, 212, 255, 0.15);
+  --card-bg: #28221A;
+  --border: rgba(255, 220, 160, 0.09);
   --accent: #F09422;
+  --teal: #3D8A82;
+  --sand: #C4A882;
   --muted: #94a3b8;
 }
 
@@ -31,4 +33,11 @@ body {
 }
 .text-glow-cyan {
   text-shadow: 0 0 20px rgba(240, 148, 34, 0.6);
+}
+
+/* LPR hero scan beam */
+@keyframes lprScanY {
+  0%   { top: 0%; opacity: 0.7; }
+  80%  { opacity: 0.7; }
+  100% { top: 100%; opacity: 0; }
 }

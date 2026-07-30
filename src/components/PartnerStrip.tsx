@@ -94,11 +94,11 @@ const partners = [
 
 export default function PartnerStrip() {
   return (
-    <section className="relative overflow-hidden py-6 border-y" style={{ background: 'rgba(6,13,46,0.95)', borderColor: 'rgba(240,148,34,0.12)' }}>
+    <section className="relative overflow-hidden py-6 border-y" style={{ background: 'rgba(30,27,24,0.95)', borderColor: 'rgba(240,148,34,0.12)' }}>
       {/* Left fade */}
-      <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #060d2e, transparent)' }} />
+      <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #1E1B18, transparent)' }} />
       {/* Right fade */}
-      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #060d2e, transparent)' }} />
+      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #1E1B18, transparent)' }} />
 
       {/* Label */}
       <div className="absolute left-8 top-1/2 -translate-y-1/2 z-20">

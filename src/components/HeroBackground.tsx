@@ -32,7 +32,7 @@ export default function HeroBackground() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, rgba(6,13,46,0.45) 0%, rgba(6,13,46,0.25) 50%, rgba(6,13,46,0.40) 100%)',
+          background: 'linear-gradient(135deg, rgba(24,21,16,0.45) 0%, rgba(24,21,16,0.25) 50%, rgba(24,21,16,0.40) 100%)',
           opacity: videoVisible ? 1 : 0,
           transition: 'opacity 1.5s ease-out',
         }}

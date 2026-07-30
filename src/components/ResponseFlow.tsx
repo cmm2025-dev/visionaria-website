@@ -3,7 +3,7 @@ const panels = [
     time: 'T=0s',
     timeColor: '#F09422',
     label: 'ALARMA',
-    bg: 'radial-gradient(ellipse at 40% 70%, rgba(220,50,0,0.45) 0%, rgba(4,10,35,0.97) 65%)',
+    bg: 'radial-gradient(ellipse at 40% 70%, rgba(220,50,0,0.45) 0%, rgba(24,21,16,0.97) 65%)',
     sep: '#F09422',
     icon: (
       <svg viewBox="0 0 120 180" className="w-28 h-40 mx-auto">
@@ -25,39 +25,39 @@ const panels = [
   },
   {
     time: 'T=5s',
-    timeColor: '#00d4ff',
+    timeColor: '#3D8A82',
     label: 'DESPACHO',
-    bg: 'radial-gradient(ellipse at 50% 55%, rgba(0,80,200,0.4) 0%, rgba(4,10,35,0.97) 65%)',
-    sep: '#00d4ff',
+    bg: 'radial-gradient(ellipse at 50% 55%, rgba(61,138,130,0.3) 0%, rgba(24,21,16,0.97) 65%)',
+    sep: '#3D8A82',
     icon: (
       <svg viewBox="0 0 120 180" className="w-28 h-40 mx-auto">
         {/* Operator silhouette */}
-        <ellipse cx="60" cy="150" rx="28" ry="8" fill="rgba(0,80,200,0.15)"/>
+        <ellipse cx="60" cy="150" rx="28" ry="8" fill="rgba(61,138,130,0.1)"/>
         <rect x="35" y="105" width="50" height="40" rx="2" fill="#1a2240" stroke="#2a3860" strokeWidth="1"/>
         <circle cx="60" cy="95" r="12" fill="#1a2240" stroke="#2a3860" strokeWidth="1"/>
         {/* Screen glow */}
-        <rect x="5" y="20" width="110" height="72" rx="4" fill="rgba(0,60,180,0.15)" stroke="#00d4ff" strokeWidth="1.5" style={{ filter: 'drop-shadow(0 0 8px rgba(0,180,255,0.4))' }}/>
+        <rect x="5" y="20" width="110" height="72" rx="4" fill="rgba(40,60,58,0.3)" stroke="#3D8A82" strokeWidth="1.5" style={{ filter: 'drop-shadow(0 0 8px rgba(0,180,255,0.4))' }}/>
         {/* Genetec screen content */}
-        <text x="10" y="36" fontSize="8" fill="#00d4ff" fontFamily="Arial" fontWeight="bold">Genetec</text>
+        <text x="10" y="36" fontSize="8" fill="#3D8A82" fontFamily="Arial" fontWeight="bold">Genetec</text>
         {/* Map lines */}
         <line x1="10" y1="50" x2="80" y2="50" stroke="#1a4080" strokeWidth="1"/>
         <line x1="10" y1="60" x2="80" y2="60" stroke="#1a4080" strokeWidth="1"/>
         <line x1="30" y1="35" x2="30" y2="85" stroke="#1a4080" strokeWidth="1"/>
         <line x1="55" y1="35" x2="55" y2="85" stroke="#1a4080" strokeWidth="1"/>
         {/* Drone icon on map */}
-        <circle cx="45" cy="58" r="8" fill="rgba(0,180,255,0.15)" stroke="#00d4ff" strokeWidth="1"/>
-        <line x1="40" y1="58" x2="50" y2="58" stroke="#00d4ff" strokeWidth="1.5"/>
-        <line x1="45" y1="53" x2="45" y2="63" stroke="#00d4ff" strokeWidth="1.5"/>
-        <circle cx="45" cy="58" r="2" fill="#00d4ff"/>
+        <circle cx="45" cy="58" r="8" fill="rgba(0,180,255,0.15)" stroke="#3D8A82" strokeWidth="1"/>
+        <line x1="40" y1="58" x2="50" y2="58" stroke="#3D8A82" strokeWidth="1.5"/>
+        <line x1="45" y1="53" x2="45" y2="63" stroke="#3D8A82" strokeWidth="1.5"/>
+        <circle cx="45" cy="58" r="2" fill="#3D8A82"/>
       </svg>
     ),
   },
   {
     time: 'T=30s',
-    timeColor: '#00d4ff',
+    timeColor: '#3D8A82',
     label: 'DESPEGUE',
-    bg: 'radial-gradient(ellipse at 50% 45%, rgba(0,120,255,0.35) 0%, rgba(4,10,35,0.95) 60%)',
-    sep: '#00d4ff',
+    bg: 'radial-gradient(ellipse at 50% 45%, rgba(61,138,130,0.3) 0%, rgba(24,21,16,0.95) 60%)',
+    sep: '#3D8A82',
     icon: (
       <svg viewBox="0 0 120 180" className="w-28 h-40 mx-auto">
         {/* DJI Dock base */}
@@ -77,8 +77,8 @@ const panels = [
         <ellipse cx="24" cy="97" rx="12" ry="3.5" fill="none" stroke="#aaa" strokeWidth="1.5" opacity="0.7"/>
         <ellipse cx="96" cy="97" rx="12" ry="3.5" fill="none" stroke="#aaa" strokeWidth="1.5" opacity="0.7"/>
         {/* Spotlight beam */}
-        <path d="M53 86 L42 125 L78 125 L67 86Z" fill="rgba(0,212,255,0.08)"/>
-        <line x1="60" y1="86" x2="60" y2="125" stroke="rgba(0,212,255,0.4)" strokeWidth="1.5" style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }}/>
+        <path d="M53 86 L42 125 L78 125 L67 86Z" fill="rgba(61,138,130,0.08)"/>
+        <line x1="60" y1="86" x2="60" y2="125" stroke="rgba(61,138,130,0.4)" strokeWidth="1.5" style={{ filter: 'drop-shadow(0 0 4px #3D8A82)' }}/>
       </svg>
     ),
   },
@@ -86,7 +86,7 @@ const panels = [
     time: 'T=90s',
     timeColor: '#F09422',
     label: 'VIDEO EN VIVO',
-    bg: 'radial-gradient(ellipse at 50% 50%, rgba(180,80,0,0.35) 0%, rgba(4,10,35,0.97) 65%)',
+    bg: 'radial-gradient(ellipse at 50% 50%, rgba(180,80,0,0.35) 0%, rgba(24,21,16,0.97) 65%)',
     sep: '#F09422',
     icon: (
       <svg viewBox="0 0 120 180" className="w-28 h-40 mx-auto">
@@ -103,10 +103,10 @@ const panels = [
         {/* Target box */}
         <rect x="60" y="33" width="30" height="25" fill="none" stroke="#F09422" strokeWidth="1.5" strokeDasharray="3 2"/>
         {/* Second smaller screen */}
-        <rect x="5" y="90" width="52" height="38" rx="3" fill="rgba(20,40,80,0.5)" stroke="#2a4080" strokeWidth="1"/>
-        <text x="10" y="103" fontSize="6" fill="#00d4ff" fontFamily="Arial">CÁMARA 2</text>
+        <rect x="5" y="90" width="52" height="38" rx="3" fill="rgba(28,32,28,0.5)" stroke="#2a4080" strokeWidth="1"/>
+        <text x="10" y="103" fontSize="6" fill="#3D8A82" fontFamily="Arial">CÁMARA 2</text>
         {/* Operator panel */}
-        <rect x="62" y="90" width="53" height="38" rx="3" fill="rgba(20,40,80,0.4)" stroke="#2a4080" strokeWidth="1"/>
+        <rect x="62" y="90" width="53" height="38" rx="3" fill="rgba(28,32,28,0.4)" stroke="#2a4080" strokeWidth="1"/>
         <text x="67" y="103" fontSize="6" fill="#34d399" fontFamily="Arial">GENETEC</text>
         {/* Operator silhouettes */}
         <circle cx="75" cy="150" r="10" fill="#1a2240" stroke="#2a3860" strokeWidth="1"/>
@@ -119,7 +119,7 @@ const panels = [
     time: '< 2 min',
     timeColor: '#34d399',
     label: 'DECISIÓN',
-    bg: 'radial-gradient(ellipse at 50% 50%, rgba(20,140,80,0.35) 0%, rgba(4,10,35,0.97) 65%)',
+    bg: 'radial-gradient(ellipse at 50% 50%, rgba(20,140,80,0.35) 0%, rgba(24,21,16,0.97) 65%)',
     sep: '#34d399',
     icon: (
       <svg viewBox="0 0 120 180" className="w-28 h-40 mx-auto">
@@ -135,7 +135,7 @@ const panels = [
           </g>
         ))}
         {/* Map with zone */}
-        <rect x="8" y="95" width="104" height="42" rx="3" fill="rgba(10,30,20,0.5)" stroke="#1a4030" strokeWidth="1"/>
+        <rect x="8" y="95" width="104" height="42" rx="3" fill="rgba(28,32,28,0.5)" stroke="#1a4030" strokeWidth="1"/>
         <circle cx="60" cy="116" r="20" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.4)" strokeWidth="1" strokeDasharray="4 2"/>
         <circle cx="60" cy="116" r="8" fill="rgba(52,211,153,0.15)" stroke="#34d399" strokeWidth="1.5"/>
         <path d="M55 116l3 3 7-7" stroke="#34d399" strokeWidth="2" fill="none" strokeLinecap="round"/>
@@ -149,7 +149,7 @@ const panels = [
 
 export default function ResponseFlow() {
   return (
-    <section className="w-full overflow-hidden" style={{ background: 'linear-gradient(180deg, #040a23 0%, #060d2e 100%)' }}>
+    <section className="w-full overflow-hidden" style={{ background: 'linear-gradient(180deg, #1A1714 0%, #1E1B18 100%)' }}>
       {/* 5 panels */}
       <div className="grid grid-cols-5 relative" style={{ minHeight: '360px' }}>
         {panels.map((panel, i) => (

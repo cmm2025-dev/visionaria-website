@@ -154,7 +154,7 @@ export default function HeroCinematic() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0,212,255,${0.08 * (1 - dist / 100)})`;
+            ctx.strokeStyle = `rgba(61,138,130,${0.08 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -203,7 +203,7 @@ export default function HeroCinematic() {
                 right: pos.right,
                 width: pos.size,
                 height: pos.size,
-                color: i % 2 === 0 ? 'rgba(240,148,34,0.18)' : 'rgba(0,212,255,0.15)',
+                color: i % 2 === 0 ? 'rgba(240,148,34,0.18)' : 'rgba(61,138,130,0.15)',
                 animationDelay: `${pos.delay}s`,
               }}
             >
@@ -238,7 +238,7 @@ export default function HeroCinematic() {
           position: absolute;
           left: 0; right: 0;
           height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(0,212,255,0.15) 30%, rgba(240,148,34,0.3) 50%, rgba(0,212,255,0.15) 70%, transparent 100%);
+          background: linear-gradient(90deg, transparent 0%, rgba(61,138,130,0.15) 30%, rgba(240,148,34,0.3) 50%, rgba(61,138,130,0.15) 70%, transparent 100%);
           animation: scanline 6s linear infinite;
         }
       `}</style>
