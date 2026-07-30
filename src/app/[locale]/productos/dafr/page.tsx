@@ -43,19 +43,39 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
     <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <div className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 60%, #221E18 100%)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(ellipse at 60% 40%, rgba(240,148,34,0.07) 0%, transparent 60%)' }} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden py-20 lg:py-28">
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/dafr-hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            zIndex: 1,
+            background: 'linear-gradient(135deg, rgba(20,16,12,0.80) 0%, rgba(20,16,12,0.55) 50%, rgba(20,16,12,0.35) 100%)',
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative" style={{ zIndex: 2 }}>
           <div className="max-w-3xl">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422', textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               Soluciones · DAFR
             </p>
-            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
               Dron como<br />
               <span style={{ color: '#F09422' }}>Primera Fuerza</span><br />
               de Respuesta
             </h1>
-            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl">
+            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               El concepto DAFR (Drone as First Responder) redefine la seguridad urbana. Antes de que cualquier patrulla llegue al lugar del incidente, un dron autónomo ya está transmitiendo video en vivo desde el punto exacto de la alarma.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
