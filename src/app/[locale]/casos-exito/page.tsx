@@ -198,6 +198,52 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
           </Link>
         </div>
       </section>
+
+      {/* Presencia regional */}
+      <section className="border-t" style={{ background: 'rgba(61,138,130,0.04)', borderColor: 'var(--border)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="mb-10">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: 'var(--teal)' }}>Distribución geográfica</p>
+            <h2 className="text-2xl font-bold text-white">Presencia en 10 regiones de Chile</h2>
+            <p className="mt-2 text-slate-400 text-sm max-w-2xl">Desde Arica hasta el extremo sur, con proyectos activos en las principales regiones del país y cobertura completa en Ñuble.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {presencia.map(({ region, proyectos, entidades }) => (
+              <div key={region} className="rounded-xl p-5 border" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                <p className="text-white font-semibold text-sm mb-3">{region}</p>
+                <div className="flex gap-4">
+                  <div>
+                    <p className="text-xl font-extrabold" style={{ color: 'var(--accent)' }}>{proyectos}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">proyectos</p>
+                  </div>
+                  <div>
+                    <p className="text-xl font-extrabold" style={{ color: 'var(--teal)' }}>{entidades}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">entidades</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-xs text-slate-600 text-center">Datos del portafolio histórico Visionaria · Corte julio 2026</p>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t" style={{ borderColor: 'var(--border)', background: 'var(--background)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-xl font-bold text-white">¿Tu municipio o institución no aparece aquí?</h3>
+            <p className="mt-1 text-slate-400 text-sm">Conversemos — 265 municipalidades aún no tienen cobertura de televigilancia integrada.</p>
+          </div>
+          <Link
+            href={`/${locale}/contacto`}
+            className="shrink-0 inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg shadow-lg transition-all hover:brightness-110"
+            style={{ background: 'var(--accent)', color: '#1E1B18' }}
+          >
+            Contactar a Visionaria <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
