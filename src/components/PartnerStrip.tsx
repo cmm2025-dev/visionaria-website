@@ -61,8 +61,21 @@ const brands = [
   {
     name: 'DJI',
     svg: (
-      <svg viewBox="0 0 80 36" className="h-7 w-auto" aria-label="DJI">
-        <text y="28" fontSize="30" fontWeight="900" fontFamily="Arial Black, Arial, sans-serif" fill="white" letterSpacing="-1">DJI</text>
+      <svg viewBox="0 0 220 150" className="h-8 w-auto" aria-label="DJI">
+        {/* d — rounded rect with square cutout */}
+        <path
+          d="M 8,4 Q 4,4 4,8 L 4,118 Q 4,142 28,142 L 90,142 L 90,104 L 36,104 Q 28,104 28,96 L 28,54 L 90,54 L 90,4 Z"
+          fill="white"
+        />
+        <rect x="44" y="18" width="46" height="50" fill="black" rx="2" />
+        {/* j — tall center shape with curved bottom */}
+        <path
+          d="M 102,4 L 102,118 Q 102,142 78,142 L 78,126 Q 86,126 86,118 L 86,4 Z"
+          fill="white"
+        />
+        {/* i — two diagonal slash bars */}
+        <path d="M 112,4 L 136,4 L 136,56 L 112,56 Z" fill="white" transform="skewX(-10)" />
+        <path d="M 112,70 L 136,70 L 136,142 L 112,142 Z" fill="white" transform="skewX(-10)" />
       </svg>
     ),
   },
