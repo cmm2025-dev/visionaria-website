@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
+import ScrollCue from './ScrollCue';
 
 interface VideoDemoProps {
   /** YouTube video ID (e.g. "dQw4w9WgXcQ") OR a direct .mp4 URL */
@@ -12,13 +13,16 @@ interface VideoDemoProps {
   locale?: string;
 }
 
+/** Local file paths and .mp4 URLs render as <video>; everything else is treated as YouTube. */
 function isYouTube(src: string) {
-  return !src.startsWith('http') || src.includes('youtube') || src.includes('youtu.be');
+  return !src.startsWith('/') && !src.endsWith('.mp4');
 }
 
-function youtubeId(src: string) {
-  const match = src.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
-  return match ? match[1] : src;
+/** Extracts an 11-char YouTube ID, or null. Never returns unvalidated input. */
+function youtubeId(src: string): string | null {
+  const match = src.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+  const id = match ? match[1] : src;
+  return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
 }
 
 export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemoProps) {
@@ -92,12 +96,13 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
             className="relative rounded-2xl overflow-hidden border"
             style={{ borderColor: 'rgba(240,148,34,0.25)', aspectRatio: '16/9' }}
           >
-            {/* YouTube embed */}
-            {ytMode && playing && (
+            {/* YouTube embed — nocookie domain, only when the ID validates */}
+            {ytMode && playing && youtubeId(videoSrc) && (
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${youtubeId(videoSrc)}?autoplay=1&rel=0&modestbranding=1`}
-                allow="autoplay; encrypted-media"
+                src={`https://www.youtube-nocookie.com/embed/${youtubeId(videoSrc)}?autoplay=1&rel=0&modestbranding=1`}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
                 title="Visionaria demo"
               />
@@ -194,6 +199,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
           </div>
         </div>
       </div>
+      <ScrollCue label="Seguir explorando" />
     </section>
   );
 }

@@ -20,6 +20,8 @@ type Status = 'idle' | 'loading' | 'success' | 'error';
 export default function ContactForm({ labels }: ContactFormProps) {
   const [status, setStatus] = useState<Status>('idle');
   const [fields, setFields] = useState({ name: '', email: '', company: '', message: '' });
+  // Honeypot — hidden from users, filled by naive bots. Rejected server-side.
+  const [website, setWebsite] = useState('');
 
   const set = (k: keyof typeof fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFields(f => ({ ...f, [k]: e.target.value }));
@@ -31,7 +33,7 @@ export default function ContactForm({ labels }: ContactFormProps) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fields),
+        body: JSON.stringify({ ...fields, website }),
       });
       setStatus(res.ok ? 'success' : 'error');
       if (res.ok) setFields({ name: '', email: '', company: '', message: '' });
@@ -87,6 +89,20 @@ export default function ContactForm({ labels }: ContactFormProps) {
           onChange={set('message')}
           className={`${inputClass} resize-none`}
           style={inputStyle}
+        />
+      </div>
+
+      {/* Honeypot — visually hidden, not display:none (some bots skip those) */}
+      <div aria-hidden style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={e => setWebsite(e.target.value)}
         />
       </div>
 

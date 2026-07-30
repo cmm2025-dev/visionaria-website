@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import ScrollCue from './ScrollCue';
 
 /* ─── Typewriter hook ─── */
 function useTypewriter(texts: string[], speed = 55, pause = 2200) {
@@ -442,12 +443,15 @@ export default function SurveillanceDeck() {
           </div>
         </div>
 
-        {/* Grid of feeds */}
-        <div className="grid grid-cols-12 gap-2" style={{ height: 420 }}>
+        {/* Grid of feeds — filas explícitas, sin altura fija en el wrapper */}
+        <div
+          className="grid grid-cols-12 gap-2"
+          style={{ gridTemplateRows: '210px 210px' }}
+        >
 
-          {/* Feed 1 — Facial recognition (large) */}
-          <div className="col-span-12 sm:col-span-4 row-span-2 rounded-xl border overflow-hidden relative"
-            style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)' }}>
+          {/* Feed 1 — Facial recognition (large, 2 filas) */}
+          <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative"
+            style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)', minHeight: 210 }}>
             <FeedHeader label="CAM-01" sublabel="RECONOCIMIENTO FACIAL" color="#3D8A82" />
             <div className="h-full pt-7">
               <FaceScanPanel />
@@ -457,7 +461,7 @@ export default function SurveillanceDeck() {
 
           {/* Feed 2 — Drone UAV video real */}
           <div className="col-span-12 sm:col-span-5 rounded-xl border overflow-hidden relative"
-            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)', height: 204 }}>
+            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
             <FeedHeader label="UAV-01" sublabel="DRONE DJI — VIDEO EN VIVO" color="#F09422" />
             <video
               autoPlay muted loop playsInline
@@ -466,7 +470,6 @@ export default function SurveillanceDeck() {
             >
               <source src="/feeds/uav-drone.mp4" type="video/mp4" />
             </video>
-            {/* Corner brackets overlay */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ top: 28 }} viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M2,2 L2,12 M2,2 L12,2"      stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
               <path d="M98,2 L98,12 M98,2 L88,2"    stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
@@ -478,9 +481,8 @@ export default function SurveillanceDeck() {
 
           {/* Feed 3 — Radar + PTZ video */}
           <div className="col-span-12 sm:col-span-3 rounded-xl border overflow-hidden relative"
-            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.12)', height: 204 }}>
+            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.12)' }}>
             <FeedHeader label="RAD-01" sublabel="RADAR PERIMETRAL · PTZ" color="#F09422" />
-            {/* PTZ video — fondo real de la cámara */}
             <video
               autoPlay muted loop playsInline
               className="absolute inset-0 w-full h-full object-cover"
@@ -488,9 +490,7 @@ export default function SurveillanceDeck() {
             >
               <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
             </video>
-            {/* Overlay oscuro para que el radar resalte */}
             <div className="absolute inset-0 pointer-events-none" style={{ top: 28, background: 'rgba(20,17,14,0.35)' }}/>
-            {/* Radar encima del video */}
             <div className="absolute inset-0 pt-7">
               <RadarCanvas />
             </div>
@@ -499,7 +499,7 @@ export default function SurveillanceDeck() {
 
           {/* Feed 4 — LPR */}
           <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative"
-            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)', height: 204 }}>
+            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
             <FeedHeader label="LPR-03" sublabel="LECTURA DE PATENTES" color="#F09422" />
             <div className="h-full pt-7">
               <LPRPanel />
@@ -508,8 +508,8 @@ export default function SurveillanceDeck() {
           </div>
 
           {/* Feed 5 — Stats / uptime */}
-          <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative flex flex-col justify-between p-4"
-            style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.15)', height: 204 }}>
+          <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative flex flex-col p-4"
+            style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.15)' }}>
             <FeedHeader label="SYS" sublabel="ESTADO DEL SISTEMA" color="#34d399" />
             <div className="mt-7 flex flex-col gap-2">
               {[
@@ -532,8 +532,8 @@ export default function SurveillanceDeck() {
           </div>
 
           {/* Feed 6 — Event log */}
-          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative p-0"
-            style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.12)', height: 204 }}>
+          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
+            style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.12)' }}>
             <FeedHeader label="LOG" sublabel="EVENTOS EN TIEMPO REAL" color="#34d399" />
             <EventLog />
           </div>
@@ -551,6 +551,8 @@ export default function SurveillanceDeck() {
           <span className="ml-auto" style={{ color: '#F09422' }}>VISIONARIA OPS · SANTIAGO · CL</span>
         </div>
       </div>
+
+      <ScrollCue label="Seguir explorando" />
 
       <style jsx>{`
         @keyframes scanrow {
@@ -598,13 +600,12 @@ function EventLog() {
     { time: '20:17:33', msg: 'Placa BKRD·54 alertada — vehículo robado', color: '#ef4444' },
     { time: '20:17:28', msg: 'Drone UAV-01 en ruta — sector Maipú', color: '#F09422' },
     { time: '20:17:21', msg: 'Rostro ID confirmado — base PDI 94.7%', color: '#34d399' },
-    { time: '20:17:09', msg: 'Pórtico LPR-03 operativo — 847 vehículos/h', color: '#34d399' },
   ];
   return (
-    <div className="mt-7 px-3 pb-2 flex flex-col gap-1.5 overflow-hidden" style={{ maxHeight: 'calc(100% - 2rem)' }}>
+    <div className="absolute inset-0 pt-8 px-3 pb-3 flex flex-col gap-1 overflow-hidden">
       {events.map((e, i) => (
-        <div key={i} className="flex gap-2 text-xs font-mono leading-tight py-1 border-b"
-          style={{ borderColor: 'rgba(255,255,255,0.04)', opacity: 1 - i * 0.12 }}>
+        <div key={i} className="flex gap-2 font-mono leading-tight py-1 border-b"
+          style={{ fontSize: '0.68rem', borderColor: 'rgba(255,255,255,0.04)', opacity: 1 - i * 0.18 }}>
           <span className="shrink-0 text-slate-600">{e.time}</span>
           <span className="truncate" style={{ color: e.color }}>{e.msg}</span>
         </div>
