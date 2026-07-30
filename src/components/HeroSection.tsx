@@ -140,20 +140,32 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
           </div>
         </div>
 
-        {/* Scroll cue — bouncing arrow en la base del hero */}
-        <div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 transition-opacity duration-700"
-          style={{ opacity: settled ? 0.7 : 0, pointerEvents: 'none' }}
+        {/* Scroll cue — clicable, hace scroll al siguiente bloque */}
+        <button
+          onClick={() => window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' })}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-700 hover:opacity-100 group"
+          style={{ opacity: settled ? 1 : 0, pointerEvents: settled ? 'auto' : 'none', background: 'none', border: 'none', cursor: 'pointer' }}
+          aria-label="Explorar contenido"
         >
-          <span className="text-xs tracking-widest uppercase text-slate-400" style={{ fontSize: '0.6rem', letterSpacing: '0.2em' }}>
+          <span
+            className="text-xs font-bold tracking-[0.25em] uppercase"
+            style={{ color: 'var(--accent)', textShadow: '0 0 12px rgba(240,148,34,0.6)' }}
+          >
             Explorar
           </span>
-          <ChevronDown
-            size={22}
-            className="text-slate-400"
-            style={{ animation: settled ? 'bounce-cue 1.6s ease-in-out infinite' : 'none' }}
-          />
-        </div>
+          <span
+            className="flex items-center justify-center rounded-full border-2 transition-transform group-hover:scale-110"
+            style={{
+              width: '2.25rem', height: '2.25rem',
+              borderColor: 'var(--accent)',
+              background: 'rgba(240,148,34,0.15)',
+              boxShadow: '0 0 16px rgba(240,148,34,0.35)',
+              animation: settled ? 'bounce-cue 1.6s ease-in-out infinite' : 'none',
+            }}
+          >
+            <ChevronDown size={18} style={{ color: 'var(--accent)' }} />
+          </span>
+        </button>
       </div>
 
       {/* Keyframe para el bounce del scroll cue */}
