@@ -59,6 +59,14 @@ const brands = [
     ),
   },
   {
+    name: 'RADWIN',
+    svg: (
+      <svg viewBox="0 0 130 36" className="h-7 w-auto" aria-label="RADWIN">
+        <text y="28" fontSize="26" fontWeight="900" fontFamily="Arial Black, Arial, sans-serif" fill="white" letterSpacing="2">RADWIN</text>
+      </svg>
+    ),
+  },
+  {
     name: 'Axis',
     svg: (
       <svg viewBox="0 0 90 36" className="h-7 w-auto" aria-label="Axis Communications">
