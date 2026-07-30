@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Play, ArrowRight } from 'lucide-react';
+import ScrollCue from './ScrollCue';
 
 interface VideoDemoProps {
   /** YouTube video ID (e.g. "dQw4w9WgXcQ") OR a direct .mp4 URL */
@@ -194,6 +195,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
           </div>
         </div>
       </div>
+      <ScrollCue label="Seguir explorando" />
     </section>
   );
 }
