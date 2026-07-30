@@ -125,12 +125,13 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {featured.map(({ company, industry, region, result, detail, accent }) => (
-            <div
+            <Link
               key={company}
-              className="rounded-2xl overflow-hidden border transition-all hover:glow-cyan-sm flex flex-col"
+              href={`/${locale}/contacto`}
+              className="rounded-2xl overflow-hidden border transition-all hover:glow-cyan-sm hover:scale-[1.02] flex flex-col cursor-pointer group"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
             >
-              <div className="h-1" style={{ background: accent }} />
+              <div className="h-1 transition-all group-hover:h-1.5" style={{ background: accent }} />
               <div className="p-8 flex flex-col flex-1 gap-3">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="text-base font-bold text-white leading-snug">{company}</h3>
@@ -143,12 +144,58 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
                 <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--muted)' }}>Resultado clave</p>
                 <p className="font-semibold text-sm leading-snug" style={{ color: accent }}>{result}</p>
                 <p className="text-xs text-slate-500 leading-relaxed flex-1">{detail}</p>
-                <Link href={`/${locale}/contacto`} className="mt-2 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:brightness-125" style={{ color: 'var(--accent)' }}>
+                <div className="mt-2 inline-flex items-center gap-1 text-sm font-semibold transition-all group-hover:gap-2" style={{ color: 'var(--accent)' }}>
                   {t('read_more')} <ArrowRight size={14} />
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Presencia regional */}
+      <section className="border-t" style={{ background: 'rgba(61,138,130,0.04)', borderColor: 'var(--border)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="mb-10">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: 'var(--teal)' }}>Distribución geográfica</p>
+            <h2 className="text-2xl font-bold text-white">Presencia en 10 regiones de Chile</h2>
+            <p className="mt-2 text-slate-400 text-sm max-w-2xl">Desde Arica hasta el extremo sur, con proyectos activos en las principales regiones del país y cobertura completa en Ñuble.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {presencia.map(({ region, proyectos, entidades }) => (
+              <div key={region} className="rounded-xl p-5 border" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                <p className="text-white font-semibold text-sm mb-3">{region}</p>
+                <div className="flex gap-4">
+                  <div>
+                    <p className="text-xl font-extrabold" style={{ color: 'var(--accent)' }}>{proyectos}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">proyectos</p>
+                  </div>
+                  <div>
+                    <p className="text-xl font-extrabold" style={{ color: 'var(--teal)' }}>{entidades}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">entidades</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-xs text-slate-600 text-center">Datos del portafolio histórico Visionaria · Corte julio 2026</p>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t" style={{ borderColor: 'var(--border)', background: 'var(--background)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-xl font-bold text-white">¿Tu municipio o institución no aparece aquí?</h3>
+            <p className="mt-1 text-slate-400 text-sm">Conversemos — 265 municipalidades aún no tienen cobertura de televigilancia integrada.</p>
+          </div>
+          <Link
+            href={`/${locale}/contacto`}
+            className="shrink-0 inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg shadow-lg transition-all hover:brightness-110"
+            style={{ background: 'var(--accent)', color: '#1E1B18' }}
+          >
+            Contactar a Visionaria <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 
