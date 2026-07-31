@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Play, X, ChevronDown } from 'lucide-react';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
+import HeroCinematic from './HeroCinematic';
 
 interface HeroSectionProps {
   title: string;
@@ -19,6 +21,7 @@ const DUR = '1.4s';
 export default function HeroSection({ title, subtitle, cta, cta2, locale }: HeroSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [settled, setSettled] = useState(false);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
     const t = setTimeout(() => setSettled(true), 3400);
@@ -27,14 +30,19 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
 
   return (
     <>
-      {/* Video */}
-      <video
-        autoPlay muted loop playsInline
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        style={{ zIndex: 0 }}
-      >
-        <source src="/hero-bg.mp4" type="video/mp4" />
-      </video>
+      {/* Video en desktop; canvas de partículas en mobile — un video de ~25MB en
+          autoplay agotaba el timeout de carga antes de que la página renderizara */}
+      {isDesktop ? (
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/hero-bg.mp4" type="video/mp4" />
+        </video>
+      ) : (
+        <HeroCinematic />
+      )}
 
       {/* Overlay — se aclara gradualmente al settle */}
       <div

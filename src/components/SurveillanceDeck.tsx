@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import ScrollCue from './ScrollCue';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 /* ─── Typewriter hook ─── */
 function useTypewriter(texts: string[], speed = 55, pause = 2200) {
@@ -46,7 +47,10 @@ function RadarCanvas() {
     const ctx = c.getContext('2d')!;
     c.width = c.offsetWidth; c.height = c.offsetHeight;
     const cx = c.width / 2, cy = c.height / 2;
-    const R = Math.min(cx, cy) - 8;
+    // Clamp to 0: a collapsed (zero-height) container would otherwise make R
+    // negative, and ctx.arc() throws on a negative radius — an uncaught
+    // exception inside a rAF loop that Chrome can render as a full page crash.
+    const R = Math.max(0, Math.min(cx, cy) - 8);
     let angle = 0;
     const blips: { a: number; r: number; age: number }[] = [
       { a: 0.8, r: 0.45, age: 0 }, { a: 2.1, r: 0.65, age: 0 },
@@ -420,6 +424,7 @@ export default function SurveillanceDeck() {
     'DRONES DJI DOCK EN STANDBY · T=0 LISTO',
   ];
   const status = useTypewriter(statusTexts, 45, 2500);
+  const isDesktop = useIsDesktop();
 
   return (
     <section className="w-full py-16 px-4" style={{ background: 'linear-gradient(180deg, #1A1714 0%, #1E1B18 100%)' }}>
@@ -446,7 +451,7 @@ export default function SurveillanceDeck() {
         {/* Grid of feeds — filas explícitas, sin altura fija en el wrapper */}
         <div
           className="grid grid-cols-12 gap-2"
-          style={{ gridTemplateRows: '210px 210px' }}
+          style={{ gridTemplateRows: '210px 210px', gridAutoRows: '210px' }}
         >
 
           {/* Feed 1 — Facial recognition (large, 2 filas) */}
@@ -463,13 +468,15 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-5 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
             <FeedHeader label="UAV-01" sublabel="DRONE DJI — VIDEO EN VIVO" color="#F09422" />
-            <video
-              autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ top: 28, height: 'calc(100% - 28px)' }}
-            >
-              <source src="/feeds/uav-drone.mp4" type="video/mp4" />
-            </video>
+            {isDesktop && (
+              <video
+                autoPlay muted loop playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ top: 28, height: 'calc(100% - 28px)' }}
+              >
+                <source src="/feeds/uav-drone.mp4" type="video/mp4" />
+              </video>
+            )}
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ top: 28 }} viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M2,2 L2,12 M2,2 L12,2"      stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
               <path d="M98,2 L98,12 M98,2 L88,2"    stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
@@ -483,13 +490,15 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-3 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.12)' }}>
             <FeedHeader label="RAD-01" sublabel="RADAR PERIMETRAL · PTZ" color="#F09422" />
-            <video
-              autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ top: 28, height: 'calc(100% - 28px)', opacity: 0.45 }}
-            >
-              <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
-            </video>
+            {isDesktop && (
+              <video
+                autoPlay muted loop playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ top: 28, height: 'calc(100% - 28px)', opacity: 0.45 }}
+              >
+                <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
+              </video>
+            )}
             <div className="absolute inset-0 pointer-events-none" style={{ top: 28, background: 'rgba(20,17,14,0.35)' }}/>
             <div className="absolute inset-0 pt-7">
               <RadarCanvas />

@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, BarChart2, Link2, Plane, Layers } from 'lucide-react';
 import Link from 'next/link';
+import HeroVideoBackground from '@/components/HeroVideoBackground';
 
 export default async function ProductosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -17,18 +18,8 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
     <div>
       {/* Hero con video de fondo */}
       <div className="relative overflow-hidden text-white" style={{ minHeight: '52vh' }}>
-        {/* Video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          style={{ zIndex: 0 }}
-        >
-          <source src="/soluciones-hero-bg.mp4" type="video/mp4" />
-          <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
+        {/* Video — desktop only, ver HeroVideoBackground */}
+        <HeroVideoBackground sources={['/soluciones-hero-bg.mp4', '/hero-bg.mp4']} />
 
         {/* Overlay */}
         <div
