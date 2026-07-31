@@ -24,8 +24,8 @@ export default function ClientsHero() {
           {CLIENTS.map(({ name, logo }) => (
             <div
               key={name}
-              className="flex items-center justify-center rounded-2xl border p-6 transition-all hover:scale-[1.03]"
-              style={{ background: '#FAFAF8', borderColor: 'rgba(240,148,34,0.15)', minHeight: 120 }}
+              className="flex items-center justify-center p-6 transition-all hover:scale-[1.05]"
+              style={{ minHeight: 120 }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={logo} alt={name} title={name} className="max-h-16 max-w-full object-contain" />
