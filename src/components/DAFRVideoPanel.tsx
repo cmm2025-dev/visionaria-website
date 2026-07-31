@@ -17,7 +17,7 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
   }, [playing]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5 items-start">
+    <div className="flex flex-col gap-4">
       {/* Main demo video */}
       <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/9', borderColor: 'rgba(240,148,34,0.3)' }}>
         {playing ? (
@@ -85,40 +85,35 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
         </div>
       </div>
 
-      {/* Side panel — Caso real: Asheville, USA (post-tormenta) */}
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: '#F09422' }}>
-          ¿Quieres ver un caso real?
-        </p>
-        <a
-          href="https://www.youtube.com/watch?v=o_HdKiM1MEE"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group/case rounded-xl overflow-hidden border shadow-lg transition-transform hover:scale-[1.03]"
-          style={{ borderColor: 'rgba(240,148,34,0.35)', background: '#0f0d0b' }}
-        >
-          <div className="relative" style={{ aspectRatio: '16/9' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://img.youtube.com/vi/o_HdKiM1MEE/hqdefault.jpg"
-              alt="Caso real: Asheville, USA — respuesta post-tormenta"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.35)' }}>
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-transform group-hover/case:scale-110"
-                style={{ background: 'rgba(240,148,34,0.85)' }}
-              >
-                <Video size={16} style={{ color: '#1E1B18' }} />
-              </div>
+      {/* Below — Caso real: Asheville, USA (post-tormenta) */}
+      <a
+        href="https://www.youtube.com/watch?v=o_HdKiM1MEE"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group/case flex items-center gap-4 rounded-xl overflow-hidden border shadow-lg transition-transform hover:scale-[1.01]"
+        style={{ borderColor: 'rgba(240,148,34,0.35)', background: '#0f0d0b' }}
+      >
+        <div className="relative w-32 sm:w-44 shrink-0" style={{ aspectRatio: '16/9' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://img.youtube.com/vi/o_HdKiM1MEE/hqdefault.jpg"
+            alt="Caso real: Asheville, USA — respuesta post-tormenta"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.35)' }}>
+            <div
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-transform group-hover/case:scale-110"
+              style={{ background: 'rgba(240,148,34,0.85)' }}
+            >
+              <Video size={14} style={{ color: '#1E1B18' }} />
             </div>
           </div>
-          <div className="px-3 py-2" style={{ background: 'rgba(15,13,11,0.95)' }}>
-            <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#F09422' }}>Caso real</p>
-            <p className="text-xs text-slate-300 leading-snug mt-0.5">Asheville, USA — Respuesta post-tormenta</p>
-          </div>
-        </a>
-      </div>
+        </div>
+        <div className="py-2 pr-4">
+          <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#F09422' }}>¿Quieres ver un caso real?</p>
+          <p className="text-sm text-slate-300 leading-snug mt-0.5">Asheville, USA — Respuesta post-tormenta</p>
+        </div>
+      </a>
     </div>
   );
 }
