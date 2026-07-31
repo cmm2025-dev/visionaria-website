@@ -122,166 +122,6 @@ function RadarCanvas() {
   return <canvas ref={ref} className="w-full h-full" />;
 }
 
-/* ─── Face scan panel ─── */
-function FaceScanPanel() {
-  const [step, setStep] = useState(0);
-  const steps = ['DETECTANDO ROSTRO', 'ALINEANDO RASGOS', 'CONSULTANDO PDI', 'COINCIDENCIA: 94.7%', 'ID CONFIRMADA ✓'];
-  useEffect(() => {
-    const t = setInterval(() => setStep(s => (s + 1) % steps.length), 1600);
-    return () => clearInterval(t);
-  }, []);
-  const confirmed = step === 4;
-  const c  = confirmed ? '#34d399' : '#3D8A82';
-  const cd = confirmed ? 'rgba(52,211,153,0.4)' : 'rgba(61,138,130,0.4)';
-  const cf = confirmed ? 'rgba(52,211,153,0.10)' : 'rgba(61,138,130,0.10)';
-
-  // Landmark points [x,y] — 39 total
-  // jaw (0-10), cheeks (11-12), l-brow (13-16), r-brow (17-20),
-  // l-eye (21-24), r-eye (25-28), nose (29-32), mouth (33-38)
-  const pts: [number,number][] = [
-    [54,148],[52,162],[56,176],[65,187],[76,194],[90,197],[104,194],[115,187],[124,176],[128,162],[126,148], // jaw 0-10
-    [44,125],[136,125], // cheeks 11-12
-    [54,86],[64,81],[74,82],[82,86], // l-brow 13-16
-    [98,86],[106,82],[116,81],[126,86], // r-brow 17-20
-    [82,103],[70,97],[56,103],[70,110], // l-eye inner/top/outer/bottom 21-24
-    [98,103],[110,97],[124,103],[110,110], // r-eye 25-28
-    [90,95],[81,118],[99,118],[90,128], // nose bridge/sides/tip 29-32
-    [72,154],[90,150],[108,154],[103,162],[90,166],[77,162], // mouth 33-38
-  ];
-
-  // Mesh edge pairs
-  const mesh: [number,number][] = [
-    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10], // jaw
-    [13,14],[14,15],[15,16], // l-brow
-    [17,18],[18,19],[19,20], // r-brow
-    [21,22],[22,23],[23,24],[24,21], // l-eye
-    [25,26],[26,27],[27,28],[28,25], // r-eye
-    [29,30],[29,31],[30,32],[31,32], // nose
-    [33,34],[34,35],[35,36],[36,37],[37,38],[38,33], // mouth
-    // cross-links
-    [13,21],[16,21],[17,25],[20,25],
-    [21,29],[25,29],
-    [23,30],[27,31],
-    [30,33],[31,35],
-    [3,38],[7,36],
-    [0,11],[10,12],
-    [11,23],[12,27],
-    [11,13],[12,20],
-    [13,0],[20,10],
-  ];
-
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-3">
-      <svg viewBox="0 0 180 215" className="w-36 h-44">
-        <defs>
-          <linearGradient id="fsScan" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={c} stopOpacity="0"/>
-            <stop offset="50%" stopColor={c} stopOpacity="0.45"/>
-            <stop offset="100%" stopColor={c} stopOpacity="0"/>
-          </linearGradient>
-        </defs>
-
-        {/* Head outline */}
-        <path
-          d="M54,148 C47,130 44,110 46,90 C48,65 60,45 90,38 C120,45 132,65 134,90 C136,110 133,130 126,148 C124,162 118,176 109,187 C104,193 97,197 90,197 C83,197 76,193 71,187 C62,176 56,162 54,148 Z"
-          stroke={c} strokeWidth="1.2" fill={cf}
-        />
-
-        {/* Mesh lines */}
-        {mesh.map(([a,b], i) => {
-          if (!pts[a] || !pts[b]) return null;
-          return <line key={i} x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} stroke={cd} strokeWidth="0.55"/>;
-        })}
-
-        {/* Landmark dots */}
-        {pts.map(([x,y], i) => (
-          <circle key={i} cx={x} cy={y} r="1.6" fill={c} opacity="0.75"/>
-        ))}
-
-        {/* Left iris */}
-        <circle cx="70" cy="102" r="11" stroke={c} strokeWidth="0.8" fill="rgba(0,0,0,0.25)"/>
-        <circle cx="70" cy="102" r="7"  stroke={c} strokeWidth="0.9" fill={cf}/>
-        <circle cx="70" cy="102" r="3"  fill={c} opacity="0.55"/>
-        <circle cx="67" cy="99"  r="1.4" fill="white" opacity="0.65"/>
-        {Array.from({length: 8}, (_,i) => {
-          const a = (i * Math.PI * 2) / 8;
-          return <line key={i} x1={70+3.8*Math.cos(a)} y1={102+3.8*Math.sin(a)} x2={70+6.5*Math.cos(a)} y2={102+6.5*Math.sin(a)} stroke={c} strokeWidth="0.5" opacity="0.55"/>;
-        })}
-
-        {/* Right iris */}
-        <circle cx="110" cy="102" r="11" stroke={c} strokeWidth="0.8" fill="rgba(0,0,0,0.25)"/>
-        <circle cx="110" cy="102" r="7"  stroke={c} strokeWidth="0.9" fill={cf}/>
-        <circle cx="110" cy="102" r="3"  fill={c} opacity="0.55"/>
-        <circle cx="107" cy="99"  r="1.4" fill="white" opacity="0.65"/>
-        {Array.from({length: 8}, (_,i) => {
-          const a = (i * Math.PI * 2) / 8;
-          return <line key={i} x1={110+3.8*Math.cos(a)} y1={102+3.8*Math.sin(a)} x2={110+6.5*Math.cos(a)} y2={102+6.5*Math.sin(a)} stroke={c} strokeWidth="0.5" opacity="0.55"/>;
-        })}
-
-        {/* Orange targeting brackets */}
-        <path d="M26,30 L26,44 M26,30 L40,30" stroke="#F09422" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-        <path d="M154,30 L154,44 M154,30 L140,30" stroke="#F09422" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-        <path d="M26,208 L26,194 M26,208 L40,208" stroke="#F09422" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-        <path d="M154,208 L154,194 M154,208 L140,208" stroke="#F09422" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-
-        {/* IOD measurement (between inner eye corners) */}
-        <line x1="82" y1="90" x2="98" y2="90" stroke={cd} strokeWidth="0.8"/>
-        <line x1="82" y1="87" x2="82" y2="93" stroke={cd} strokeWidth="0.8"/>
-        <line x1="98" y1="87" x2="98" y2="93" stroke={cd} strokeWidth="0.8"/>
-
-        {/* Nose width measurement */}
-        <line x1="81" y1="134" x2="99" y2="134" stroke={cd} strokeWidth="0.8"/>
-        <line x1="81" y1="131" x2="81" y2="137" stroke={cd} strokeWidth="0.8"/>
-        <line x1="99" y1="131" x2="99" y2="137" stroke={cd} strokeWidth="0.8"/>
-
-        {/* Right callout lines */}
-        <line x1="126" y1="102" x2="148" y2="102" stroke={cd} strokeWidth="0.7" strokeDasharray="2,2"/>
-        <line x1="126" y1="150" x2="148" y2="150" stroke={cd} strokeWidth="0.7" strokeDasharray="2,2"/>
-        <text x="150" y="105" fontSize="5.5" fill={cd} fontFamily="monospace">Δy=48</text>
-        <text x="150" y="153" fontSize="5.5" fill={cd} fontFamily="monospace">EYE</text>
-
-        {/* Face width callout (top) */}
-        <line x1="46" y1="32" x2="134" y2="32" stroke={cd} strokeWidth="0.7"/>
-        <line x1="46" y1="29" x2="46" y2="35" stroke={cd} strokeWidth="0.7"/>
-        <line x1="134" y1="29" x2="134" y2="35" stroke={cd} strokeWidth="0.7"/>
-        <text x="83" y="28" fontSize="5.5" fill={cd} fontFamily="monospace" textAnchor="middle">138mm</text>
-
-        {/* Animated scan beam */}
-        <rect x="28" width="124" height="20" fill="url(#fsScan)" y="0">
-          <animateTransform attributeName="transform" type="translate" values="0,28;0,198;0,28" dur="3s" repeatCount="indefinite"/>
-        </rect>
-        <line x1="28" x2="152" y1="10" y2="10" stroke={c} strokeWidth="0.9" opacity="0.65">
-          <animateTransform attributeName="transform" type="translate" values="0,28;0,198;0,28" dur="3s" repeatCount="indefinite"/>
-        </line>
-      </svg>
-
-      {/* Biometric metrics row */}
-      <div className="flex items-center gap-5 -mt-1">
-        {[
-          { label: 'IOD', value: '63.8' },
-          { label: 'CONF', value: `${Math.min(99, Math.round((step + 1) * 19.4))}%` },
-          { label: 'ID', value: 'A3F7' },
-        ].map(({ label, value }) => (
-          <div key={label} className="text-center">
-            <div className="text-[8px] font-mono tracking-wider" style={{ color: 'rgba(148,163,184,0.5)' }}>{label}</div>
-            <div className="text-[11px] font-mono font-bold leading-tight" style={{ color: c }}>{value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Status + progress */}
-      <div className="w-full text-center">
-        <p className="text-[9.5px] font-mono tracking-[0.2em]" style={{ color: c }}>
-          {steps[step]}
-        </p>
-        <div className="mt-1.5 h-px w-28 mx-auto overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-          <div className="h-full transition-all duration-1000" style={{ width: `${(step + 1) * 20}%`, background: c }}/>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ─── LPR carousel panel (imágenes reales Genetec) ─── */
 const LPR_CAPTURES = [
   { img: '/feeds/lpr-las-industrias.png',    plate: 'PS·JZ·93', ts: '01-07-2026 12:20:22' },
@@ -458,9 +298,13 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)', minHeight: 210 }}>
             <FeedHeader label="CAM-01" sublabel="RECONOCIMIENTO FACIAL" color="#3D8A82" />
-            <div className="h-full pt-7">
-              <FaceScanPanel />
-            </div>
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)' }}
+            >
+              <source src="/feeds/security-continuum.mp4" type="video/mp4" />
+            </video>
             <ScanlineOverlay />
           </div>
 
