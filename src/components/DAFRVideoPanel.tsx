@@ -1,11 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Play, Video } from 'lucide-react';
+
+const LOOP_FRAMES = ['/dafr-loop/frame-1.jpg', '/dafr-loop/frame-2.jpg', '/dafr-loop/frame-3.jpg'];
 
 /** Same click-to-play YouTube panel used on the home page (VideoDemo), reused here for DAFR. */
 export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
   const [playing, setPlaying] = useState(false);
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    if (playing) return;
+    const t = setInterval(() => setFrame(f => (f + 1) % LOOP_FRAMES.length), 3200);
+    return () => clearInterval(t);
+  }, [playing]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5 items-start">
@@ -26,13 +35,17 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
             className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer select-none"
             onClick={() => setPlaying(true)}
           >
-            {/* First-frame poster */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-              alt="Vista previa — Demo DAFR"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            {/* Looping background — Central Táctica de Drones */}
+            {LOOP_FRAMES.map((src, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={src}
+                src={src}
+                alt="Central Táctica de Drones — Visionaria"
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                style={{ opacity: frame === i ? 1 : 0 }}
+              />
+            ))}
             <div className="absolute inset-0" style={{ background: 'rgba(20,17,14,0.35)' }} />
 
             <button
