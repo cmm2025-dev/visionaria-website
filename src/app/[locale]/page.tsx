@@ -6,6 +6,7 @@ import PartnerStrip from '@/components/PartnerStrip';
 import HeroSection from '@/components/HeroSection';
 import VideoDemo from '@/components/VideoDemo';
 import SurveillanceDeck from '@/components/SurveillanceDeck';
+import ClientsHero from '@/components/ClientsHero';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -44,6 +45,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Surveillance deck */}
       <SurveillanceDeck />
+
+      {/* Clients hero */}
+      <ClientsHero />
 
       {/* Manifesto */}
       <Manifesto />
