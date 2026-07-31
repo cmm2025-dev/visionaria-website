@@ -298,13 +298,22 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)', minHeight: 210 }}>
             <FeedHeader label="CAM-01" sublabel="PLATAFORMA INTEGRADA SITIA" color="#3D8A82" />
-            <video
-              autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-contain"
-              style={{ top: 28, height: 'calc(100% - 28px)', mixBlendMode: 'screen', filter: 'brightness(0.62)' }}
-            >
-              <source src="/feeds/security-continuum.mp4" type="video/mp4" />
-            </video>
+            <div className="absolute inset-0 flex flex-col" style={{ top: 28 }}>
+              <video
+                autoPlay muted loop playsInline
+                className="w-full flex-1 object-contain"
+                style={{ mixBlendMode: 'screen', filter: 'brightness(0.62)' }}
+              >
+                <source src="/feeds/security-continuum.mp4" type="video/mp4" />
+              </video>
+              <video
+                autoPlay muted loop playsInline
+                className="w-full flex-1 object-cover"
+                style={{ filter: 'brightness(0.75)' }}
+              >
+                <source src="/feeds/variety-tiles.mp4" type="video/mp4" />
+              </video>
+            </div>
             <ScanlineOverlay />
           </div>
 
