@@ -301,7 +301,7 @@ export default function SurveillanceDeck() {
             <video
               autoPlay muted loop playsInline
               className="absolute inset-0 w-full h-full object-contain"
-              style={{ top: 28, height: 'calc(100% - 28px)', mixBlendMode: 'screen' }}
+              style={{ top: 28, height: 'calc(100% - 28px)', mixBlendMode: 'screen', filter: 'brightness(0.62)' }}
             >
               <source src="/feeds/security-continuum.mp4" type="video/mp4" />
             </video>
