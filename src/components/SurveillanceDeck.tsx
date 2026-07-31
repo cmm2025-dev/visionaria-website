@@ -300,8 +300,8 @@ export default function SurveillanceDeck() {
             <FeedHeader label="CAM-01" sublabel="RECONOCIMIENTO FACIAL" color="#3D8A82" />
             <video
               autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ top: 28, height: 'calc(100% - 28px)' }}
+              className="absolute inset-0 w-full h-full object-contain"
+              style={{ top: 28, height: 'calc(100% - 28px)', mixBlendMode: 'screen' }}
             >
               <source src="/feeds/security-continuum.mp4" type="video/mp4" />
             </video>
