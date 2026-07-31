@@ -432,7 +432,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           </div>
           <CaseVideoCard
             videoId="o_HdKiM1MEE"
-            poster="https://img.youtube.com/vi/o_HdKiM1MEE/hqdefault.jpg"
+            poster="/dafr-loop/asheville-poster.jpg"
             eyebrow="¿Quieres ver un caso real?"
             title="Asheville, USA — Respuesta post-tormenta"
           />
