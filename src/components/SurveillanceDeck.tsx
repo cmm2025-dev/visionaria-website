@@ -547,6 +547,34 @@ export default function SurveillanceDeck() {
             <EventLog />
           </div>
 
+          {/* Feed 7 — Milesight LPR loop */}
+          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
+            style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
+            <FeedHeader label="MLS-01" sublabel="MILESIGHT LPR" color="#F09422" />
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)' }}
+            >
+              <source src="/feeds/milesight-lpr.mp4" type="video/mp4" />
+            </video>
+            <ScanlineOverlay color="rgba(240,148,34,0.03)" />
+          </div>
+
+          {/* Feed 8 — Streamvault product family loop */}
+          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
+            style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)' }}>
+            <FeedHeader label="SVT-01" sublabel="GENETEC STREAMVAULT" color="#3D8A82" />
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)' }}
+            >
+              <source src="/feeds/streamvault-family.mp4" type="video/mp4" />
+            </video>
+            <ScanlineOverlay color="rgba(61,138,130,0.03)" />
+          </div>
+
         </div>
 
         {/* Bottom bar */}
