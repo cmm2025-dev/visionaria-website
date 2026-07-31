@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Clock, Radio, Video, Zap } from 'lucide-react';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
+import DAFRVideoPanel from '@/components/DAFRVideoPanel';
 
 export default async function DAFRPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -93,24 +94,14 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
-      {/* Video YouTube */}
+      {/* Video demo */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>En acción</p>
           <h2 className="text-3xl font-extrabold text-white">Ve cómo funciona el sistema DAFR</h2>
           <p className="mt-3 text-slate-400">Desde la alarma hasta el video en vivo en menos de 90 segundos</p>
         </div>
-        <div className="relative rounded-2xl overflow-hidden border" style={{ aspectRatio: '16/9', borderColor: 'rgba(240,148,34,0.3)' }}>
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/o_HdKiM1MEE?rel=0&modestbranding=1"
-            title="DAFR — Dron como Primera Fuerza de Respuesta"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            className="absolute inset-0 w-full h-full"
-            style={{ border: 'none' }}
-          />
-        </div>
+        <DAFRVideoPanel videoId="IfCDJXEi-w4" />
       </section>
 
       {/* Flujo operacional */}
