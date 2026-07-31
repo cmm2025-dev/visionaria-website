@@ -12,6 +12,7 @@ const routes = [
   '/casos-exito',
   '/innovacion',
   '/noticias',
+  '/clientes',
   '/soporte',
   '/contacto',
 ];

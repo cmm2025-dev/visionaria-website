@@ -1,3 +1,5 @@
+import ScrollCue from '@/components/ScrollCue';
+
 const CLIENTS = [
   { name: 'Municipalidad de Las Condes', logo: '/clientes/las-condes.png' },
   { name: 'Gobierno Regional de Ñuble', logo: '/clientes/nuble.png' },
@@ -9,17 +11,24 @@ const CLIENTS = [
   { name: 'Municipalidad de Algarrobo', logo: '/clientes/algarrobo.png' },
 ];
 
-export default function ClientsHero() {
+export default function ClientesPage() {
   return (
-    <section className="w-full py-20 px-4" style={{ background: '#1E1B18' }}>
-      <div className="max-w-7xl mx-auto text-center">
-        <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
-          Confianza institucional
-        </p>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-14">
-          Clientes principales
-        </h2>
+    <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#F09422' }} />
+        <div className="max-w-7xl mx-auto relative">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
+            Confianza institucional
+          </p>
+          <h1 className="text-4xl lg:text-5xl font-extrabold">Clientes principales</h1>
+          <p className="mt-4 text-lg text-slate-300 max-w-2xl">
+            Instituciones públicas y privadas que confían en Visionaria para proteger a sus comunidades.
+          </p>
+        </div>
+        <ScrollCue label="Seguir explorando" />
+      </div>
 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
           {CLIENTS.map(({ name, logo }) => (
             <div
@@ -32,7 +41,7 @@ export default function ClientsHero() {
             </div>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

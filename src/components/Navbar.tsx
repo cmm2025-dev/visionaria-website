@@ -12,6 +12,7 @@ const links = [
   { href: '/casos-exito', key: 'cases' },
   { href: '/innovacion', key: 'innovation' },
   { href: '/noticias', key: 'news' },
+  { href: '/clientes', key: 'clients' },
   { href: '/soporte', key: 'support' },
   { href: '/contacto', key: 'contact' },
 ] as const;
