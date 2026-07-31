@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { ArrowRight, MonitorCheck, Layers, Camera, Car, Smartphone, Bell, Phone, Wind, MapPin, BarChart2, Shield, FileText, TrendingUp, ClipboardCheck, Table2, Lock } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import ScrollCue from '@/components/ScrollCue';
 
 export default async function CadPsimPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -88,6 +89,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </a>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
 
       {/* Manifesto */}
@@ -112,6 +114,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
           </div>
         </div>
         <p className="font-bold text-white text-base">No son lo mismo — se potencian.</p>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* El orden correcto */}
@@ -135,6 +138,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* La solución */}
@@ -187,6 +191,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             Cada comuna dispone de un <strong className="text-slate-300">acceso municipal independiente</strong> con autonomía operativa dentro de la red regional.
           </p>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Capacidades */}
@@ -209,6 +214,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Integración tecnológica */}
@@ -223,6 +229,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </span>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Trazabilidad */}
@@ -245,6 +252,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Beneficios */}
@@ -262,6 +270,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Para quién */}
@@ -282,6 +291,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Financiamiento */}
@@ -314,6 +324,7 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
         <p className="text-slate-500 text-sm max-w-3xl">
           El instrumento aplicable depende de la naturaleza, escala y titularidad de cada iniciativa, y debe validarse con el GORE y la DIPRES. Visionaria acompaña la identificación y formulación; no sustituye la evaluación de la autoridad.
         </p>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* CTA */}

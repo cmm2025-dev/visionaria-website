@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import ScrollCue from '@/components/ScrollCue';
 
 const newsItems = [
   { date: '2025-05-20', tag: 'Smart City', title: 'Visionaria expande red de televigilancia en Gran Santiago a 26 comunas', excerpt: 'Nuevo contrato con GORE Metropolitano amplía la cobertura con 120 nuevas cámaras HD y analítica de comportamiento.' },
@@ -32,6 +33,7 @@ export default async function NoticiasPage({ params }: { params: Promise<{ local
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

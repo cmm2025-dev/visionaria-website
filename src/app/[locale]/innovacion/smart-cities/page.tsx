@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Shield, Camera, Car, KeyRound, Plane, Leaf, ArrowRight, CheckCircle } from 'lucide-react';
+import ScrollCue from '@/components/ScrollCue';
 
 export default async function SmartCitiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -137,6 +138,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
 
       {/* Intro retos */}
@@ -182,6 +184,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Módulos */}
@@ -225,6 +228,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             })}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Beneficios */}
@@ -264,6 +268,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* CTA */}

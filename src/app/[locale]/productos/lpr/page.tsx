@@ -7,6 +7,7 @@ import {
 import Link from 'next/link';
 import LprHeroVisual from '@/components/LprHeroVisual';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
+import ScrollCue from '@/components/ScrollCue';
 
 export default async function LprPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -205,6 +206,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
 
       {/* Ley CATI — sección destacada */}
@@ -250,6 +252,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Proyecto emblemático: SPD Región Metropolitana */}
@@ -306,6 +309,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Integraciones institucionales */}
@@ -339,6 +343,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Flujo de arquitectura */}
@@ -374,6 +379,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             Todo el flujo ocurre en menos de 500 ms. La alerta llega al operador antes de que el vehículo abandone el cuadro de la cámara.
           </p>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Capacidades */}
@@ -397,6 +403,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Especificaciones técnicas */}
@@ -444,6 +451,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Casos de uso */}
@@ -470,6 +478,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Notas de implementación */}
@@ -506,6 +515,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             ))}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* CTA */}

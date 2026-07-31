@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import ScrollCue from '@/components/ScrollCue';
 
 const featured = [
   {
@@ -101,6 +102,7 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
 
       {/* Presencia nacional — stats bar */}
@@ -151,6 +153,7 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
             </Link>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Presencia regional */}
@@ -226,6 +229,7 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
           </div>
           <p className="mt-6 text-xs text-slate-600 text-center">Datos del portafolio histórico Visionaria · Corte julio 2026</p>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* CTA */}
