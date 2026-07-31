@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Clock, Radio, Video, Zap } from 'lucide-react';
+import HeroVideoBackground from '@/components/HeroVideoBackground';
 
 export default async function DAFRPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -44,17 +45,11 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
 
       {/* Hero */}
       <div className="relative overflow-hidden py-20 lg:py-28">
-        {/* Video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
+        {/* Video background — desktop only, ver HeroVideoBackground */}
+        <HeroVideoBackground
+          sources={['/dafr-hero-bg.mp4']}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
-        >
-          <source src="/dafr-hero-bg.mp4" type="video/mp4" />
-        </video>
+        />
 
         {/* Overlay */}
         <div

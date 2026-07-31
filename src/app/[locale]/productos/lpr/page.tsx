@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import LprHeroVisual from '@/components/LprHeroVisual';
+import HeroVideoBackground from '@/components/HeroVideoBackground';
 
 export default async function LprPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -128,17 +129,11 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
     <div>
       {/* Hero */}
       <div className="text-white relative overflow-hidden" style={{ borderLeft: '6px solid #C4A882' }}>
-        {/* Video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
+        {/* Video background — desktop only, ver HeroVideoBackground */}
+        <HeroVideoBackground
+          sources={['/lpr-hero-bg.mp4']}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
-        >
-          <source src="/lpr-hero-bg.mp4" type="video/mp4" />
-        </video>
+        />
 
         {/* Overlay: darkens video so text stays readable, with brand tint */}
         <div

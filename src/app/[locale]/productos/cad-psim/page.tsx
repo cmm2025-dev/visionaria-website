@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, MonitorCheck, Layers, Camera, Car, Smartphone, Bell, Phone, Wind, MapPin, BarChart2, Shield, FileText, TrendingUp, ClipboardCheck, Table2, Lock } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function CadPsimPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -48,17 +49,15 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
     <div>
       {/* Hero */}
       <div className="text-white relative overflow-hidden" style={{ borderLeft: '6px solid #3D8A82' }}>
-        {/* Video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
-        >
-          <source src="/cad-hero-bg.mp4" type="video/mp4" />
-        </video>
+        {/* Fondo estático — centro de despacho CAD/PSIM */}
+        <Image
+          src="/cad-hero-bg.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
 
         {/* Overlay */}
         <div
