@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle, Clock, Radio, Video, Zap } from 'lucide-react';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
 import DAFRVideoPanel from '@/components/DAFRVideoPanel';
+import CaseVideoCard from '@/components/CaseVideoCard';
+import ScrollCue from '@/components/ScrollCue';
 
 export default async function DAFRPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -92,6 +94,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </div>
 
       {/* Video demo */}
@@ -102,6 +105,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           <p className="mt-3 text-slate-400">Desde la alarma hasta el video en vivo en menos de 90 segundos</p>
         </div>
         <DAFRVideoPanel videoId="IfCDJXEi-w4" />
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Flujo operacional */}
@@ -135,6 +139,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               ))}
             </div>
           </div>
+          <ScrollCue label="Seguir explorando" />
         </div>
       </section>
 
@@ -155,6 +160,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             </div>
           ))}
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Beneficios clave */}
@@ -194,6 +200,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               ))}
             </div>
           </div>
+          <ScrollCue label="Seguir explorando" />
         </div>
       </section>
 
@@ -223,6 +230,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               </div>
             ))}
           </div>
+          <ScrollCue label="Seguir explorando" />
         </div>
       </section>
 
@@ -320,6 +328,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               </div>
             ))}
           </div>
+          <ScrollCue label="Seguir explorando" />
         </div>
       </section>
 
@@ -359,6 +368,7 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             })}
           </div>
         </div>
+        <ScrollCue label="Seguir explorando" />
       </section>
 
       {/* Seguridad de datos */}
@@ -395,27 +405,37 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <h2 className="text-3xl font-extrabold text-white">¿Tu municipio está listo para el DAFR?</h2>
-        <p className="mt-4 text-slate-400 max-w-xl mx-auto">
-          Nuestro equipo diseña la solución a medida, desde la ubicación de las estaciones hasta la integración con tu centro de mando existente.
-        </p>
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href={`/${locale}/contacto`}
-            className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full transition-all"
-            style={{ background: '#F09422', color: '#1E1B18' }}
-          >
-            Hablar con un especialista <ArrowRight size={16} />
-          </Link>
-          <Link
-            href={`/${locale}/productos`}
-            className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full border text-white hover:bg-white/5 transition-colors"
-            style={{ borderColor: 'rgba(255,255,255,0.2)' }}
-          >
-            Ver todas las soluciones
-          </Link>
+      {/* CTA + Caso real */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-10">
+          <div className="text-center lg:text-left">
+            <h2 className="text-3xl font-extrabold text-white">¿Tu municipio está listo para el DAFR?</h2>
+            <p className="mt-4 text-slate-400 max-w-xl">
+              Nuestro equipo diseña la solución a medida, desde la ubicación de las estaciones hasta la integración con tu centro de mando existente.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Link
+                href={`/${locale}/contacto`}
+                className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full transition-all"
+                style={{ background: '#F09422', color: '#1E1B18' }}
+              >
+                Hablar con un especialista <ArrowRight size={16} />
+              </Link>
+              <Link
+                href={`/${locale}/productos`}
+                className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-full border text-white hover:bg-white/5 transition-colors"
+                style={{ borderColor: 'rgba(255,255,255,0.2)' }}
+              >
+                Ver todas las soluciones
+              </Link>
+            </div>
+          </div>
+          <CaseVideoCard
+            videoId="o_HdKiM1MEE"
+            poster="https://img.youtube.com/vi/o_HdKiM1MEE/hqdefault.jpg"
+            eyebrow="¿Quieres ver un caso real?"
+            title="Asheville, USA — Respuesta post-tormenta"
+          />
         </div>
       </section>
     </div>

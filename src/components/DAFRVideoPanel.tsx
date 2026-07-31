@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Play, Video } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 const LOOP_FRAMES = ['/dafr-loop/frame-1.jpg', '/dafr-loop/frame-2.jpg', '/dafr-loop/frame-3.jpg'];
 
@@ -84,36 +84,6 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
           DEMO
         </div>
       </div>
-
-      {/* Below — Caso real: Asheville, USA (post-tormenta) */}
-      <a
-        href="https://www.youtube.com/watch?v=o_HdKiM1MEE"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group/case flex items-center gap-4 rounded-xl overflow-hidden border shadow-lg transition-transform hover:scale-[1.01]"
-        style={{ borderColor: 'rgba(240,148,34,0.35)', background: '#0f0d0b' }}
-      >
-        <div className="relative w-32 sm:w-44 shrink-0" style={{ aspectRatio: '16/9' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://img.youtube.com/vi/o_HdKiM1MEE/hqdefault.jpg"
-            alt="Caso real: Asheville, USA — respuesta post-tormenta"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.35)' }}>
-            <div
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-transform group-hover/case:scale-110"
-              style={{ background: 'rgba(240,148,34,0.85)' }}
-            >
-              <Video size={14} style={{ color: '#1E1B18' }} />
-            </div>
-          </div>
-        </div>
-        <div className="py-2 pr-4">
-          <p className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#F09422' }}>¿Quieres ver un caso real?</p>
-          <p className="text-sm text-slate-300 leading-snug mt-0.5">Asheville, USA — Respuesta post-tormenta</p>
-        </div>
-      </a>
     </div>
   );
 }
