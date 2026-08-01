@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { getMessages } from 'next-intl/server';
+import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -78,6 +79,7 @@ export default async function LocaleLayout({
         <Navbar locale={locale} t={nav as Parameters<typeof Navbar>[0]['t']} />
         <main className="flex-1">{children}</main>
         <Footer locale={locale} tagline={footer.tagline} rights={footer.rights} nav={nav} />
+        <Analytics />
       </body>
     </html>
   );
