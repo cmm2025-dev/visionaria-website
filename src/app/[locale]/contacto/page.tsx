@@ -24,6 +24,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
     send: t('send'),
     success: t('success'),
     error: t('error_sending'),
+    sending: t('sending'),
   };
 
   return (

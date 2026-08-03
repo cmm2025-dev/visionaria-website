@@ -24,7 +24,10 @@
     "featured_support": "Soporte 7×24×365",
     "featured_support_desc": "Centro de operaciones disponible las 24 horas del día, los 365 días del año, con contratos de mantención de largo plazo.",
     "featured_results": "Líder en Seguridad Pública",
-    "featured_results_desc": "Más del 60% de participación en el mercado de videovigilancia pública en Chile, con presencia en todo el territorio nacional."
+    "featured_results_desc": "Más del 60% de participación en el mercado de videovigilancia pública en Chile, con presencia en todo el territorio nacional.",
+    "watch_video": "Ver video",
+    "explore": "Explorar",
+    "explore_aria": "Explorar contenido"
   },
   "products": {
     "title": "Nuestras Soluciones",
@@ -204,7 +207,8 @@
     "success": "Mensaje enviado. Nos pondremos en contacto pronto.",
     "error_sending": "Hubo un error al enviar. Por favor intenta nuevamente.",
     "address_commercial": "Dirección Comercial",
-    "address_admin": "Administración y Gerencia"
+    "address_admin": "Administración y Gerencia",
+    "sending": "Enviando…"
   },
   "footer": {
     "tagline": "Sistemas de Seguridad y Tecnología SpA — Empresa 100% chilena, fundada el 2002.",
