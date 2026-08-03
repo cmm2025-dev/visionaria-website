@@ -509,5 +509,125 @@
     "cta2_company": "Visionaria",
     "cta2_tagline": "Technology integrators for public safety",
     "cta2_button": "Request a presentation"
+  },
+  "lpr": {
+    "hero_eyebrow": "Solutions portfolio · Vehicle control",
+    "hero_title": "LPR / ANPR Platform",
+    "hero_subtitle": "Automatic license plate reading with institutional integration",
+    "hero_desc": "Real-time vehicle recognition, connected to the Carabineros vehicle-search database (SEBV) and the Ministry of the Interior's investigation platform (SITIA) — in under half a second per read.",
+    "hero_stats": [
+      { "value": "303", "label": "active cameras in the RM" },
+      { "value": "23", "label": "integrated municipalities" },
+      { "value": "<500ms", "label": "matching vs. SEBV/SITIA" }
+    ],
+    "cta_primary": "Request an assessment",
+    "cta_secondary": "View completed projects",
+    "cati_badge": "New · CATI Law",
+    "cati_title": "Electronic traffic enforcement",
+    "cati_subtitle": "Speeding · Red light · Exclusive lanes · Wrong-way driving",
+    "cati_desc": "The CATI Law requires automated enforcement with certified photographic evidence. We activate these capabilities on existing LPR infrastructure or with new sites — without municipalities and agencies having to start from scratch.",
+    "cati_tags": ["Speeding", "Red light", "Exclusive lane", "Wrong-way driving", "No plate"],
+    "cati_box_value": "2 models",
+    "cati_box_desc": "Urban roads (2 lanes, 160 km/h) or expressways (3 lanes, 4K)",
+    "cati_cta": "View full CATI solution",
+    "case_badge": "Flagship project",
+    "case_title": "Metropolitan LPR Network",
+    "case_title_accent": "Undersecretariat for Crime Prevention",
+    "case_desc1": "The largest license-plate reading project in Chile: 303 LPR cameras deployed at strategic points across the 23 municipalities of Greater Santiago, operated from the Metropolitan Dispatch Center with direct integration to the Carabineros SEBV and Undersecretariat for Crime Prevention SITIA platforms.",
+    "case_desc2": "Every read is checked against both databases in under 500 ms. A match triggers an immediate alert to the operator, opens an incident in the CAD, and notifies the nearest police station with the vehicle's image and travel route.",
+    "case_tags": ["SEBV — Carabineros", "SITIA — SPD", "Regional CAD", "Integrated VMS", "23 municipalities", "24/7 operation"],
+    "case_stats": [
+      { "value": "303", "label": "active LPR cameras", "sub": "in the metropolitan area" },
+      { "value": "23", "label": "municipalities covered", "sub": "Greater Santiago" },
+      { "value": "24/7", "label": "continuous operation", "sub": "no manual intervention" },
+      { "value": "<500ms", "label": "matching time", "sub": "vs. SEBV/SITIA databases" }
+    ],
+    "integrations_eyebrow": "Institutional ecosystem",
+    "integrations_title": "Integrated with the State's platforms",
+    "integrations_desc": "Visionaria's LPR platform operates within Chile's public safety ecosystem, not as an isolated silo.",
+    "integrations": [
+      {
+        "name": "SEBV — Carabineros de Chile",
+        "full": "Vehicle Search Statistics System",
+        "desc": "Real-time integration with Carabineros' national registry of stolen vehicles. Every read is automatically checked: if the vehicle is under active search, the system generates an immediate alert and opens an incident in the CAD.",
+        "badge": "Active search",
+        "color": "#F09422"
+      },
+      {
+        "name": "SITIA — Undersecretariat for Crime Prevention",
+        "full": "Information and Technology System for Investigation and Action",
+        "desc": "The LPR system feeds and queries the Ministry of the Interior's SITIA platform, contributing pass records as evidence for criminal investigations and regional crime-pattern analysis.",
+        "badge": "Digital evidence",
+        "color": "#3D8A82"
+      },
+      {
+        "name": "Regional CAD / PSIM",
+        "full": "Dispatch and incident-management center",
+        "desc": "Every blacklist match automatically opens an incident in the CAD platform. The operator receives the vehicle's image, owner data (if available) and a suggested response protocol.",
+        "badge": "Automatic dispatch",
+        "color": "#C4A882"
+      }
+    ],
+    "arch_eyebrow": "Architecture",
+    "arch_title": "Processing flow",
+    "arch_flow": [
+      { "label": "LPR camera", "sub": "IR · high-speed" },
+      { "label": "OCR engine", "sub": "local recognition" },
+      { "label": "Matching engine", "sub": "vs. active lists" },
+      { "label": "SEBV / SITIA", "sub": "institutional databases" },
+      { "label": "CAD / PSIM", "sub": "automatic dispatch" }
+    ],
+    "arch_footer": "The entire flow happens in under 500 ms. The alert reaches the operator before the vehicle leaves the camera's frame.",
+    "capabilities_eyebrow": "Platform",
+    "capabilities_title": "Core capabilities",
+    "capabilities": [
+      { "icon": "Car", "title": "Real-time recognition", "desc": "Automatic plate reading for moving or stationary vehicles, at speeds up to 150 km/h, in day and night conditions, rain and backlight.", "accent": "#F09422" },
+      { "icon": "Database", "title": "List and alert management", "desc": "Blacklists (stolen, suspended, actively-searched vehicles) and whitelists (authorized access). Instant alert to the operator on any match.", "accent": "#3D8A82" },
+      { "icon": "Network", "title": "Integration with external databases", "desc": "Direct connection to institutional databases — including Carabineros records and Ministry of the Interior platforms — via secure protocols and formal agreements.", "accent": "#F09422" },
+      { "icon": "Search", "title": "Vehicle lookup and history", "desc": "Search by full or partial plate, date range and checkpoint. Pass history with front-facing image, direction of travel and estimated speed.", "accent": "#3D8A82" },
+      { "icon": "BarChart2", "title": "Vehicle flow analytics", "desc": "Traffic-flow statistics by checkpoint, time window and road type. Actionable data for traffic management and patrol planning.", "accent": "#C4A882" },
+      { "icon": "Lock", "title": "Vehicle access control", "desc": "Automatic barrier or gate opening for an authorized plate. Entry and exit logging for parking lots, industrial sites and municipal access points.", "accent": "#C4A882" }
+    ],
+    "specs_eyebrow": "Specifications",
+    "specs_title": "Reference technical parameters",
+    "specs_desc": "The values shown correspond to standard installation conditions. Every project includes an on-site technical survey to determine the optimal configuration based on traffic volume, lighting and road type.",
+    "specs": [
+      { "param": "Capture speed", "value": "Up to 150 km/h" },
+      { "param": "Processing time", "value": "< 500 ms per vehicle" },
+      { "param": "Recognition accuracy", "value": "> 95% under standard conditions" },
+      { "param": "Supported formats", "value": "Chilean, MERCOSUR and international plates" },
+      { "param": "Operation", "value": "Day/night — rain — backlight" },
+      { "param": "Cameras per lane", "value": "1–4 depending on road layout" },
+      { "param": "Image retention", "value": "Configurable per applicable regulation" },
+      { "param": "IP protection", "value": "IP67 or higher in harsh environments" }
+    ],
+    "legal_eyebrow": "Legal framework",
+    "legal_title": "Regulatory compliance",
+    "regulatory": [
+      { "icon": "Shield", "title": "Law 21.719 — Personal data", "desc": "A plate links to its owner. The system operates under lawful data processing, with a declared purpose, query logging and access restricted to authorized personnel." },
+      { "icon": "FileText", "title": "Inter-institutional agreements", "desc": "Integration with Carabineros and SPD databases requires a prior formal agreement. Visionaria supports the documentary and technical management of the agreement as part of the project." },
+      { "icon": "Clock", "title": "Defined retention period", "desc": "LPR image storage is sized and capped at the maximum period allowed by regulation, with an automatic deletion policy once the period expires." }
+    ],
+    "usecases_eyebrow": "Applications",
+    "usecases_title": "Use cases",
+    "usecases_desc": "One platform, multiple deployment contexts.",
+    "use_cases": [
+      { "icon": "Building2", "title": "Municipal surveillance", "desc": "Gantries at communal access points with automatic alerts to Carabineros for wanted vehicles." },
+      { "icon": "Search", "title": "Criminal investigation", "desc": "Reconstructing a vehicle of interest's routes from its pass history across multiple checkpoints." },
+      { "icon": "Lock", "title": "Industrial access control", "desc": "Automatic entry for authorized vehicles at plants, ports and high-security facilities." },
+      { "icon": "BarChart2", "title": "Road safety and statistics", "desc": "Counting, classification and speed of vehicle flow for traffic authorities." },
+      { "icon": "AlertCircle", "title": "High-criticality zones", "desc": "Surveillance with thermal cameras and recognition on critical routes, border zones and strategic infrastructure." },
+      { "icon": "Car", "title": "Parking lots and access points", "desc": "Access-list management for residential complexes, hospitals, universities and corporate buildings." }
+    ],
+    "implementation_eyebrow": "To consider in every project",
+    "implementation_title": "What makes the difference on the ground",
+    "implementation_notes": [
+      { "title": "Mandatory site survey", "desc": "Camera positioning and angle are critical to the recognition rate. We always carry out an on-site survey before sizing the project." },
+      { "title": "Institutional integration managed from day one", "desc": "Connecting to SEBV and SITIA requires a formal agreement. We support inter-institutional coordination as part of the process, not as a later stage." },
+      { "title": "Network infrastructure assessed in detail", "desc": "Every checkpoint requires connectivity, latency and redundancy analysis to guarantee the committed response time." },
+      { "title": "Storage sizing", "desc": "LPR images grow fast. We calculate the real volume before defining the storage infrastructure, taking applicable retention regulations into account." }
+    ],
+    "final_cta_title": "Does your municipality or institution need vehicle control?",
+    "final_cta_desc": "We advise you on system design, institutional agreements and technical sizing — at no cost."
   }
 }
