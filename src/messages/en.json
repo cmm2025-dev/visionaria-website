@@ -629,5 +629,101 @@
     ],
     "final_cta_title": "Does your municipality or institution need vehicle control?",
     "final_cta_desc": "We advise you on system design, institutional agreements and technical sizing — at no cost."
+  },
+  "dafr": {
+    "hero_eyebrow": "Solutions · DAFR",
+    "hero_title_1": "Drone as",
+    "hero_title_2": "First Response",
+    "hero_title_3": "Force",
+    "hero_desc": "The DAFR (Drone as First Responder) concept redefines urban security. Before any patrol reaches the scene of an incident, an autonomous drone is already streaming live video from the exact location of the alarm.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "View success stories",
+    "video_eyebrow": "In action",
+    "video_title": "See how the DAFR system works",
+    "video_desc": "From the alarm to live video in under 90 seconds",
+    "protocol_eyebrow": "Protocol",
+    "protocol_title": "DAFR operational flow",
+    "steps": [
+      { "label": "ALARM", "time": "T = 0s", "color": "#F09422", "desc": "A sensor, camera or panic button triggers the alert in the system." },
+      { "label": "DISPATCH", "time": "T = 5s", "color": "#3D8A82", "desc": "The Drone Tactical Command Center receives the alarm and orders the automatic takeoff of the nearest drone." },
+      { "label": "TAKEOFF", "time": "T = 30s", "color": "#3D8A82", "desc": "The drone leaves the DJI Dock station and navigates autonomously to the event location." },
+      { "label": "LIVE VIDEO", "time": "T = 90s", "color": "#F09422", "desc": "The drone arrives and streams Full HD live video to the command center." },
+      { "label": "DECISION", "time": "< 2 min", "color": "#34d399", "desc": "The operator assesses the situation and dispatches the ground response with real information." }
+    ],
+    "tech_eyebrow": "Technology",
+    "tech_title": "System capabilities",
+    "features": [
+      { "icon": "Clock", "color": "#F09422", "title": "Response in under 90 seconds", "desc": "From the alarm trigger to the drone being over the incident location, response time is under 90 seconds — outpacing any ground patrol." },
+      { "icon": "Video", "color": "#3D8A82", "title": "Live video to the command center", "desc": "Real-time Full HD streaming to the operator. The response team sees the incident before arriving, improving decision-making and personnel safety." },
+      { "icon": "Radio", "color": "#C4A882", "title": "Integrated automatic dispatch", "desc": "The Drone Tactical Command Center (CTD) receives the alarm and dispatches the drone automatically, with no human intervention. Compatible with Genetec, Milestone and police dispatch systems." },
+      { "icon": "Zap", "color": "#34d399", "title": "Autonomous 24/7 operation", "desc": "DJI Dock station with automatic recharging. The drone returns, recharges and is ready for the next event with no on-site operator required." }
+    ],
+    "why_eyebrow": "Why DAFR",
+    "why_title": "Faster than any ground patrol",
+    "why_bullets": [
+      "Reaches the incident location in under 90 seconds",
+      "The operator assesses the situation before sending ground resources",
+      "Reduces false alarms — personnel are only dispatched once the drone confirms the incident",
+      "24/7 aerial coverage with no risk to security personnel",
+      "Native integration with Genetec Security Center and dispatch platforms",
+      "Compatible with Carabineros and municipal communication systems"
+    ],
+    "why_stats": [
+      { "val": "< 90s", "label": "Response time", "color": "#F09422" },
+      { "val": "24/7", "label": "Continuous operation", "color": "#3D8A82" },
+      { "val": "Full HD", "label": "Live video", "color": "#C4A882" },
+      { "val": "0", "label": "On-site operators required", "color": "#34d399" }
+    ],
+    "dji_eyebrow": "DJI Ecosystem",
+    "dji_title": "Accessories compatible with DJI Dock 3",
+    "dji_desc": "Expand operational capabilities to fit the needs of each deployment",
+    "accessories": [
+      { "color": "#C4A882", "title": "D-RTK 3 Fixed Relay Version", "desc": "Improves the range and quality of RTK signal transmission in complex urban environments." },
+      { "color": "#3D8A82", "title": "AS1 Real-Time Speaker", "desc": "Broadcast range of up to 300 meters. Enables direct communication from the drone to the incident area." },
+      { "color": "#F09422", "title": "AL1 Spotlight with Stabilized Tracking", "desc": "Powerful illumination at 100 meters with automatic target tracking." },
+      { "color": "#34d399", "title": "RC Plus 2 Enterprise", "desc": "Professional remote control for manual flight of the M4D/M4TD with a high-visibility integrated screen." },
+      { "color": "#f87171", "title": "Obstacle Detection Module", "desc": "Ensures operational safety in environments with obstacles, avoiding collisions during autonomous flight." },
+      { "color": "#C4A882", "title": "Vehicle Mounting Kit", "desc": "Ready for mobile deployment. Anti-vibration design and automatic RTK calibration while in motion." }
+    ],
+    "hardware_eyebrow": "Hardware",
+    "hardware_title": "DJI Dock 3 — Ready for any challenge",
+    "hardware_desc": "Autonomous deployment station with built-in FlightHub2 intelligence, EU C6 certification and operation in extreme conditions.",
+    "hardware_groups": [
+      { "color": "#C4A882", "title": "High Regulatory Compliance", "items": ["EU Class C6 marking", "Dock 3 documentation templates", "BVLOS-ready features"] },
+      { "color": "#F09422", "title": "Superior Performance", "items": ["Max flight time of 54 min", "Laser rangefinder for precise localization", "10s to take off", "Real-time terrain following"] },
+      { "color": "#3D8A82", "title": "Enhanced Data Security", "items": ["ISO27001 + ISO27701", "Local FlightHub 2 version", "Data security report"] },
+      { "color": "#34d399", "title": "Robustness and Reliability", "items": ["12 m/s wind resistance on takeoff", "Operating temperature -30°C to 50°C", "IP56+IP55 rating"] },
+      { "color": "#C4A882", "title": "Multiple Accessories", "items": ["Vehicle mounting kit", "D-RTK3 fixed relay deployment version", "Obstacle detection module"] },
+      { "color": "#F09422", "title": "FlightHub2 Intelligence", "items": ["Real-time AI detection", "Smart tracking", "Change detection", "Automated routes"] }
+    ],
+    "deploy_eyebrow": "Deployment",
+    "deploy_title": "Implementation anywhere",
+    "deployments": [
+      { "color": "#F09422", "title": "Ready for vehicle deployment", "desc": "Anti-vibration design ensures the Dock's reliability. Cloud-based RTK calibration and tilt-angle detection optimize mobile operation and safety." },
+      { "color": "#3D8A82", "title": "Simple RTK setup with D-RTK3", "desc": "Pairing with D-RTK 3 improves RTK signal acquisition, overcoming deployment limitations in urban environments (placing the Dock 3 near buildings and D-RTK 3 on rooftops)." },
+      { "color": "#34d399", "title": "Improved RTK signal performance", "desc": "External RTK module with 2 dB increased signal reception capability, enabling faster and more reliable RTK convergence." },
+      { "color": "#C4A882", "title": "Precise landing techniques", "desc": "A combination of SLAM (simultaneous localization and mapping) and marker recognition ensures precise landing even in challenging deployment environments." }
+    ],
+    "flighthub_eyebrow": "FlightHub2",
+    "flighthub_title": "Built-in Intelligence",
+    "flighthub_desc": "The DJI Dock 3 with FlightHub2 is smarter than ever. It detects, tracks and acts autonomously in real time.",
+    "flighthub_features": [
+      { "color": "#3D8A82", "title": "Real-time AI detection", "desc": "Recognition of people, vehicles and vessels with configurable alert thresholds." },
+      { "color": "#C4A882", "title": "Smart tracking", "desc": "The drone automatically follows moving targets with no operator intervention." },
+      { "color": "#34d399", "title": "Change detection", "desc": "Compares images from recurring routes and identifies anomalies or changes in the environment." },
+      { "color": "#F09422", "title": "Automated routes with recognition", "desc": "Smart recognition at waypoints: detects, alerts and captures data upon finding a target. Actions: photo, video and hover." }
+    ],
+    "flighthub_labels": ["REAL-TIME AI DETECTION", "CHANGE DETECTION", "SMART TRACKING", "AUTOMATED ROUTES"],
+    "privacy_eyebrow": "Privacy",
+    "privacy_title": "How does the system protect your data?",
+    "privacy_regions": [
+      { "flag": "🇺🇸", "title": "AWS server based in the US", "desc": "DJI uses Amazon AWS as its cloud services provider, recognized for its security qualifications and high reliability. AWS holds ISO 27001/27017/27018 certifications.", "color": "#3D8A82" },
+      { "flag": "🇪🇺", "title": "AWS server based in the EU", "desc": "DJI is deploying FlightHub 2 on Amazon AWS Frankfurt, Germany. All EU user data stays within European territory, in compliance with GDPR.", "color": "#C4A882" }
+    ],
+    "final_cta_title": "Is your municipality ready for DAFR?",
+    "final_cta_desc": "Our team designs a tailored solution, from station placement to integration with your existing command center.",
+    "final_cta_secondary": "View all solutions",
+    "case_eyebrow": "Want to see a real case?",
+    "case_title": "Asheville, USA — Post-storm response"
   }
 }
