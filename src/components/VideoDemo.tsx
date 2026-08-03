@@ -121,6 +121,16 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
               />
             )}
 
+            {/* Frozen poster frame — YouTube mode has no native <video> to show one, so render it as an image */}
+            {ytMode && poster && !playing && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={poster}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+
             {/* Poster / overlay before play */}
             {!playing && (
               <div

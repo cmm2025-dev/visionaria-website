@@ -81,7 +81,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Video demo */}
-      <VideoDemo videoSrc="IfCDJXEi-w4" locale={locale} />
+      <VideoDemo videoSrc="IfCDJXEi-w4" poster="/dafr-loop/frame-1.jpg" locale={locale} />
 
 
       {/* CTA band */}
