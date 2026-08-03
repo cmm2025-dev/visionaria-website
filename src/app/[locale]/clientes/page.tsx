@@ -15,6 +15,13 @@ export default async function ClientesPage({ params }: { params: Promise<{ local
   return (
     <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
       <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ mixBlendMode: 'screen', filter: 'brightness(0.62)' }}
+        >
+          <source src="/clientes/nuble-sala-crisis.mp4" type="video/mp4" />
+        </video>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#F09422' }} />
         <div className="max-w-7xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
