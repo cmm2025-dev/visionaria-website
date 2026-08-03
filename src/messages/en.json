@@ -215,6 +215,63 @@
     "talk_to_specialist": "Talk to a specialist",
     "request_demo": "Request a demo"
   },
+  "manifesto": {
+    "eyebrow": "Our purpose",
+    "title_1": "Integrated technology in the service of",
+    "title_accent": "people's safety",
+    "desc_pre": "Visionaria actively promotes the integration of technology systems for a single purpose:",
+    "desc_strong": "safeguarding citizen security",
+    "desc_post": ", giving public institutions tools that pursue operational efficiency and the optimization of State resources.",
+    "pillars": [
+      { "icon": "Shield", "title": "Citizen Security", "desc": "Our core purpose is protecting people. Every camera, every sensor, every algorithm exists so citizens can live, move around and thrive in safe environments.", "accent": "#F09422", "bg": "rgba(240,148,34,0.08)" },
+      { "icon": "Cpu", "title": "Systems Integration", "desc": "We don't sell isolated technology. We connect video surveillance, facial recognition, license plate readers, drones and dispatch platforms into a unified ecosystem that operates as a single intelligent system.", "accent": "#3D8A82", "bg": "rgba(61,138,130,0.08)" },
+      { "icon": "BarChart3", "title": "Public Resource Efficiency", "desc": "We design solutions that maximize the impact of every peso invested by municipalities, governorships and public agencies: more coverage, shorter response times, better decision-making.", "accent": "#34d399", "bg": "rgba(52,211,153,0.08)" }
+    ],
+    "quote_pre": "A safer city doesn't need more resources —",
+    "quote_accent": "it needs systems that work together intelligently.",
+    "quote_footer": "Visionaria · Since 2002",
+    "stats": [
+      { "value": "+3,700", "label": "Cameras in operation", "sub": "in real time" },
+      { "value": "80+", "label": "Municipalities", "sub": "from Arica to Punta Arenas" },
+      { "value": "10/16", "label": "Regions covered", "sub": "direct presence" },
+      { "value": "320+", "label": "Projects completed", "sub": "since 2002" }
+    ],
+    "scroll_cue": "See more"
+  },
+  "surveillanceDeck": {
+    "eyebrow": "Operations Center",
+    "title_1": "Integrated surveillance,",
+    "title_accent": "in real time",
+    "status_texts": [
+      "SYSTEM ACTIVE · VISIONARIA OPS CENTER",
+      "24/7 MONITORING · 40+ MUNICIPALITIES",
+      "+3,700 CAMERAS ONLINE",
+      "FACIAL RECOGNITION ACTIVE · PDI DATABASE",
+      "DJI DOCK DRONES ON STANDBY · T=0 READY"
+    ],
+    "feed_cam01": "SITIA INTEGRATED PLATFORM",
+    "feed_uav01": "DJI DRONE — LIVE FEED",
+    "feed_rad01": "PERIMETER RADAR · PTZ",
+    "feed_lpr03": "LICENSE PLATE READING",
+    "feed_sys": "SYSTEM STATUS",
+    "feed_log": "REAL-TIME EVENTS",
+    "feed_mls01": "MILESIGHT LPR",
+    "feed_svt01": "GENETEC STREAMVAULT",
+    "sys_stats": [
+      { "label": "Cameras online", "val": 97, "color": "#34d399" },
+      { "label": "Network latency", "val": 82, "color": "#3D8A82" },
+      { "label": "Genetec CPU", "val": 61, "color": "#F09422" },
+      { "label": "Storage", "val": 44, "color": "#F09422" }
+    ],
+    "lpr_scanning": "READING...",
+    "lpr_registered": "✓ LOGGED",
+    "events": [
+      { "time": "20:17:33", "msg": "Plate BKRD·54 flagged — stolen vehicle", "color": "#ef4444" },
+      { "time": "20:17:28", "msg": "Drone UAV-01 en route — Maipú sector", "color": "#F09422" },
+      { "time": "20:17:21", "msg": "Face ID confirmed — PDI database 94.7%", "color": "#34d399" }
+    ],
+    "bottom_bar_status": "VISIONARIA OPS · SANTIAGO · CL"
+  },
   "clients": {
     "eyebrow": "Institutional trust",
     "title": "Main clients",

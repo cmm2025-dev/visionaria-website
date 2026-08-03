@@ -215,6 +215,63 @@
     "talk_to_specialist": "Hablar con un especialista",
     "request_demo": "Solicitar demo"
   },
+  "manifesto": {
+    "eyebrow": "Nuestra razón de ser",
+    "title_1": "Tecnología integrada al servicio de",
+    "title_accent": "la seguridad de las personas",
+    "desc_pre": "Visionaria promueve activamente la integración de sistemas tecnológicos con un único propósito:",
+    "desc_strong": "resguardar la seguridad de la ciudadanía",
+    "desc_post": ", dotando a las instituciones públicas de herramientas que persiguen la eficiencia operacional y la optimización de los recursos del Estado.",
+    "pillars": [
+      { "icon": "Shield", "title": "Seguridad Ciudadana", "desc": "Nuestro propósito central es proteger a las personas. Cada cámara, cada sensor, cada algoritmo existe para que los ciudadanos puedan vivir, transitar y desarrollarse en entornos seguros.", "accent": "#F09422", "bg": "rgba(240,148,34,0.08)" },
+      { "icon": "Cpu", "title": "Integración de Sistemas", "desc": "No vendemos tecnología aislada. Conectamos videovigilancia, reconocimiento facial, lectores de patentes, drones y plataformas de despacho en un ecosistema unificado que opera como un solo sistema inteligente.", "accent": "#3D8A82", "bg": "rgba(61,138,130,0.08)" },
+      { "icon": "BarChart3", "title": "Eficiencia del Recurso Público", "desc": "Diseñamos soluciones que maximizan el impacto de cada peso invertido por municipios, gobernaciones y organismos públicos: más cobertura, menos tiempos de respuesta, mejor toma de decisiones.", "accent": "#34d399", "bg": "rgba(52,211,153,0.08)" }
+    ],
+    "quote_pre": "Una ciudad más segura no requiere más recursos —",
+    "quote_accent": "requiere sistemas que trabajen juntos con inteligencia.",
+    "quote_footer": "Visionaria · Desde 2002",
+    "stats": [
+      { "value": "+3.700", "label": "Cámaras en operación", "sub": "en tiempo real" },
+      { "value": "80+", "label": "Municipios", "sub": "de Arica a Punta Arenas" },
+      { "value": "10/16", "label": "Regiones cubiertas", "sub": "presencia directa" },
+      { "value": "320+", "label": "Proyectos ejecutados", "sub": "desde 2002" }
+    ],
+    "scroll_cue": "Ver más"
+  },
+  "surveillanceDeck": {
+    "eyebrow": "Centro de Operaciones",
+    "title_1": "Vigilancia integrada",
+    "title_accent": "en tiempo real",
+    "status_texts": [
+      "SISTEMA ACTIVO · VISIONARIA OPS CENTER",
+      "MONITOREO 24/7 · 40+ MUNICIPALIDADES",
+      "+3.700 CÁMARAS EN LÍNEA",
+      "RECONOCIMIENTO FACIAL ACTIVO · BASE PDI",
+      "DRONES DJI DOCK EN STANDBY · T=0 LISTO"
+    ],
+    "feed_cam01": "PLATAFORMA INTEGRADA SITIA",
+    "feed_uav01": "DRONE DJI — VIDEO EN VIVO",
+    "feed_rad01": "RADAR PERIMETRAL · PTZ",
+    "feed_lpr03": "LECTURA DE PATENTES",
+    "feed_sys": "ESTADO DEL SISTEMA",
+    "feed_log": "EVENTOS EN TIEMPO REAL",
+    "feed_mls01": "MILESIGHT LPR",
+    "feed_svt01": "GENETEC STREAMVAULT",
+    "sys_stats": [
+      { "label": "Cámaras online", "val": 97, "color": "#34d399" },
+      { "label": "Latencia red", "val": 82, "color": "#3D8A82" },
+      { "label": "CPU Genetec", "val": 61, "color": "#F09422" },
+      { "label": "Almacenamiento", "val": 44, "color": "#F09422" }
+    ],
+    "lpr_scanning": "LEYENDO...",
+    "lpr_registered": "✓ REGISTRADO",
+    "events": [
+      { "time": "20:17:33", "msg": "Placa BKRD·54 alertada — vehículo robado", "color": "#ef4444" },
+      { "time": "20:17:28", "msg": "Drone UAV-01 en ruta — sector Maipú", "color": "#F09422" },
+      { "time": "20:17:21", "msg": "Rostro ID confirmado — base PDI 94.7%", "color": "#34d399" }
+    ],
+    "bottom_bar_status": "VISIONARIA OPS · SANTIAGO · CL"
+  },
   "clients": {
     "eyebrow": "Confianza institucional",
     "title": "Clientes principales",

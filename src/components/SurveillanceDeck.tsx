@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import ScrollCue from './ScrollCue';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
@@ -131,6 +132,7 @@ const LPR_CAPTURES = [
 ];
 
 function LPRPanel() {
+  const tLpr = useTranslations('surveillanceDeck');
   const [idx, setIdx]           = useState(0);
   const [visible, setVisible]   = useState(true);
   const [scanning, setScanning] = useState(false);
@@ -180,7 +182,7 @@ function LPRPanel() {
         <div className="absolute top-1 right-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono"
           style={{ background: 'rgba(0,0,0,0.6)', color: scanning ? '#F09422' : '#34d399' }}>
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: scanning ? '#F09422' : '#34d399' }}/>
-          {scanning ? 'LEYENDO...' : '✓ REGISTRADO'}
+          {scanning ? tLpr('lpr_scanning') : tLpr('lpr_registered')}
         </div>
       </div>
 
@@ -256,13 +258,9 @@ function DronePanel() {
 
 /* ─── Main component ─── */
 export default function SurveillanceDeck() {
-  const statusTexts = [
-    'SISTEMA ACTIVO · VISIONARIA OPS CENTER',
-    'MONITOREO 24/7 · 40+ MUNICIPALIDADES',
-    '+3.700 CÁMARAS EN LÍNEA',
-    'RECONOCIMIENTO FACIAL ACTIVO · BASE PDI',
-    'DRONES DJI DOCK EN STANDBY · T=0 LISTO',
-  ];
+  const t = useTranslations('surveillanceDeck');
+  const c = useTranslations('common');
+  const statusTexts = t.raw('status_texts') as string[];
   const status = useTypewriter(statusTexts, 45, 2500);
   const isDesktop = useIsDesktop();
 
@@ -274,10 +272,10 @@ export default function SurveillanceDeck() {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div>
             <p className="text-xs font-bold tracking-[0.3em] uppercase mb-1" style={{ color: '#F09422' }}>
-              Centro de Operaciones
+              {t('eyebrow')}
             </p>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Vigilancia integrada <span style={{ color: '#F09422' }}>en tiempo real</span>
+              {t('title_1')} <span style={{ color: '#F09422' }}>{t('title_accent')}</span>
             </h2>
           </div>
           {/* Live status bar */}
@@ -297,7 +295,7 @@ export default function SurveillanceDeck() {
           {/* Feed 1 — Facial recognition (large, 2 filas) */}
           <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)', minHeight: 210 }}>
-            <FeedHeader label="CAM-01" sublabel="PLATAFORMA INTEGRADA SITIA" color="#3D8A82" />
+            <FeedHeader label="CAM-01" sublabel={t('feed_cam01')} color="#3D8A82" />
             <div className="absolute inset-0 flex flex-col" style={{ top: 28 }}>
               <video
                 autoPlay muted loop playsInline
@@ -320,7 +318,7 @@ export default function SurveillanceDeck() {
           {/* Feed 2 — Drone UAV video real */}
           <div className="col-span-12 sm:col-span-5 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
-            <FeedHeader label="UAV-01" sublabel="DRONE DJI — VIDEO EN VIVO" color="#F09422" />
+            <FeedHeader label="UAV-01" sublabel={t('feed_uav01')} color="#F09422" />
             {isDesktop && (
               <video
                 autoPlay muted loop playsInline
@@ -342,7 +340,7 @@ export default function SurveillanceDeck() {
           {/* Feed 3 — Radar + PTZ video */}
           <div className="col-span-12 sm:col-span-3 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.12)' }}>
-            <FeedHeader label="RAD-01" sublabel="RADAR PERIMETRAL · PTZ" color="#F09422" />
+            <FeedHeader label="RAD-01" sublabel={t('feed_rad01')} color="#F09422" />
             {isDesktop && (
               <video
                 autoPlay muted loop playsInline
@@ -362,7 +360,7 @@ export default function SurveillanceDeck() {
           {/* Feed 4 — LPR */}
           <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
-            <FeedHeader label="LPR-03" sublabel="LECTURA DE PATENTES" color="#F09422" />
+            <FeedHeader label="LPR-03" sublabel={t('feed_lpr03')} color="#F09422" />
             <div className="h-full pt-7">
               <LPRPanel />
             </div>
@@ -372,14 +370,9 @@ export default function SurveillanceDeck() {
           {/* Feed 5 — Stats / uptime */}
           <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative flex flex-col p-4"
             style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.15)' }}>
-            <FeedHeader label="SYS" sublabel="ESTADO DEL SISTEMA" color="#34d399" />
+            <FeedHeader label="SYS" sublabel={t('feed_sys')} color="#34d399" />
             <div className="mt-7 flex flex-col gap-2">
-              {[
-                { label: 'Cámaras online', val: 97, color: '#34d399' },
-                { label: 'Latencia red',   val: 82, color: '#3D8A82' },
-                { label: 'CPU Genetec',    val: 61, color: '#F09422' },
-                { label: 'Almacenamiento', val: 44, color: '#F09422' },
-              ].map(({ label, val, color }) => (
+              {(t.raw('sys_stats') as { label: string; val: number; color: string }[]).map(({ label, val, color }) => (
                 <div key={label}>
                   <div className="flex justify-between text-xs mb-0.5">
                     <span className="text-slate-500 font-mono">{label}</span>
@@ -396,14 +389,14 @@ export default function SurveillanceDeck() {
           {/* Feed 6 — Event log */}
           <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.12)' }}>
-            <FeedHeader label="LOG" sublabel="EVENTOS EN TIEMPO REAL" color="#34d399" />
+            <FeedHeader label="LOG" sublabel={t('feed_log')} color="#34d399" />
             <EventLog />
           </div>
 
           {/* Feed 7 — Milesight LPR loop */}
           <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
-            <FeedHeader label="MLS-01" sublabel="MILESIGHT LPR" color="#F09422" />
+            <FeedHeader label="MLS-01" sublabel={t('feed_mls01')} color="#F09422" />
             <video
               autoPlay muted loop playsInline
               className="absolute inset-0 w-full h-full object-cover"
@@ -417,7 +410,7 @@ export default function SurveillanceDeck() {
           {/* Feed 8 — Streamvault product family loop */}
           <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)' }}>
-            <FeedHeader label="SVT-01" sublabel="GENETEC STREAMVAULT" color="#3D8A82" />
+            <FeedHeader label="SVT-01" sublabel={t('feed_svt01')} color="#3D8A82" />
             <video
               autoPlay muted loop playsInline
               className="absolute inset-0 w-full h-full object-cover"
@@ -438,11 +431,11 @@ export default function SurveillanceDeck() {
           <span>DJI DOCK 2 ×3</span>
           <span>HIKVISION DS-2CD ×847</span>
           <span>AXIS P32 ×214</span>
-          <span className="ml-auto" style={{ color: '#F09422' }}>VISIONARIA OPS · SANTIAGO · CL</span>
+          <span className="ml-auto" style={{ color: '#F09422' }}>{t('bottom_bar_status')}</span>
         </div>
       </div>
 
-      <ScrollCue label="Seguir explorando" />
+      <ScrollCue label={c('scroll_cue')} />
 
       <style jsx>{`
         @keyframes scanrow {
@@ -486,11 +479,8 @@ function ScanlineOverlay({ color = 'rgba(61,138,130,0.025)' }: { color?: string 
 }
 
 function EventLog() {
-  const events = [
-    { time: '20:17:33', msg: 'Placa BKRD·54 alertada — vehículo robado', color: '#ef4444' },
-    { time: '20:17:28', msg: 'Drone UAV-01 en ruta — sector Maipú', color: '#F09422' },
-    { time: '20:17:21', msg: 'Rostro ID confirmado — base PDI 94.7%', color: '#34d399' },
-  ];
+  const t = useTranslations('surveillanceDeck');
+  const events = t.raw('events') as { time: string; msg: string; color: string }[];
   return (
     <div className="absolute inset-0 pt-8 px-3 pb-3 flex flex-col gap-1 overflow-hidden">
       {events.map((e, i) => (

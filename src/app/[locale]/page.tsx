@@ -46,7 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <SurveillanceDeck />
 
       {/* Manifesto */}
-      <Manifesto />
+      <Manifesto locale={locale} />
 
       {/* Stats */}
       <section className="border-b" style={{ background: 'rgba(240,148,34,0.05)', borderColor: 'var(--border)' }}>
