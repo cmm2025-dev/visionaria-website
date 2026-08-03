@@ -1,76 +1,46 @@
+import { getTranslations } from 'next-intl/server';
 import ScrollCue from '@/components/ScrollCue';
 
-const CLIENTS = [
-  { name: 'Municipalidad de Las Condes', logo: '/clientes/las-condes.png' },
-  { name: 'Gobierno Regional de Ñuble', logo: '/clientes/nuble.png' },
-  { name: 'Municipalidad de Santiago', logo: '/clientes/santiago.png' },
-  { name: 'Subsecretaría de Prevención del Delito', logo: '/clientes/spd.png' },
-  { name: 'Ruta de la Araucanía', logo: '/clientes/ruta-araucania.png' },
-  { name: 'Ruta de Los Ríos', logo: '/clientes/ruta-los-rios.png' },
-  { name: 'Municipalidad de Puente Alto', logo: '/clientes/puente-alto.png' },
-  { name: 'Municipalidad de Algarrobo', logo: '/clientes/algarrobo.png' },
-];
+interface Institution { name: string; logo: string }
+interface Testimonial { quote: string; name: string; role: string }
 
-const TESTIMONIALS = [
-  {
-    quote: 'Esta es una iniciativa emblemática del Gobierno Regional que busca fortalecer la seguridad en toda nuestra región mediante tecnología de punta, incluyendo inteligencia artificial, para prevenir delitos y contar con medios probatorios en caso de incidentes.',
-    name: 'Óscar Crisóstomo',
-    role: 'Gobernador Regional de Ñuble',
-  },
-  {
-    quote: 'Valoro profundamente la sintonía que tenemos con el Gobierno Regional en materia de seguridad, porque esta alianza nos permite potenciar la vigilancia y la persecución de la delincuencia con un claro enfoque preventivo. Hoy inauguramos 26 cámaras y cuatro puntos de Wi-Fi, una inversión que agradezco, y que además proyectamos complementar con pórticos para detectar vehículos con encargo por robo, porque nuestro objetivo es garantizar tranquilidad tanto en la comuna como en toda la región.',
-    name: 'Jorge Del Pozo',
-    role: 'Alcalde de Chillán Viejo',
-  },
-  {
-    quote: 'Herramienta fantástica y eficaz para combatir los delitos.',
-    name: 'Enrique Zamora',
-    role: 'Prefecto Inspector, PDI',
-  },
-  {
-    quote: 'Reforzar nuestro servicio, analizar y focalizar de manera eficiente el trabajo policial.',
-    name: 'Sandra Vargas',
-    role: 'Coronel, Jefa del Departamento de Operaciones Policiales de Ñuble, Carabineros',
-  },
-  {
-    quote: 'Han funcionado de maravilla, lo que nos tiene seguros y tranquilos como vecinos.',
-    name: 'Cecilia Tauda',
-    role: 'Presidenta, Junta de Vecinos Hacienda Naranjo del Futuro',
-  },
-];
+export default async function ClientesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'clients' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
-export default function ClientesPage() {
+  const institutions = t.raw('institutions') as Institution[];
+  const testimonials = t.raw('testimonials') as Testimonial[];
+
   return (
     <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
       <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#F09422' }} />
         <div className="max-w-7xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
-            Confianza institucional
+            {t('eyebrow')}
           </p>
-          <h1 className="text-4xl lg:text-5xl font-extrabold">Clientes principales</h1>
+          <h1 className="text-4xl lg:text-5xl font-extrabold">{t('title')}</h1>
           <p className="mt-4 text-lg text-slate-300 max-w-2xl">
-            Instituciones públicas y privadas que confían en Visionaria para proteger a sus comunidades.
+            {t('subtitle')}
           </p>
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Caso de éxito — Chillán Viejo / GORE Ñuble */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-4">
-          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>Caso de éxito</p>
-          <h2 className="text-3xl font-extrabold text-white">Chillán Viejo inaugura sistema de televigilancia con 26 cámaras</h2>
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>{t('case_study_eyebrow')}</p>
+          <h2 className="text-3xl font-extrabold text-white">{t('case_study_title')}</h2>
           <p className="mt-3 text-slate-400 max-w-2xl mx-auto">
-            Proyecto del Gobierno Regional de Ñuble por $3.656 millones para 209 cámaras de alta gama en toda la región,
-            con sala de monitoreo municipal, salas espejo en Carabineros y PDI, y análisis con inteligencia artificial
-            mediante el convenio SITIA con la Subsecretaría de Prevención del Delito.
+            {t('case_study_desc')}
           </p>
-          <p className="mt-2 text-xs text-slate-500">Fuente: La Discusión, 18 de marzo de 2026</p>
+          <p className="mt-2 text-xs text-slate-500">{t('case_study_source')}</p>
         </div>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {TESTIMONIALS.map(({ quote, name, role }) => (
+          {testimonials.map(({ quote, name, role }) => (
             <blockquote
               key={name}
               className="rounded-2xl p-6 border flex flex-col gap-4"
@@ -84,17 +54,17 @@ export default function ClientesPage() {
             </blockquote>
           ))}
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Emblemas institucionales */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
-          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>Más instituciones</p>
-          <h2 className="text-2xl font-extrabold text-white">Confían en Visionaria</h2>
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>{t('more_institutions_eyebrow')}</p>
+          <h2 className="text-2xl font-extrabold text-white">{t('more_institutions_title')}</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-          {CLIENTS.map(({ name, logo }) => (
+          {institutions.map(({ name, logo }) => (
             <div
               key={name}
               className="flex items-center justify-center p-6 transition-all hover:scale-[1.05]"

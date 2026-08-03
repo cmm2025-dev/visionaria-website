@@ -93,5 +93,310 @@
   "footer": {
     "tagline": "Security and Technology Systems SpA — 100% Chilean company, founded in 2002.",
     "rights": "All rights reserved."
+  },
+  "common": {
+    "scroll_cue": "Keep exploring",
+    "talk_to_specialist": "Talk to a specialist",
+    "request_demo": "Request a demo"
+  },
+  "clients": {
+    "eyebrow": "Institutional trust",
+    "title": "Main clients",
+    "subtitle": "Public and private institutions that trust Visionaria to protect their communities.",
+    "case_study_eyebrow": "Success story",
+    "case_study_title": "Chillán Viejo launches televigilance system with 26 cameras",
+    "case_study_desc": "A Ñuble Regional Government project worth CLP $3.656 million for 209 high-end cameras across the region, with a municipal monitoring room, mirror rooms at Carabineros and the PDI, and AI-driven analysis through the SITIA agreement with the Undersecretariat for Crime Prevention.",
+    "case_study_source": "Source: La Discusión, March 18, 2026",
+    "more_institutions_eyebrow": "More institutions",
+    "more_institutions_title": "Trust Visionaria",
+    "institutions": [
+      { "name": "Municipality of Las Condes", "logo": "/clientes/las-condes.png" },
+      { "name": "Ñuble Regional Government", "logo": "/clientes/nuble.png" },
+      { "name": "Municipality of Santiago", "logo": "/clientes/santiago.png" },
+      { "name": "Undersecretariat for Crime Prevention", "logo": "/clientes/spd.png" },
+      { "name": "Ruta de la Araucanía Highway", "logo": "/clientes/ruta-araucania.png" },
+      { "name": "Ruta de Los Ríos Highway", "logo": "/clientes/ruta-los-rios.png" },
+      { "name": "Municipality of Puente Alto", "logo": "/clientes/puente-alto.png" },
+      { "name": "Municipality of Algarrobo", "logo": "/clientes/algarrobo.png" }
+    ],
+    "testimonials": [
+      {
+        "quote": "This is a landmark initiative by the Regional Government that seeks to strengthen security across our entire region through cutting-edge technology, including artificial intelligence, to prevent crime and gather evidence in the event of incidents.",
+        "name": "Óscar Crisóstomo",
+        "role": "Regional Governor of Ñuble"
+      },
+      {
+        "quote": "I deeply value the alignment we have with the Regional Government on security matters, because this partnership lets us strengthen surveillance and the pursuit of crime with a clear preventive focus. Today we are inaugurating 26 cameras and four Wi-Fi points, an investment I'm grateful for, and one we also plan to complement with gantries to detect vehicles reported stolen, because our goal is to guarantee peace of mind both in the commune and across the whole region.",
+        "name": "Jorge Del Pozo",
+        "role": "Mayor of Chillán Viejo"
+      },
+      {
+        "quote": "A fantastic, effective tool for fighting crime.",
+        "name": "Enrique Zamora",
+        "role": "Inspector Prefect, PDI"
+      },
+      {
+        "quote": "Strengthening our service, and analyzing and focusing police work efficiently.",
+        "name": "Sandra Vargas",
+        "role": "Colonel, Head of the Ñuble Police Operations Department, Carabineros"
+      },
+      {
+        "quote": "They have worked wonderfully, which keeps us safe and gives us peace of mind as neighbors.",
+        "name": "Cecilia Tauda",
+        "role": "President, Hacienda Naranjo del Futuro Neighborhood Council"
+      }
+    ]
+  },
+  "cati": {
+    "badge": "Public policy · Traffic enforcement",
+    "hero_title": "CATI Law",
+    "hero_subtitle": "Road Safety and Traffic Accidents — Technology solution for its implementation",
+    "hero_desc": "The CATI Law requires electronic enforcement of traffic violations with certified photographic evidence. Visionaria delivers the complete platform — hardware, software and operation — on new infrastructure or on assets already under our maintenance.",
+    "cta_primary": "Request technical proposal",
+    "cta_secondary": "View LPR platform",
+    "context_eyebrow": "Regulatory framework",
+    "context_title": "What does the CATI Law require?",
+    "context_desc": "Law 21.495 on Road Safety and Traffic Accidents sets a new standard for traffic enforcement in Chile, making technology the core of violation detection and recording. Its phased rollout opens a critical window for municipalities, traffic agencies and highway concessionaires.",
+    "points": [
+      "Mandatory electronic traffic enforcement on concessioned highways and high-congestion urban roads",
+      "Automated violation recording with photographic evidence valid before the Local Police Court",
+      "Interoperability with the National Violations Registry of the Ministry of Transport (SEMTT)",
+      "Phased rollout: communes prioritized by CONASET's road-accident rate index"
+    ],
+    "stats": [
+      { "value": "2,000+", "label": "annual deaths in road accidents", "sub": "Chile — CONASET 2023" },
+      { "value": "60%", "label": "of violations involve speeding", "sub": "or running a red light" },
+      { "value": "346", "label": "communes with pending enforcement", "sub": "under the CATI Law" },
+      { "value": "∞", "label": "photographic evidence available on the JPL portal", "sub": "with certified imagery" }
+    ],
+    "detection_eyebrow": "Detection capabilities",
+    "detection_title": "Violations the system records automatically",
+    "detection_desc": "Every event generates a record with image, plate, speed or violation type, timestamp and coordinates — evidence valid for notification and proceedings before the Local Police Court.",
+    "violations": [
+      { "icon": "Zap", "title": "Speeding", "desc": "Integrated 60 GHz radar measures instantaneous speed with ±2 km/h accuracy. Photo capture of the vehicle, plate and speed in a single violation record.", "accent": "#F09422" },
+      { "icon": "AlertTriangle", "title": "Red light violation", "desc": "Linked to the traffic signal controller via RS485/dry contact. The system records the crossing while the signal is red, with vehicle image and synchronized timestamp.", "accent": "#ef4444" },
+      { "icon": "Car", "title": "Misuse of exclusive lanes", "desc": "Detects vehicles in bus/metro lanes, emergency lanes or segregated corridors via Specific Lane Management, scheduled or permanent.", "accent": "#3D8A82" },
+      { "icon": "Eye", "title": "Wrong-way driving", "desc": "Automatic Reverse Driving Detection for travel against the permitted direction. Generates an immediate alert and record with image and plate.", "accent": "#C4A882" },
+      { "icon": "Camera", "title": "Vehicle without a visible plate", "desc": "Identifies vehicles circulating without a plate or with a tampered plate (No-plate Vehicle Capture). High-resolution image recorded as evidence.", "accent": "#F09422" },
+      { "icon": "BarChart2", "title": "Flow statistics and classification", "desc": "Counts by vehicle type (car, motorcycle, truck, bus), average speed and hourly distribution. Data for road planning and compliance assessment.", "accent": "#3D8A82" }
+    ],
+    "hardware_eyebrow": "Certified hardware",
+    "hardware_title": "Two options for every scenario",
+    "hardware_desc": "Same software architecture, same management platform. The unit is chosen based on road type, number of lanes and operating speed.",
+    "tiers": [
+      {
+        "badge": "Urban roads · Communes",
+        "title": "Compact Radar + LPR",
+        "subtitle": "4 MP · 60 GHz radar · 2 lanes · up to 160 km/h",
+        "desc": "All-in-one solution for intersections, 2-lane avenues and communal access roads. Integrated radar module, no additional civil works, PoE powered. Ideal for municipalities looking to start enforcement with a limited investment.",
+        "specs": [
+          { "label": "Resolution", "value": "4 MP (2688×1520)" },
+          { "label": "Lanes covered", "value": "2 (≥95% each)" },
+          { "label": "Max speed", "value": "160 km/h" },
+          { "label": "Radar accuracy", "value": "±2 km/h" },
+          { "label": "ANPR range", "value": "Up to 40 m" },
+          { "label": "Blacklist records", "value": "20,000 on-camera" },
+          { "label": "Power", "value": "PoE 802.3at / 12V DC" },
+          { "label": "Protection", "value": "IP67 · –40°C to +60°C" }
+        ],
+        "accent": "#F09422",
+        "border": "rgba(240,148,34,0.25)"
+      },
+      {
+        "badge": "Expressways · High traffic",
+        "title": "Premium 4K Radar + LPR",
+        "subtitle": "4K · 60 GHz radar · 3 lanes · up to 120 km/h",
+        "desc": "For urban highways, ring roads and high-speed arterials with 3 lanes. 4K resolution (3840×2160) and longer read range for sharp capture at higher speeds. Built for metropolitan or interurban enforcement systems.",
+        "specs": [
+          { "label": "Resolution", "value": "4K (3840×2160)" },
+          { "label": "Lanes covered", "value": "3 (≥95% each)" },
+          { "label": "Max speed", "value": "120 km/h" },
+          { "label": "Radar accuracy", "value": "±2 km/h" },
+          { "label": "ANPR range", "value": "Up to 50 m" },
+          { "label": "Blacklist records", "value": "20,000 on-camera" },
+          { "label": "Power", "value": "PoE 802.3at / 12V DC" },
+          { "label": "Protection", "value": "IP67 · –40°C to +60°C" }
+        ],
+        "accent": "#3D8A82",
+        "border": "rgba(61,138,130,0.25)"
+      }
+    ],
+    "hardware_footnote": "Both models: ONVIF Profile G/M/S/T · REST API · MQTT · RS485 · I/O alarm · PoE 802.3at · IP67 · 3/5-year warranty",
+    "specs_label": "Key specifications",
+    "service_eyebrow": "Implementation model",
+    "service_title": "Enforcement as a service",
+    "service_desc": "Visionaria operates over 300 LPR points in the Santiago Metropolitan Region. That installed infrastructure is the foundation for rolling out CATI enforcement without starting from scratch.",
+    "service_modes": [
+      { "icon": "Layers", "title": "Upgrade on existing infrastructure", "desc": "If you already operate LPR cameras under a maintenance contract with Visionaria, we add enforcement capabilities on top of the installed network: firmware updates, integration with traffic signal controllers and activation of violation-detection modules.", "tag": "No hardware replacement", "accent": "#F09422" },
+      { "icon": "Building2", "title": "New sites · Concession model", "desc": "Visionaria finances, installs and operates the equipment. The municipality or public agency receives a fully working system and violation reports with no upfront cost. The recovery model is structured on the processed violation records.", "tag": "Deferred investment", "accent": "#3D8A82" },
+      { "icon": "Radio", "title": "Enforcement platform as a service", "desc": "Violation records generated by the system feed directly into the municipality's or SEMTT's violation-management platform. Reports, photographic evidence and flow data available via API and web portal.", "tag": "EnforcementaaS", "accent": "#C4A882" }
+    ],
+    "integration_eyebrow": "Native integration",
+    "integration_title": "Builds on what's already there",
+    "integration_desc": "The CATI module integrates on top of Visionaria's LPR/ANPR platform. Violation records share the same database as SEBV alerts and SITIA events — the operator manages everything from a single console.",
+    "integration_list": [
+      "Violation image + plate + speed in a single ticket",
+      "Automatic export in the format required by SEMTT",
+      "Checkpoint monitoring dashboard with real-time compliance rate",
+      "Automatic reports by segment, time window and violation type",
+      "Photographic evidence stored with a cryptographic hash for legal validity"
+    ],
+    "flow_label": "Flow of a violation event",
+    "flow_steps": [
+      { "step": "01", "title": "Capture", "desc": "Radar detects speed · camera records a high-resolution image with the plate" },
+      { "step": "02", "title": "Recognition", "desc": "OCR engine identifies the plate in <500 ms · associated vehicle attributes" },
+      { "step": "03", "title": "Validation", "desc": "System checks against configured thresholds (speed, lane, signal)" },
+      { "step": "04", "title": "Recording", "desc": "Ticket generated with evidence, hash and metadata · stored locally and on the central platform" },
+      { "step": "05", "title": "Notification", "desc": "Alert to the operator · export to the municipal or SEMTT violation-management system" }
+    ],
+    "cta_title": "Does your municipality or agency need to comply with the CATI Law?",
+    "cta_desc": "We assess your current infrastructure, define the most suitable implementation model, and present a technical and financial proposal at no cost.",
+    "cta_primary2": "Request a free assessment",
+    "cta_secondary2": "Full LPR platform"
+  },
+  "smartCities": {
+    "eyebrow": "Innovation · Smart Cities",
+    "hero_title_line1": "The",
+    "hero_title_accent": "Smart City",
+    "hero_title_line3": "solution for Chile",
+    "hero_desc": "Visionaria integrates surveillance, traffic management, access control and response drones into a unified ecosystem designed for Chilean cities. Real-time data, centralized coordination and faster response to every incident.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "View success stories",
+    "hero_image_alt": "Santiago, Chile — smart city",
+    "hero_image_caption": "SANTIAGO, CHILE · SMART CITY PLATFORM",
+    "challenges_title": "What are the challenges of building a smart city?",
+    "challenges_desc": "A smart city is an environment where digital solutions optimize the use of infrastructure and services, improving residents' quality of life. However, the road to that goal comes with concrete challenges:",
+    "challenges_list": [
+      "Isolated legacy systems that don't talk to each other",
+      "Insufficient network infrastructure for real-time data",
+      "Scaling existing solutions is costly and inefficient",
+      "Lack of unified visibility for decision-making",
+      "Fragmented coordination between security agencies"
+    ],
+    "response_eyebrow": "Visionaria's answer",
+    "response_title": "An integrated ecosystem connecting cameras, sensors, drones, access control and communications in a single management platform.",
+    "response_desc": "We work with the world's best brands — Genetec, DJI, Axis, Hikvision — and integrate every component so operators see everything on one screen and respond in seconds, not minutes.",
+    "response_stats": [
+      { "val": "< 90s", "label": "DFR response time" },
+      { "val": "24/7", "label": "Continuous monitoring" },
+      { "val": "80 km", "label": "Network range" }
+    ],
+    "modules_eyebrow": "Capabilities",
+    "modules_title": "Smart Cities ecosystem modules",
+    "modules_desc": "Each module operates standalone or fully integrated with the rest",
+    "modules": [
+      {
+        "id": "security",
+        "icon": "Shield",
+        "color": "#F09422",
+        "bg": "rgba(240,148,34,0.10)",
+        "title": "Public Safety",
+        "desc": "IoT sensors integrated with our platform enable real-time monitoring, data collection and automated emergency responses. We significantly improve urban resilience, with an emphasis on incident prevention and police coordination.",
+        "bullets": [
+          "Automatic detection of incidents and anomalous behavior",
+          "Integration with Carabineros and police dispatch systems",
+          "Real-time alerts to unified command centers",
+          "24/7 coverage with power backup and network redundancy"
+        ]
+      },
+      {
+        "id": "surveillance",
+        "icon": "Camera",
+        "color": "#3D8A82",
+        "bg": "rgba(61,138,130,0.10)",
+        "title": "Smart Surveillance",
+        "desc": "High-resolution IP camera network with AI-based video analytics. Detects events in real time without constant human intervention, optimizing each municipality's operational resources.",
+        "bullets": [
+          "Long-range PTZ cameras with 40x optical zoom",
+          "Analytics: people counting, loitering detection, abandoned objects",
+          "License plate recognition (LPR) at gantries and entry points",
+          "Centralized management from a Genetec control room"
+        ]
+      },
+      {
+        "id": "traffic",
+        "icon": "Car",
+        "color": "#34d399",
+        "bg": "rgba(52,211,153,0.10)",
+        "title": "Traffic Management",
+        "desc": "Integrated solutions for real-time monitoring and management of vehicle flow. We reduce congestion, improve emergency response times and deliver valuable data for urban planning.",
+        "bullets": [
+          "Vehicle counting and average-speed analysis",
+          "Violation detection: red light, wrong-way driving, speeding",
+          "Integration with smart traffic lights and variable message signs",
+          "Real-time traffic dashboard for authorities"
+        ]
+      },
+      {
+        "id": "access",
+        "icon": "KeyRound",
+        "color": "#a78bfa",
+        "bg": "rgba(167,139,250,0.10)",
+        "title": "Access Control",
+        "desc": "Vehicle and pedestrian access control platforms for critical areas, municipal buildings and sensitive perimeters. Fully integrated with the video surveillance ecosystem for complete perimeter security.",
+        "bullets": [
+          "Vehicle barriers with automatic plate recognition",
+          "Biometric control (facial, fingerprint) at critical facilities",
+          "Whitelists and blacklists synced in real time",
+          "Complete audit trail with associated video evidence"
+        ]
+      },
+      {
+        "id": "environment",
+        "icon": "Leaf",
+        "color": "#34d399",
+        "bg": "rgba(52,211,153,0.10)",
+        "title": "Environmental Monitoring",
+        "desc": "Environmental monitoring is essential for urban management, improving public health, safety and sustainability. IoT sensors distributed across the city collect and analyze environmental data in real time, enabling informed decisions by municipal authorities.",
+        "bullets": [
+          "Distance sensors in containers: fill-level monitoring and waste-collection route optimization",
+          "Solenoid valve controllers: automated irrigation based on time, flow and soil moisture",
+          "Detection cameras: monitoring of green spaces, pest infestations and signs of vandalism",
+          "Soil moisture sensors: real-time data on soil humidity, temperature and electrical conductivity",
+          "Weather stations: temperature, humidity, wind speed/direction, barometric pressure and rainfall"
+        ]
+      },
+      {
+        "id": "dfr",
+        "icon": "Plane",
+        "color": "#F09422",
+        "bg": "rgba(240,148,34,0.10)",
+        "title": "Drone as First Responder (DFR)",
+        "desc": "Autonomous drone system deployed from fixed stations that responds to alarms in under 90 seconds. The Drone Tactical Command Center coordinates automatic dispatch and streams live video to the command center.",
+        "bullets": [
+          "Arrival time at the alarm location: under 90 seconds",
+          "Full HD live video streamed to the control room",
+          "Integration with PTZ cameras for coordinated tracking",
+          "24/7 operation with automatic recharging at the DJI Dock station"
+        ]
+      }
+    ],
+    "traffic_image_alt": "Traffic management, Santiago",
+    "benefits_eyebrow": "Results",
+    "benefits_title": "What benefits will you get?",
+    "benefits": [
+      {
+        "title": "Data-driven decision making",
+        "desc": "IoT sensors analyze large data flows and quickly identify patterns. This leads to actionable insights for urban planning, resource allocation and overall city management.",
+        "color": "#F09422",
+        "icon": "📊"
+      },
+      {
+        "title": "Efficient public services and infrastructure",
+        "desc": "Real-time data integration optimizes the operation of critical services: smart lighting, waste management, traffic and emergencies — reducing costs and improving service quality.",
+        "color": "#3D8A82",
+        "icon": "🏙️"
+      },
+      {
+        "title": "Greater civic engagement and experience",
+        "desc": "A safer, cleaner and more efficient city directly improves residents' quality of life and builds trust in public institutions through measurable, transparent results.",
+        "color": "#34d399",
+        "icon": "👥"
+      }
+    ],
+    "cta_title": "Is your municipality ready for the next level?",
+    "cta_desc": "Let's talk about your city's specific needs. Our team designs a tailored solution.",
+    "cta_primary": "Contact a specialist",
+    "cta_secondary": "View completed projects"
   }
 }
