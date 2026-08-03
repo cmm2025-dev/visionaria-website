@@ -208,7 +208,9 @@
   },
   "footer": {
     "tagline": "Sistemas de Seguridad y Tecnología SpA — Empresa 100% chilena, fundada el 2002.",
-    "rights": "Todos los derechos reservados."
+    "rights": "Todos los derechos reservados.",
+    "links_title": "Links",
+    "resources_title": "Recursos"
   },
   "common": {
     "scroll_cue": "Seguir explorando",
@@ -237,6 +239,16 @@
       { "value": "320+", "label": "Proyectos ejecutados", "sub": "desde 2002" }
     ],
     "scroll_cue": "Ver más"
+  },
+  "dafrVideoPanel": {
+    "iframe_title": "DAFR — Dron como Primera Fuerza de Respuesta",
+    "loop_alt": "Central Táctica de Drones — Visionaria",
+    "play_aria": "Reproducir video",
+    "play_caption": "Ver demostración — Sistema Integrado Visionaria",
+    "live_badge": "DEMO"
+  },
+  "caseVideoCard": {
+    "play_aria_prefix": "Reproducir —"
   },
   "lprVisual": {
     "live": "EN VIVO",

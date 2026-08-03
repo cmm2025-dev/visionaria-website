@@ -6,10 +6,12 @@ interface FooterProps {
   tagline: string;
   rights: string;
   nav: Record<string, string>;
+  linksTitle: string;
+  resourcesTitle: string;
 }
 
-export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
-  const year = 2025;
+export default function Footer({ locale, tagline, rights, nav, linksTitle, resourcesTitle }: FooterProps) {
+  const year = new Date().getFullYear();
   return (
     <footer className="mt-auto border-t" style={{ background: 'rgba(30,27,24,0.95)', borderColor: 'var(--border)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,7 +21,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
             <p className="mt-3 text-sm leading-relaxed text-slate-400">{tagline}</p>
           </div>
           <div>
-            <p className="text-white font-semibold mb-4">Links</p>
+            <p className="text-white font-semibold mb-4">{linksTitle}</p>
             <ul className="space-y-2 text-sm text-slate-400">
               {[
                 { href: `/${locale}`, label: nav.brand },
@@ -36,7 +38,7 @@ export default function Footer({ locale, tagline, rights, nav }: FooterProps) {
             </ul>
           </div>
           <div>
-            <p className="text-white font-semibold mb-4">Recursos</p>
+            <p className="text-white font-semibold mb-4">{resourcesTitle}</p>
             <ul className="space-y-2 text-sm text-slate-400">
               {[
                 { href: `/${locale}/noticias`, label: nav.news },

@@ -208,7 +208,9 @@
   },
   "footer": {
     "tagline": "Security and Technology Systems SpA — 100% Chilean company, founded in 2002.",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "links_title": "Links",
+    "resources_title": "Resources"
   },
   "common": {
     "scroll_cue": "Keep exploring",
@@ -237,6 +239,16 @@
       { "value": "320+", "label": "Projects completed", "sub": "since 2002" }
     ],
     "scroll_cue": "See more"
+  },
+  "dafrVideoPanel": {
+    "iframe_title": "DAFR — Drone as First Response Force",
+    "loop_alt": "Drone Tactical Command Center — Visionaria",
+    "play_aria": "Play video",
+    "play_caption": "Watch the demo — Visionaria Integrated System",
+    "live_badge": "DEMO"
+  },
+  "caseVideoCard": {
+    "play_aria_prefix": "Play —"
   },
   "lprVisual": {
     "live": "LIVE",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Video } from 'lucide-react';
 
 interface CaseVideoCardProps {
@@ -12,6 +13,7 @@ interface CaseVideoCardProps {
 
 /** Inline case-study video card — plays in place (no new tab), only fullscreen via the iframe's own control. */
 export default function CaseVideoCard({ videoId, poster, eyebrow, title }: CaseVideoCardProps) {
+  const t = useTranslations('caseVideoCard');
   const [playing, setPlaying] = useState(false);
 
   return (
@@ -33,7 +35,7 @@ export default function CaseVideoCard({ videoId, poster, eyebrow, title }: CaseV
             type="button"
             onClick={() => setPlaying(true)}
             className="group/case absolute inset-0 w-full h-full cursor-pointer"
-            aria-label={`Reproducir — ${title}`}
+            aria-label={`${t('play_aria_prefix')} ${title}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={poster} alt={title} className="absolute inset-0 w-full h-full object-cover" />

@@ -80,7 +80,14 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navbar locale={locale} t={nav as Parameters<typeof Navbar>[0]['t']} />
           <main className="flex-1">{children}</main>
-          <Footer locale={locale} tagline={footer.tagline} rights={footer.rights} nav={nav} />
+          <Footer
+            locale={locale}
+            tagline={footer.tagline}
+            rights={footer.rights}
+            nav={nav}
+            linksTitle={footer.links_title}
+            resourcesTitle={footer.resources_title}
+          />
         </NextIntlClientProvider>
         <Analytics />
       </body>

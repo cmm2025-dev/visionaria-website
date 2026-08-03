@@ -1,19 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Play } from 'lucide-react';
 
 const LOOP_FRAMES = ['/dafr-loop/frame-1.jpg', '/dafr-loop/frame-2.jpg', '/dafr-loop/frame-3.jpg'];
 
 /** Same click-to-play YouTube panel used on the home page (VideoDemo), reused here for DAFR. */
 export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
+  const t = useTranslations('dafrVideoPanel');
   const [playing, setPlaying] = useState(false);
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
     if (playing) return;
-    const t = setInterval(() => setFrame(f => (f + 1) % LOOP_FRAMES.length), 3200);
-    return () => clearInterval(t);
+    const id = setInterval(() => setFrame(f => (f + 1) % LOOP_FRAMES.length), 3200);
+    return () => clearInterval(id);
   }, [playing]);
 
   return (
@@ -27,7 +29,7 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
-            title="DAFR — Dron como Primera Fuerza de Respuesta"
+            title={t('iframe_title')}
             style={{ border: 'none' }}
           />
         ) : (
@@ -41,7 +43,7 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
               <img
                 key={src}
                 src={src}
-                alt="Central Táctica de Drones — Visionaria"
+                alt={t('loop_alt')}
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
                 style={{ opacity: frame === i ? 1 : 0 }}
               />
@@ -56,13 +58,13 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
                 boxShadow: '0 0 40px rgba(240,148,34,0.3), 0 0 80px rgba(240,148,34,0.1)',
                 backdropFilter: 'blur(2px)',
               }}
-              aria-label="Reproducir video"
+              aria-label={t('play_aria')}
             >
               <Play size={32} fill="#F09422" style={{ color: '#F09422', marginLeft: 4 }} />
             </button>
 
             <p className="relative z-10 mt-4 text-sm text-white tracking-wide" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.8)' }}>
-              Ver demostración — Sistema Integrado Visionaria
+              {t('play_caption')}
             </p>
 
             {['top-3 left-3', 'top-3 right-3', 'bottom-3 left-3', 'bottom-3 right-3'].map((pos, i) => (
@@ -81,7 +83,7 @@ export default function DAFRVideoPanel({ videoId }: { videoId: string }) {
         <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold"
           style={{ background: 'rgba(24,21,16,0.8)', border: '1px solid rgba(240,148,34,0.3)', color: '#F09422' }}>
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#F09422' }} />
-          DEMO
+          {t('live_badge')}
         </div>
       </div>
     </div>
