@@ -7,6 +7,7 @@ import ScrollCue from '@/components/ScrollCue';
 export default async function ProductosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'products' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
   const products = [
     { icon: Layers, nameKey: 'p1_name', descKey: 'p1_desc', accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
@@ -52,7 +53,7 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
             {t('subtitle')}
           </p>
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

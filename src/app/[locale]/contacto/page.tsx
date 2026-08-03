@@ -6,6 +6,7 @@ import ScrollCue from '@/components/ScrollCue';
 export default async function ContactoPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
   const info = [
     { icon: Phone, label: t('phone_title'), value: '+56 2 2925 4140' },
@@ -33,7 +34,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">

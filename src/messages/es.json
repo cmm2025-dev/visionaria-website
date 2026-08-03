@@ -43,7 +43,106 @@
     "title": "Proyectos Destacados",
     "subtitle": "Implementaciones que están transformando la seguridad en Chile",
     "result": "Resultado clave",
-    "read_more": "Ver detalle"
+    "read_more": "Ver detalle",
+    "stats": [
+      { "value": "80+", "label": "Municipios con presencia", "sub": "directa o vinculada" },
+      { "value": "10/16", "label": "Regiones cubiertas", "sub": "de Arica a Punta Arenas" },
+      { "value": "320+", "label": "Proyectos ejecutados", "sub": "desde 2002" },
+      { "value": "84%", "label": "Videovigilancia", "sub": "especialización del portafolio" }
+    ],
+    "featured": [
+      {
+        "company": "GORE Región Metropolitana",
+        "industry": "Smart City",
+        "region": "Región Metropolitana",
+        "result": "303 cámaras · 23 comunas · Proyecto más grande en Chile",
+        "detail": "Red de televigilancia metropolitana integrada con Carabineros y UOCT, cubriendo las 23 comunas del Gran Santiago en una plataforma unificada.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipalidad de Las Condes",
+        "industry": "Televigilancia",
+        "region": "Región Metropolitana",
+        "result": "23 proyectos ejecutados · Mayor recurrencia del portafolio",
+        "detail": "Relación estratégica de largo plazo con el municipio de mayor recurrencia en el portafolio Visionaria, abarcando videovigilancia HD, LPR y reconocimiento facial.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Municipalidad de La Reina",
+        "industry": "Televigilancia",
+        "region": "Región Metropolitana",
+        "result": "91 cámaras HD + pórticos LPR + reconocimiento facial PDI",
+        "detail": "Sistema integrado de última generación con cámaras 4K, pórticos lectores de patentes y módulo de reconocimiento facial conectado a base de datos PDI.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipalidad de Puente Alto",
+        "industry": "Seguridad Pública",
+        "region": "Región Metropolitana",
+        "result": "11 proyectos ejecutados · Cobertura comunal completa",
+        "detail": "Una de las comunas con mayor densidad poblacional del país, con red de televigilancia desplegada en múltiples etapas de expansión.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "GORE de Ñuble",
+        "industry": "Smart City Regional",
+        "region": "Región de Ñuble",
+        "result": "21 municipios beneficiarios · Cobertura regional 100%",
+        "detail": "Proyecto regional de escala única: un solo contrato crea presencia operacional en los 21 municipios de la región, con postventa y soporte centralizado.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Ruta de La Araucanía",
+        "industry": "Seguridad Vial",
+        "region": "Región de La Araucanía",
+        "result": "71 cámaras térmicas militares + analítica antiterrorismo",
+        "detail": "Solución de alta complejidad con cámaras térmicas de grado militar y analítica de video para detección de amenazas en rutas críticas del sur de Chile.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipalidad de Santiago",
+        "industry": "Ciudad Inteligente",
+        "region": "Región Metropolitana",
+        "result": "15 proyectos ejecutados · Integración multisistémica",
+        "detail": "Centro histórico y administrativo del país, con integración de videovigilancia, control de acceso y plataforma de despacho coordinada con Carabineros.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipalidad de Arica",
+        "industry": "Seguridad Pública",
+        "region": "Región de Arica y Parinacota",
+        "result": "14 proyectos · Presencia sostenida en frontera norte",
+        "detail": "Presencia de larga data en el extremo norte del país, con proyectos de videovigilancia en zona fronteriza de alta complejidad operacional.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Codelco Salvador",
+        "industry": "Minería",
+        "region": "Región de Atacama",
+        "result": "Plataforma unificada video-intrusión-acceso · enlaces 80km",
+        "detail": "Solución industrial para operaciones mineras en zonas remotas: video, control de intrusión y acceso integrados con radioenlaces de hasta 80 kilómetros.",
+        "accent": "#C4A882"
+      }
+    ],
+    "presence_eyebrow": "Distribución geográfica",
+    "presence_title": "Presencia en 10 regiones de Chile",
+    "presence_desc": "Desde Arica hasta el extremo sur, con proyectos activos en las principales regiones del país y cobertura completa en Ñuble.",
+    "presence_projects_label": "proyectos",
+    "presence_entities_label": "entidades",
+    "presence_footnote": "Datos del portafolio histórico Visionaria · Corte julio 2026",
+    "presencia": [
+      { "region": "Metropolitana", "proyectos": 193, "entidades": 39 },
+      { "region": "Valparaíso", "proyectos": 28, "entidades": 10 },
+      { "region": "Arica y Parinacota", "proyectos": 14, "entidades": 1 },
+      { "region": "Tarapacá", "proyectos": 4, "entidades": 3 },
+      { "region": "Coquimbo", "proyectos": 5, "entidades": 2 },
+      { "region": "Maule", "proyectos": 6, "entidades": 1 },
+      { "region": "Ñuble", "proyectos": 1, "entidades": 21 },
+      { "region": "Antofagasta", "proyectos": 1, "entidades": 1 }
+    ],
+    "cta_title": "¿Tu municipio o institución no aparece aquí?",
+    "cta_desc": "Conversemos — 265 municipalidades aún no tienen cobertura de televigilancia integrada.",
+    "cta_button": "Contactar a Visionaria"
   },
   "innovation": {
     "title": "Tecnología e Innovación",
@@ -53,12 +152,29 @@
     "ai_title": "Smart Cities",
     "ai_desc": "Plataformas de ciudad inteligente que integran televigilancia, gestión del tránsito, control de acceso y despacho policial en un ecosistema unificado.",
     "cloud_title": "Comunicaciones Avanzadas",
-    "cloud_desc": "Redes de fibra óptica, enlaces inalámbricos P2P y P2MP de largo alcance (hasta 80 km), MPLS y redundancia para operación crítica ininterrumpida."
+    "cloud_desc": "Redes de fibra óptica, enlaces inalámbricos P2P y P2MP de largo alcance (hasta 80 km), MPLS y redundancia para operación crítica ininterrumpida.",
+    "learn_more": "Ver más →"
   },
   "news": {
     "title": "Noticias",
     "subtitle": "Actualidad de Visionaria y el mundo de la seguridad tecnológica",
-    "read_more": "Leer más"
+    "read_more": "Leer más",
+    "tags": {
+      "smart_city": "Smart City",
+      "tecnologia": "Tecnología",
+      "proyecto": "Proyecto",
+      "industria": "Industria",
+      "innovacion": "Innovación",
+      "empresa": "Empresa"
+    },
+    "items": [
+      { "date": "2025-05-20", "tag": "smart_city", "title": "Visionaria expande red de televigilancia en Gran Santiago a 26 comunas", "excerpt": "Nuevo contrato con GORE Metropolitano amplía la cobertura con 120 nuevas cámaras HD y analítica de comportamiento." },
+      { "date": "2025-04-15", "tag": "tecnologia", "title": "Implementación de reconocimiento facial en tiempo real integrado con PDI", "excerpt": "Sistema biométrico instalado en 8 municipalidades permite identificar personas con alertas vigentes en menos de 2 segundos." },
+      { "date": "2025-03-10", "tag": "proyecto", "title": "Pórticos lectores de patentes en accesos de Autopista Central", "excerpt": "Nueva red LPR lee y cruza datos con el Registro Civil y Carabineros para detección automática de vehículos con órdenes de aprehensión." },
+      { "date": "2025-02-28", "tag": "industria", "title": "Plataforma unificada de despacho reducirá tiempos de respuesta en minería", "excerpt": "Sistema integrado de video-intrusión-acceso en operación minera en la zona norte conecta 3 centros de control en tiempo real." },
+      { "date": "2025-01-18", "tag": "innovacion", "title": "Visionaria integra drones DJI a plataforma de despacho municipal", "excerpt": "Las aeronaves autónomas se activan automáticamente ante alertas del sistema de videovigilancia, reduciendo tiempos de respuesta a menos de 4 minutos." },
+      { "date": "2024-12-05", "tag": "empresa", "title": "Visionaria cumple 22 años liderando la seguridad tecnológica en Chile", "excerpt": "Con más de 3.700 cámaras instaladas y presencia en todo el territorio nacional, celebramos dos décadas protegiendo ciudades y organizaciones." }
+    ]
   },
   "support": {
     "title": "Soporte Técnico",

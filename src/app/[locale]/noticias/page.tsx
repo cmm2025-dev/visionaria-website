@@ -3,27 +3,24 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import ScrollCue from '@/components/ScrollCue';
 
-const newsItems = [
-  { date: '2025-05-20', tag: 'Smart City', title: 'Visionaria expande red de televigilancia en Gran Santiago a 26 comunas', excerpt: 'Nuevo contrato con GORE Metropolitano amplía la cobertura con 120 nuevas cámaras HD y analítica de comportamiento.' },
-  { date: '2025-04-15', tag: 'Tecnología', title: 'Implementación de reconocimiento facial en tiempo real integrado con PDI', excerpt: 'Sistema biométrico instalado en 8 municipalidades permite identificar personas con alertas vigentes en menos de 2 segundos.' },
-  { date: '2025-03-10', tag: 'Proyecto', title: 'Pórticos lectores de patentes en accesos de Autopista Central', excerpt: 'Nueva red LPR lee y cruza datos con el Registro Civil y Carabineros para detección automática de vehículos con órdenes de aprehensión.' },
-  { date: '2025-02-28', tag: 'Industria', title: 'Plataforma unificada de despacho reducirá tiempos de respuesta en minería', excerpt: 'Sistema integrado de video-intrusión-acceso en operación minera en la zona norte conecta 3 centros de control en tiempo real.' },
-  { date: '2025-01-18', tag: 'Innovación', title: 'Visionaria integra drones DJI a plataforma de despacho municipal', excerpt: 'Las aeronaves autónomas se activan automáticamente ante alertas del sistema de videovigilancia, reduciendo tiempos de respuesta a menos de 4 minutos.' },
-  { date: '2024-12-05', tag: 'Empresa', title: 'Visionaria cumple 22 años liderando la seguridad tecnológica en Chile', excerpt: 'Con más de 3.700 cámaras instaladas y presencia en todo el territorio nacional, celebramos dos décadas protegiendo ciudades y organizaciones.' },
-];
+interface NewsItem { date: string; tag: string; title: string; excerpt: string }
 
-const tagStyles: Record<string, { color: string; bg: string }> = {
-  'Smart City': { color: '#F09422', bg: 'rgba(240,148,34,0.12)' },
-  Tecnología: { color: '#3D8A82', bg: 'rgba(61,138,130,0.12)' },
-  Proyecto: { color: '#C4A882', bg: 'rgba(196,168,130,0.12)' },
-  Industria: { color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
-  Innovación: { color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
-  Empresa: { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
+const TAG_STYLES: Record<string, { color: string; bg: string }> = {
+  smart_city: { color: '#F09422', bg: 'rgba(240,148,34,0.12)' },
+  tecnologia: { color: '#3D8A82', bg: 'rgba(61,138,130,0.12)' },
+  proyecto: { color: '#C4A882', bg: 'rgba(196,168,130,0.12)' },
+  industria: { color: '#34d399', bg: 'rgba(52,211,153,0.12)' },
+  innovacion: { color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
+  empresa: { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
 };
 
 export default async function NoticiasPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'news' });
+  const c = await getTranslations({ locale, namespace: 'common' });
+
+  const items = t.raw('items') as NewsItem[];
+  const tags = t.raw('tags') as Record<string, string>;
 
   return (
     <div>
@@ -33,12 +30,12 @@ export default async function NoticiasPage({ params }: { params: Promise<{ local
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {newsItems.map(({ date, tag, title, excerpt }) => {
-            const style = tagStyles[tag] ?? { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' };
+          {items.map(({ date, tag, title, excerpt }) => {
+            const style = TAG_STYLES[tag] ?? { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' };
             return (
               <article
                 key={title}
@@ -46,7 +43,7 @@ export default async function NoticiasPage({ params }: { params: Promise<{ local
                 style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full" style={{ color: style.color, background: style.bg }}>{tag}</span>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full" style={{ color: style.color, background: style.bg }}>{tags[tag] ?? tag}</span>
                   <time className="text-xs text-slate-500">{date}</time>
                 </div>
                 <h3 className="text-lg font-bold text-white leading-snug">{title}</h3>

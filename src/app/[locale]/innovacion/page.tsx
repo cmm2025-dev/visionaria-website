@@ -6,6 +6,7 @@ import ScrollCue from '@/components/ScrollCue';
 export default async function InnovacionPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'innovation' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
   const pillars = [
     { icon: FlaskConical, title: t('rd_title'), desc: t('rd_desc'), accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
@@ -21,7 +22,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
-        <ScrollCue label="Seguir explorando" />
+        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -38,7 +39,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
                 <p className="text-slate-400 leading-relaxed">{desc}</p>
                 {href && (
                   <p className="text-sm font-semibold mt-auto" style={{ color: accent }}>
-                    Ver más →
+                    {t('learn_more')}
                   </p>
                 )}
               </div>

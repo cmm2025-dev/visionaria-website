@@ -43,7 +43,106 @@
     "title": "Featured Projects",
     "subtitle": "Implementations transforming security across Chile",
     "result": "Key result",
-    "read_more": "View details"
+    "read_more": "View details",
+    "stats": [
+      { "value": "80+", "label": "Municipalities with presence", "sub": "direct or affiliated" },
+      { "value": "10/16", "label": "Regions covered", "sub": "from Arica to Punta Arenas" },
+      { "value": "320+", "label": "Projects completed", "sub": "since 2002" },
+      { "value": "84%", "label": "Video surveillance", "sub": "portfolio specialization" }
+    ],
+    "featured": [
+      {
+        "company": "Metropolitan Regional Government",
+        "industry": "Smart City",
+        "region": "Santiago Metropolitan Region",
+        "result": "303 cameras · 23 municipalities · Largest project in Chile",
+        "detail": "Metropolitan video-surveillance network integrated with Carabineros and UOCT, covering all 23 municipalities of Greater Santiago on a unified platform.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipality of Las Condes",
+        "industry": "Video surveillance",
+        "region": "Santiago Metropolitan Region",
+        "result": "23 completed projects · Highest recurrence in the portfolio",
+        "detail": "A long-term strategic relationship with the municipality with the highest recurrence in Visionaria's portfolio, spanning HD video surveillance, LPR and facial recognition.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Municipality of La Reina",
+        "industry": "Video surveillance",
+        "region": "Santiago Metropolitan Region",
+        "result": "91 HD cameras + LPR gantries + PDI facial recognition",
+        "detail": "A next-generation integrated system with 4K cameras, license-plate reading gantries and a facial-recognition module connected to the PDI database.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipality of Puente Alto",
+        "industry": "Public safety",
+        "region": "Santiago Metropolitan Region",
+        "result": "11 completed projects · Full communal coverage",
+        "detail": "One of the country's most densely populated municipalities, with a video-surveillance network rolled out across multiple expansion phases.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Ñuble Regional Government",
+        "industry": "Regional Smart City",
+        "region": "Ñuble Region",
+        "result": "21 beneficiary municipalities · 100% regional coverage",
+        "detail": "A regional project of unique scale: a single contract creates operational presence across all 21 municipalities in the region, with centralized after-sales support.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Ruta de La Araucanía Highway",
+        "industry": "Road safety",
+        "region": "La Araucanía Region",
+        "result": "71 military-grade thermal cameras + anti-terrorism analytics",
+        "detail": "A highly complex solution with military-grade thermal cameras and video analytics for threat detection on critical routes in southern Chile.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipality of Santiago",
+        "industry": "Smart City",
+        "region": "Santiago Metropolitan Region",
+        "result": "15 completed projects · Multi-system integration",
+        "detail": "The country's historic and administrative center, with integrated video surveillance, access control and a dispatch platform coordinated with Carabineros.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipality of Arica",
+        "industry": "Public safety",
+        "region": "Arica y Parinacota Region",
+        "result": "14 projects · Sustained presence on the northern border",
+        "detail": "A long-standing presence in the country's far north, with video-surveillance projects in an operationally complex border zone.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Codelco Salvador",
+        "industry": "Mining",
+        "region": "Atacama Region",
+        "result": "Unified video-intrusion-access platform · 80 km radio links",
+        "detail": "An industrial solution for mining operations in remote areas: video, intrusion control and access integrated with radio links of up to 80 kilometers.",
+        "accent": "#C4A882"
+      }
+    ],
+    "presence_eyebrow": "Geographic footprint",
+    "presence_title": "Presence across 10 regions of Chile",
+    "presence_desc": "From Arica to the far south, with active projects across the country's main regions and full coverage in Ñuble.",
+    "presence_projects_label": "projects",
+    "presence_entities_label": "entities",
+    "presence_footnote": "Data from Visionaria's historical portfolio · As of July 2026",
+    "presencia": [
+      { "region": "Metropolitan", "proyectos": 193, "entidades": 39 },
+      { "region": "Valparaíso", "proyectos": 28, "entidades": 10 },
+      { "region": "Arica y Parinacota", "proyectos": 14, "entidades": 1 },
+      { "region": "Tarapacá", "proyectos": 4, "entidades": 3 },
+      { "region": "Coquimbo", "proyectos": 5, "entidades": 2 },
+      { "region": "Maule", "proyectos": 6, "entidades": 1 },
+      { "region": "Ñuble", "proyectos": 1, "entidades": 21 },
+      { "region": "Antofagasta", "proyectos": 1, "entidades": 1 }
+    ],
+    "cta_title": "Doesn't your municipality or institution appear here?",
+    "cta_desc": "Let's talk — 265 municipalities still don't have integrated video-surveillance coverage.",
+    "cta_button": "Contact Visionaria"
   },
   "innovation": {
     "title": "Technology & Innovation",
@@ -53,12 +152,29 @@
     "ai_title": "Smart Cities",
     "ai_desc": "Smart city platforms integrating surveillance, traffic management, access control and police dispatch in a unified ecosystem.",
     "cloud_title": "Advanced Communications",
-    "cloud_desc": "Fiber optic networks, long-range P2P and P2MP wireless links (up to 80 km), MPLS and redundancy for uninterrupted critical operations."
+    "cloud_desc": "Fiber optic networks, long-range P2P and P2MP wireless links (up to 80 km), MPLS and redundancy for uninterrupted critical operations.",
+    "learn_more": "Learn more →"
   },
   "news": {
     "title": "News",
     "subtitle": "Updates from Visionaria and the security technology world",
-    "read_more": "Read more"
+    "read_more": "Read more",
+    "tags": {
+      "smart_city": "Smart City",
+      "tecnologia": "Technology",
+      "proyecto": "Project",
+      "industria": "Industry",
+      "innovacion": "Innovation",
+      "empresa": "Company"
+    },
+    "items": [
+      { "date": "2025-05-20", "tag": "smart_city", "title": "Visionaria expands Greater Santiago video-surveillance network to 26 municipalities", "excerpt": "A new contract with the Metropolitan Regional Government expands coverage with 120 new HD cameras and behavior analytics." },
+      { "date": "2025-04-15", "tag": "tecnologia", "title": "Real-time facial recognition deployed with PDI integration", "excerpt": "A biometric system installed in 8 municipalities identifies people with active alerts in under 2 seconds." },
+      { "date": "2025-03-10", "tag": "proyecto", "title": "License-plate reading gantries at Autopista Central access points", "excerpt": "A new LPR network reads and cross-checks data with the Civil Registry and Carabineros for automatic detection of vehicles with arrest warrants." },
+      { "date": "2025-02-28", "tag": "industria", "title": "Unified dispatch platform will cut mining response times", "excerpt": "An integrated video-intrusion-access system at a northern mining operation connects 3 control centers in real time." },
+      { "date": "2025-01-18", "tag": "innovacion", "title": "Visionaria integrates DJI drones into a municipal dispatch platform", "excerpt": "Autonomous aircraft activate automatically on alerts from the video-surveillance system, cutting response times to under 4 minutes." },
+      { "date": "2024-12-05", "tag": "empresa", "title": "Visionaria marks 22 years leading security technology in Chile", "excerpt": "With over 3,700 cameras installed and a presence across the country, we celebrate two decades protecting cities and organizations." }
+    ]
   },
   "support": {
     "title": "Technical Support",
