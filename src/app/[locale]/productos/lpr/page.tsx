@@ -111,7 +111,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
 
             {/* Right: animated LPR simulation */}
-            <div className="hidden lg:block">
+            <div>
               <LprHeroVisual />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
 
             {/* Right: stats */}
-            <div className="grid grid-cols-2 gap-4 lg:w-80 shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-80 shrink-0">
               {caseStats.map(({ value, label, sub }) => (
                 <div
                   key={label}

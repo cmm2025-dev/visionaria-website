@@ -66,7 +66,7 @@ export default function Navbar({ locale, t }: NavbarProps) {
             {otherLocale.toUpperCase()}
           </Link>
           <button
-            className="lg:hidden p-2 rounded-md text-slate-300 hover:text-[#F09422]"
+            className="lg:hidden p-3 -mr-1 rounded-md text-slate-300 hover:text-[#F09422]"
             onClick={() => setOpen(!open)}
           >
             {open ? <X size={20} /> : <Menu size={20} />}

@@ -100,7 +100,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             <p className="mt-4 text-slate-400 leading-relaxed">
               {t('response_desc')}
             </p>
-            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               {responseStats.map(({ val, label }) => (
                 <div key={label} className="rounded-xl p-4 border" style={{ background: 'rgba(0,0,0,0.2)', borderColor: 'rgba(61,138,130,0.1)' }}>
                   <p className="text-xl font-extrabold" style={{ color: '#3D8A82' }}>{val}</p>
@@ -126,8 +126,8 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
               const Icon = ICONS[icon];
               const isTrafico = id === 'traffic';
               return (
-                <div key={id} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:[direction:rtl]' : ''}`} style={{ direction: 'ltr' }}>
-                  <div className="rounded-2xl p-8 border flex flex-col gap-5" style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
+                <div key={id} className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                  <div className={`rounded-2xl p-8 border flex flex-col gap-5 ${i % 2 === 1 ? 'lg:order-2' : ''}`} style={{ background: 'rgba(4,13,32,0.8)', borderColor: `${color}25` }}>
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style={{ background: bg }}>
                         <Icon size={28} style={{ color }} />
@@ -142,7 +142,7 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-3">
+                  <div className={`flex flex-col gap-3 ${i % 2 === 1 ? 'lg:order-1' : ''}`}>
                     {bullets.map(b => (
                       <div key={b} className="flex items-start gap-3 rounded-xl px-5 py-3.5 border" style={{ background: 'rgba(4,13,32,0.6)', borderColor: 'rgba(255,255,255,0.06)' }}>
                         <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: color }} />

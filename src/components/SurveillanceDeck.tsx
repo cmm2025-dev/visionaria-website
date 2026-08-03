@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import ScrollCue from './ScrollCue';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 /* ─── Typewriter hook ─── */
 function useTypewriter(texts: string[], speed = 55, pause = 2200) {
@@ -262,7 +261,6 @@ export default function SurveillanceDeck() {
   const c = useTranslations('common');
   const statusTexts = t.raw('status_texts') as string[];
   const status = useTypewriter(statusTexts, 45, 2500);
-  const isDesktop = useIsDesktop();
 
   return (
     <section className="w-full py-16 px-4" style={{ background: 'linear-gradient(180deg, #1A1714 0%, #1E1B18 100%)' }}>
@@ -288,13 +286,12 @@ export default function SurveillanceDeck() {
 
         {/* Grid of feeds — filas explícitas, sin altura fija en el wrapper */}
         <div
-          className="grid grid-cols-12 gap-2"
-          style={{ gridTemplateRows: '210px 210px', gridAutoRows: '210px' }}
+          className="grid grid-cols-12 gap-2 auto-rows-[260px] sm:auto-rows-[210px]"
         >
 
           {/* Feed 1 — Facial recognition (large, 2 filas) */}
-          <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative"
-            style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)', minHeight: 210 }}>
+          <div className="col-span-12 sm:col-span-4 sm:row-span-2 rounded-xl border overflow-hidden relative min-h-[320px] sm:min-h-[210px]"
+            style={{ background: '#1A1714', borderColor: 'rgba(61,138,130,0.15)' }}>
             <FeedHeader label="CAM-01" sublabel={t('feed_cam01')} color="#3D8A82" />
             <div className="absolute inset-0 flex flex-col" style={{ top: 28 }}>
               <video
@@ -319,15 +316,13 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-5 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
             <FeedHeader label="UAV-01" sublabel={t('feed_uav01')} color="#F09422" />
-            {isDesktop && (
-              <video
-                autoPlay muted loop playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ top: 28, height: 'calc(100% - 28px)' }}
-              >
-                <source src="/feeds/uav-drone.mp4" type="video/mp4" />
-              </video>
-            )}
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)' }}
+            >
+              <source src="/feeds/uav-drone.mp4" type="video/mp4" />
+            </video>
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ top: 28 }} viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M2,2 L2,12 M2,2 L12,2"      stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
               <path d="M98,2 L98,12 M98,2 L88,2"    stroke="#F09422" strokeWidth="1" fill="none" opacity="0.7" vectorEffect="non-scaling-stroke"/>
@@ -341,15 +336,13 @@ export default function SurveillanceDeck() {
           <div className="col-span-12 sm:col-span-3 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.12)' }}>
             <FeedHeader label="RAD-01" sublabel={t('feed_rad01')} color="#F09422" />
-            {isDesktop && (
-              <video
-                autoPlay muted loop playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ top: 28, height: 'calc(100% - 28px)', opacity: 0.45 }}
-              >
-                <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
-              </video>
-            )}
+            <video
+              autoPlay muted loop playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ top: 28, height: 'calc(100% - 28px)', opacity: 0.45 }}
+            >
+              <source src="/feeds/ptz-casablanca.mp4" type="video/mp4" />
+            </video>
             <div className="absolute inset-0 pointer-events-none" style={{ top: 28, background: 'rgba(20,17,14,0.35)' }}/>
             <div className="absolute inset-0 pt-7">
               <RadarCanvas />
@@ -358,7 +351,7 @@ export default function SurveillanceDeck() {
           </div>
 
           {/* Feed 4 — LPR */}
-          <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative"
+          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative"
             style={{ background: '#1A1714', borderColor: 'rgba(240,148,34,0.15)' }}>
             <FeedHeader label="LPR-03" sublabel={t('feed_lpr03')} color="#F09422" />
             <div className="h-full pt-7">
@@ -368,7 +361,7 @@ export default function SurveillanceDeck() {
           </div>
 
           {/* Feed 5 — Stats / uptime */}
-          <div className="col-span-6 sm:col-span-4 rounded-xl border overflow-hidden relative flex flex-col p-4"
+          <div className="col-span-12 sm:col-span-4 rounded-xl border overflow-hidden relative flex flex-col p-4"
             style={{ background: '#1A1714', borderColor: 'rgba(52,211,153,0.15)' }}>
             <FeedHeader label="SYS" sublabel={t('feed_sys')} color="#34d399" />
             <div className="mt-7 flex flex-col gap-2">

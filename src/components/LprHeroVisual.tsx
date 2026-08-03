@@ -100,8 +100,8 @@ export default function LprHeroVisual() {
           <span className="text-[9px] font-mono font-bold tracking-widest shrink-0" style={{ color: '#34d399' }}>{t('live')}</span>
           <span className="text-[9px] font-mono text-slate-600 shrink-0">·</span>
           <span className="text-[9px] font-mono text-slate-400 shrink-0">{v.cam}</span>
-          <span className="text-[9px] font-mono text-slate-600 hidden sm:inline shrink-0">·</span>
-          <span className="text-[9px] font-mono text-slate-500 truncate hidden sm:inline">{v.loc}</span>
+          <span className="text-[9px] font-mono text-slate-600 shrink-0">·</span>
+          <span className="text-[9px] font-mono text-slate-500 truncate">{v.loc}</span>
         </div>
         <span className="text-[9px] font-mono text-slate-600 tabular-nums shrink-0 ml-2">{clock}</span>
       </div>

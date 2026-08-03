@@ -87,7 +87,7 @@ export default async function CatiPage({ params }: { params: Promise<{ locale: s
                 ))}
               </ul>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {stats.map(({ value, label, sub }) => (
                 <div key={label} className="rounded-xl p-5 border" style={{ background: 'var(--card-bg)', borderColor: 'rgba(240,148,34,0.15)' }}>
                   <p className="text-3xl font-extrabold" style={{ color: '#F09422' }}>{value}</p>
@@ -149,7 +149,7 @@ export default async function CatiPage({ params }: { params: Promise<{ locale: s
                 {/* Specs */}
                 <div className="px-8 py-6">
                   <p className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-4">{t('specs_label')}</p>
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                     {specs.map(({ label, value }) => (
                       <div key={label}>
                         <p className="text-xs text-slate-500">{label}</p>
