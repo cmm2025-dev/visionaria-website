@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Play, ArrowRight } from 'lucide-react';
 import ScrollCue from './ScrollCue';
 
@@ -26,9 +27,12 @@ function youtubeId(src: string): string | null {
 }
 
 export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemoProps) {
+  const t = useTranslations('videoDemo');
+  const c = useTranslations('common');
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const ytMode = isYouTube(videoSrc);
+  const stats = t.raw('stats') as { value: string; label: string }[];
 
   const handlePlay = () => {
     setPlaying(true);
@@ -45,29 +49,25 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
         <div className="order-2 lg:order-1">
           {/* Eyebrow */}
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
-            Demo en vivo
+            {t('eyebrow')}
           </p>
 
           {/* Heading */}
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-6">
-            Mira cómo funciona{' '}
-            <span style={{ color: '#F09422' }}>en tiempo real</span>
+            {t('title_1')}{' '}
+            <span style={{ color: '#F09422' }}>{t('title_accent')}</span>
           </h2>
 
           <p className="text-slate-400 leading-relaxed mb-4">
-            Desde la detección automática de un incidente hasta el despliegue de un drone y la confirmación de identidad — todo en menos de dos minutos.
+            {t('desc1')}
           </p>
           <p className="text-slate-400 leading-relaxed mb-8">
-            Plataforma Genetec Security Center integrada con drones DJI Dock, reconocimiento facial y lectores LPR en un único ecosistema de respuesta.
+            {t('desc2')}
           </p>
 
           {/* Stats row */}
           <div className="flex gap-8 mb-10">
-            {[
-              { value: '< 2 min', label: 'Tiempo de respuesta' },
-              { value: '+3.700', label: 'Cámaras activas' },
-              { value: '80+', label: 'Municipios' },
-            ].map(({ value, label }) => (
+            {stats.map(({ value, label }) => (
               <div key={label}>
                 <p className="text-xl font-extrabold" style={{ color: '#F09422' }}>{value}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{label}</p>
@@ -80,7 +80,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
             className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all glow-cyan-sm hover:glow-cyan"
             style={{ background: 'var(--accent)', color: '#1E1B18' }}
           >
-            Solicitar demo presencial <ArrowRight size={16} />
+            {t('cta')} <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -104,7 +104,7 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
                 allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
-                title="Visionaria demo"
+                title={t('youtube_title')}
               />
             )}
 
@@ -167,13 +167,13 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
                     border: '2px solid rgba(240,148,34,0.6)',
                     boxShadow: '0 0 40px rgba(240,148,34,0.3), 0 0 80px rgba(240,148,34,0.1)',
                   }}
-                  aria-label="Reproducir video"
+                  aria-label={t('play_aria')}
                 >
                   <Play size={32} fill="#F09422" style={{ color: '#F09422', marginLeft: 4 }} />
                 </button>
 
                 <p className="mt-4 text-sm text-slate-400 tracking-wide z-10">
-                  Ver demostración — Sistema Integrado Visionaria
+                  {t('play_caption')}
                 </p>
 
                 {/* Corner brackets */}
@@ -194,12 +194,12 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
             <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold"
               style={{ background: 'rgba(24,21,16,0.8)', border: '1px solid rgba(240,148,34,0.3)', color: '#F09422' }}>
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#F09422' }} />
-              DEMO
+              {t('live_badge')}
             </div>
           </div>
         </div>
       </div>
-      <ScrollCue label="Seguir explorando" />
+      <ScrollCue label={c('scroll_cue')} />
     </section>
   );
 }

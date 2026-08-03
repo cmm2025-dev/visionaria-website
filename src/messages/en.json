@@ -238,6 +238,37 @@
     ],
     "scroll_cue": "See more"
   },
+  "lprVisual": {
+    "live": "LIVE",
+    "plate_captured": "PLATE CAPTURED",
+    "plate_format": "CHL · MERCOSUR",
+    "query_databases": "DATABASE QUERY",
+    "recent_captures": "RECENT CAPTURES",
+    "status_clean": "CLEAR",
+    "status_wanted": "WANTED",
+    "alert_label": "⚠ ALERT",
+    "ok_label": "✓ OK",
+    "result_wanted": "⚠ WANTED",
+    "result_clean": "✓ CLEAR",
+    "vehicle_types": { "liviano": "CAR", "suv": "SUV", "furgon": "VAN" }
+  },
+  "videoDemo": {
+    "eyebrow": "Live demo",
+    "title_1": "See how it works",
+    "title_accent": "in real time",
+    "desc1": "From automatic incident detection to drone deployment and identity confirmation — all in under two minutes.",
+    "desc2": "Genetec Security Center platform integrated with DJI Dock drones, facial recognition and LPR readers in a single response ecosystem.",
+    "stats": [
+      { "value": "< 2 min", "label": "Response time" },
+      { "value": "+3,700", "label": "Active cameras" },
+      { "value": "80+", "label": "Municipalities" }
+    ],
+    "cta": "Request an in-person demo",
+    "youtube_title": "Visionaria demo",
+    "play_aria": "Play video",
+    "play_caption": "Watch the demo — Visionaria Integrated System",
+    "live_badge": "DEMO"
+  },
   "surveillanceDeck": {
     "eyebrow": "Operations Center",
     "title_1": "Integrated surveillance,",

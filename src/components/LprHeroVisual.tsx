@@ -1,23 +1,25 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 
 const VEHICLES = [
-  { plate: 'PPGJ·72', cam: 'CAM-RM-047', loc: 'Vespucio Norte km 3.2', dir: 'S→N', tipo: 'LIVIANO', status: 'LIMPIO' },
-  { plate: 'BKTS·94', cam: 'CAM-RM-112', loc: 'Ruta 68 km 14.1',       dir: 'E→O', tipo: 'SUV',     status: 'EN BÚSQUEDA' },
-  { plate: 'HYFL·15', cam: 'CAM-RM-203', loc: 'Av. La Florida 8840',    dir: 'N→S', tipo: 'FURGÓN',  status: 'LIMPIO' },
-  { plate: 'CDRM·83', cam: 'CAM-RM-089', loc: 'Circunvalación Pte.',    dir: 'S→N', tipo: 'LIVIANO', status: 'LIMPIO' },
-];
+  { plate: 'PPGJ·72', cam: 'CAM-RM-047', loc: 'Vespucio Norte km 3.2', dir: 'S→N', tipo: 'liviano', status: 'clean' },
+  { plate: 'BKTS·94', cam: 'CAM-RM-112', loc: 'Ruta 68 km 14.1',       dir: 'E→O', tipo: 'suv',     status: 'wanted' },
+  { plate: 'HYFL·15', cam: 'CAM-RM-203', loc: 'Av. La Florida 8840',    dir: 'N→S', tipo: 'furgon',  status: 'clean' },
+  { plate: 'CDRM·83', cam: 'CAM-RM-089', loc: 'Circunvalación Pte.',    dir: 'S→N', tipo: 'liviano', status: 'clean' },
+] as const;
 
 const HISTORY = [
-  { plate: 'FHKM·51', ts: '14:22:48', status: 'LIMPIO' },
-  { plate: 'GYVD·37', ts: '14:22:31', status: 'LIMPIO' },
-  { plate: 'NXPL·09', ts: '14:22:19', status: 'LIMPIO' },
-];
+  { plate: 'FHKM·51', ts: '14:22:48', status: 'clean' },
+  { plate: 'GYVD·37', ts: '14:22:31', status: 'clean' },
+  { plate: 'NXPL·09', ts: '14:22:19', status: 'clean' },
+] as const;
 
 type Phase = 'approach' | 'detect' | 'ocr' | 'query' | 'result' | 'exit';
 
 export default function LprHeroVisual() {
+  const t = useTranslations('lprVisual');
   const [vIdx, setVIdx]         = useState(0);
   const [phase, setPhase]       = useState<Phase>('approach');
   const [chars, setChars]       = useState('');
@@ -26,7 +28,7 @@ export default function LprHeroVisual() {
   const [clock, setClock]       = useState('00:00:00.0');
 
   const v       = VEHICLES[vIdx % VEHICLES.length];
-  const isAlert = v.status === 'EN BÚSQUEDA';
+  const isAlert = v.status === 'wanted';
 
   // Live clock
   useEffect(() => {
@@ -95,7 +97,7 @@ export default function LprHeroVisual() {
             className="w-1.5 h-1.5 rounded-full shrink-0"
             style={{ background: '#34d399', boxShadow: '0 0 6px #34d399', animation: 'pulse 2s infinite' }}
           />
-          <span className="text-[9px] font-mono font-bold tracking-widest shrink-0" style={{ color: '#34d399' }}>EN VIVO</span>
+          <span className="text-[9px] font-mono font-bold tracking-widest shrink-0" style={{ color: '#34d399' }}>{t('live')}</span>
           <span className="text-[9px] font-mono text-slate-600 shrink-0">·</span>
           <span className="text-[9px] font-mono text-slate-400 shrink-0">{v.cam}</span>
           <span className="text-[9px] font-mono text-slate-600 hidden sm:inline shrink-0">·</span>
@@ -218,7 +220,7 @@ export default function LprHeroVisual() {
               className="absolute text-[8px] font-mono font-bold px-1.5 py-0.5 leading-none"
               style={{ top: -14, left: 16, background: boxColor, color: '#1E1B18' }}
             >
-              {v.tipo}
+              {t(`vehicle_types.${v.tipo}`)}
             </div>
             <div
               className="absolute text-[8px] font-mono"
@@ -259,7 +261,7 @@ export default function LprHeroVisual() {
         {/* Plate readout */}
         <div className="p-3 border-r" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
           <p className="text-[7px] font-mono tracking-widest mb-2" style={{ color: 'rgba(148,163,184,0.4)' }}>
-            PLACA CAPTURADA
+            {t('plate_captured')}
           </p>
           <div
             className="font-mono font-bold text-base tracking-[0.18em] text-center py-2 rounded transition-all duration-300"
@@ -273,14 +275,14 @@ export default function LprHeroVisual() {
             {showOcr ? (chars || '·') : '—'}
           </div>
           <p className="text-[7px] font-mono text-center mt-1" style={{ color: showOcr ? 'rgba(196,168,130,0.5)' : 'transparent' }}>
-            CHL · MERCOSUR
+            {t('plate_format')}
           </p>
         </div>
 
         {/* Query status */}
         <div className="p-3">
           <p className="text-[7px] font-mono tracking-widest mb-2" style={{ color: 'rgba(148,163,184,0.4)' }}>
-            CONSULTA BASES
+            {t('query_databases')}
           </p>
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-1">
@@ -290,7 +292,7 @@ export default function LprHeroVisual() {
                 : !sebvDone
                   ? <Loader2 size={9} className="animate-spin" style={{ color: '#F09422' }}/>
                   : <span className="text-[8px] font-mono font-bold" style={{ color: isAlert ? '#f87171' : '#34d399' }}>
-                      {isAlert ? '⚠ ALERTA' : '✓ OK'}
+                      {isAlert ? t('alert_label') : t('ok_label')}
                     </span>
               }
             </div>
@@ -300,7 +302,7 @@ export default function LprHeroVisual() {
                 ? <span className="text-[8px] font-mono text-slate-800">—</span>
                 : !sitiaDone
                   ? <Loader2 size={9} className="animate-spin" style={{ color: '#3D8A82' }}/>
-                  : <span className="text-[8px] font-mono font-bold" style={{ color: '#34d399' }}>✓ OK</span>
+                  : <span className="text-[8px] font-mono font-bold" style={{ color: '#34d399' }}>{t('ok_label')}</span>
               }
             </div>
             {showResult && (
@@ -312,7 +314,7 @@ export default function LprHeroVisual() {
                   color: isAlert ? '#f87171' : '#34d399',
                 }}
               >
-                {isAlert ? '⚠ EN BÚSQUEDA' : '✓ LIMPIO'}
+                {isAlert ? t('result_wanted') : t('result_clean')}
               </div>
             )}
           </div>
@@ -325,7 +327,7 @@ export default function LprHeroVisual() {
         style={{ borderColor: 'rgba(255,255,255,0.04)', background: 'rgba(0,0,0,0.35)' }}
       >
         <p className="text-[7px] font-mono tracking-widest mb-1.5" style={{ color: 'rgba(148,163,184,0.3)' }}>
-          CAPTURAS RECIENTES
+          {t('recent_captures')}
         </p>
         <div className="flex flex-col gap-0.5">
           {HISTORY.map(({ plate, ts, status }) => (
@@ -334,9 +336,9 @@ export default function LprHeroVisual() {
               <span className="text-[8px] font-mono text-slate-400 tracking-widest">{plate}</span>
               <span
                 className="text-[7px] font-mono"
-                style={{ color: status === 'LIMPIO' ? 'rgba(52,211,153,0.55)' : '#f87171' }}
+                style={{ color: status === 'clean' ? 'rgba(52,211,153,0.55)' : '#f87171' }}
               >
-                {status}
+                {status === 'clean' ? t('status_clean') : t('status_wanted')}
               </span>
             </div>
           ))}
