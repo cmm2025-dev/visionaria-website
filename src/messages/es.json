@@ -47,6 +47,7 @@
     "subtitle": "Implementaciones que están transformando la seguridad en Chile",
     "result": "Resultado clave",
     "read_more": "Ver detalle",
+    "gallery_view": "Ver fotografías",
     "stats": [
       { "value": "80+", "label": "Municipios con presencia", "sub": "directa o vinculada" },
       { "value": "10/16", "label": "Regiones cubiertas", "sub": "de Arica a Punta Arenas" },

@@ -47,6 +47,7 @@
     "subtitle": "Implementations transforming security across Chile",
     "result": "Key result",
     "read_more": "View details",
+    "gallery_view": "View photos",
     "stats": [
       { "value": "80+", "label": "Municipalities with presence", "sub": "direct or affiliated" },
       { "value": "10/16", "label": "Regions covered", "sub": "from Arica to Punta Arenas" },
