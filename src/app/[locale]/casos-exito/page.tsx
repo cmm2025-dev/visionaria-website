@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { ArrowRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import ScrollCue from '@/components/ScrollCue';
+import ProjectsCarousel from '@/components/ProjectsCarousel';
 
 interface Case { company: string; industry: string; region: string; result: string; detail: string; accent: string }
 interface Stat { value: string; label: string; sub: string }
@@ -20,6 +21,7 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
     <div>
       {/* Hero */}
       <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 60%, #222018 100%)', borderLeft: '4px solid var(--accent)' }}>
+        <ProjectsCarousel />
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'var(--accent)' }} />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
