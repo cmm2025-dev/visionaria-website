@@ -8,6 +8,10 @@ const FRAMES = [
   '/proyectos/obra-3.jpg',
   '/proyectos/obra-4.jpg',
   '/proyectos/obra-5.jpg',
+  '/proyectos/obra-6.jpg',
+  '/proyectos/obra-7.jpg',
+  '/proyectos/obra-8.jpg',
+  '/proyectos/obra-9.jpg',
 ];
 
 /** Cross-fading background carousel of real fieldwork photos, dimmed behind a dark overlay so hero text stays readable. */
