@@ -22,39 +22,31 @@ interface ProjectsCarouselProps {
   viewLabel?: string;
 }
 
-/** Cross-fading background carousel of real fieldwork photos, dimmed behind a dark overlay so hero text stays readable. Includes a button to view the photos full-size without the overlay. */
+/** Static mosaic/collage background of real fieldwork photos, lightly dimmed so hero text stays readable. Includes a button to view the photos full-size without the overlay. */
 export default function ProjectsCarousel({ viewLabel = 'Ver fotografías' }: ProjectsCarouselProps) {
-  const [frame, setFrame] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  useEffect(() => {
-    if (lightbox) return;
-    const id = setInterval(() => setFrame(f => (f + 1) % FRAMES.length), 4000);
-    return () => clearInterval(id);
-  }, [lightbox]);
-
   const openLightbox = () => {
-    setLightboxIndex(frame);
+    setLightboxIndex(0);
     setLightbox(true);
   };
 
   return (
     <>
-      <div className="absolute inset-0" aria-hidden>
-        {FRAMES.map((src, i) => (
+      <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 grid-rows-4 sm:grid-rows-3 lg:grid-rows-2 gap-0.5" aria-hidden>
+        {FRAMES.map((src) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={src}
             src={src}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-            style={{ opacity: frame === i ? 1 : 0 }}
+            className="w-full h-full object-cover"
           />
         ))}
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(145deg, rgba(40,34,26,0.88) 0%, rgba(30,27,24,0.80) 60%, rgba(34,32,24,0.85) 100%)' }}
+          style={{ background: 'linear-gradient(145deg, rgba(40,34,26,0.62) 0%, rgba(30,27,24,0.55) 60%, rgba(34,32,24,0.62) 100%)' }}
         />
       </div>
 
