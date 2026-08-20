@@ -104,12 +104,16 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
           </div>
         )}
 
-        {status === 'error' && (
-          <p className="text-center py-16" style={{ color: '#ef4444' }}>{t('error_generic')}</p>
-        )}
-
-        {status === 'no_account' && (
-          <p className="text-center py-16" style={{ color: '#ef4444' }}>{t('error_no_account')}</p>
+        {(status === 'error' || status === 'no_account') && (
+          <div className="rounded-2xl p-10 border text-center flex flex-col items-center gap-6" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+            <p style={{ color: '#ef4444' }}>{status === 'error' ? t('error_generic') : t('error_no_account')}</p>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+            >
+              <LogOut size={14} /> {t('logout')}
+            </button>
+          </div>
         )}
 
         {status === 'ready' && snapshot && (
