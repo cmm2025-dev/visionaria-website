@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     const params = new URLSearchParams({
       response_type: 'code',
       client_id: clientId,
-      scope: 'Desk.tickets.READ,Desk.contacts.READ,Desk.basic.READ',
+      scope: 'Desk.tickets.READ,Desk.contacts.READ,Desk.basic.READ,Desk.search.READ',
       redirect_uri: redirectUri,
       access_type: 'offline',
       prompt: 'consent',
