@@ -70,6 +70,9 @@ export async function findContactByEmail(serviceToken: string, email: string): P
   });
   if (res.status === 204) return null;
   const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho contacts/search', { status: res.status, email, data: JSON.stringify(data).slice(0, 2000) });
+  }
   const first = data?.data?.[0];
   if (!first) return null;
   return {
