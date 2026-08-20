@@ -110,12 +110,14 @@ export async function getAccountTickets(serviceToken: string, accountId: string)
     accountId,
     limit: '50',
     sortBy: 'modifiedTime',
-    include: 'sla',
   });
   const res = await fetch(`${API_BASE}/tickets?${params.toString()}`, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
   const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho tickets', { status: res.status, accountId, data: JSON.stringify(data).slice(0, 2000) });
+  }
   const rows = Array.isArray(data?.data) ? data.data : [];
   return rows
     .filter((t: Record<string, unknown>) => t.status !== 'Closed' && t.status !== 'Resolved')
