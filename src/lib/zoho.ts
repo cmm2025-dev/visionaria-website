@@ -93,14 +93,29 @@ export async function findContactByEmail(serviceToken: string, email: string): P
   return { id: first.id, accountId: first.accountId, accountName, email: first.email };
 }
 
+export type Priority = 'low' | 'medium' | 'high' | 'urgent';
+
 export interface ZohoTicket {
   id: string;
   ticketNumber: string;
   subject: string;
   status: string;
-  priority: string;
+  priority: Priority;
   dueDate: string | null;
   isOverdue: boolean;
+}
+
+/**
+ * Zoho returns priority as a display label in the org's own language (e.g. "Medio" for a
+ * Spanish-language org, "Medium" in English) -- normalize to a fixed set of keys so the
+ * semaphore logic and UI translation lookups never depend on the org's locale.
+ */
+function normalizePriority(raw: unknown): Priority {
+  const value = String(raw ?? '').trim().toLowerCase();
+  if (['high', 'alta', 'alto'].includes(value)) return 'high';
+  if (['urgent', 'urgente'].includes(value)) return 'urgent';
+  if (['low', 'baja', 'bajo'].includes(value)) return 'low';
+  return 'medium';
 }
 
 /** Fetches open tickets for the given Account (municipio/cliente), using the service token. */
@@ -119,13 +134,15 @@ export async function getAccountTickets(serviceToken: string, accountId: string)
   }
   const rows = Array.isArray(data?.data) ? data.data : [];
   return rows
-    .filter((t: Record<string, unknown>) => t.status !== 'Closed' && t.status !== 'Resolved')
+    // closedTime is a locale-independent field; ticket "status" itself is a localized label
+    // (e.g. "Cerrado" in a Spanish org), so it can't be compared against English constants.
+    .filter((t: Record<string, unknown>) => !t.closedTime)
     .map((t: Record<string, unknown>) => ({
       id: t.id as string,
       ticketNumber: t.ticketNumber as string,
       subject: t.subject as string,
       status: t.status as string,
-      priority: (t.priority as string) ?? 'Medium',
+      priority: normalizePriority(t.priority),
       dueDate: (t.dueDate as string) ?? null,
       isOverdue: Boolean(t.isOverdue),
     }));
@@ -150,7 +167,7 @@ const NEAR_SLA_WINDOW_MS = 1000 * 60 * 60 * 4; // 4h
 export function computeSnapshot(clientName: string, tickets: ZohoTicket[]): SupportSnapshot {
   const now = Date.now();
   const overdueCount = tickets.filter(t => t.isOverdue).length;
-  const highPriorityCount = tickets.filter(t => t.priority === 'High' || t.priority === 'Urgent').length;
+  const highPriorityCount = tickets.filter(t => t.priority === 'high' || t.priority === 'urgent').length;
   const nearSlaCount = tickets.filter(t => {
     if (t.isOverdue || !t.dueDate) return false;
     const due = new Date(t.dueDate).getTime();

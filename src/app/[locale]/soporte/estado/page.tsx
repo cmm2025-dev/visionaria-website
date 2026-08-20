@@ -9,7 +9,7 @@ interface Ticket {
   ticketNumber: string;
   subject: string;
   status: string;
-  priority: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
   dueDate: string | null;
   isOverdue: boolean;
 }
@@ -32,10 +32,10 @@ const SEMAPHORE_STYLE = {
 } as const;
 
 const PRIORITY_COLOR: Record<string, string> = {
-  Low: '#3D8A82',
-  Medium: '#F09422',
-  High: '#ef4444',
-  Urgent: '#ef4444',
+  low: '#3D8A82',
+  medium: '#F09422',
+  high: '#ef4444',
+  urgent: '#ef4444',
 };
 
 function formatRemaining(dueDate: string | null, locale: string): string | null {
