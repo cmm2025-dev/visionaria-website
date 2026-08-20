@@ -107,11 +107,10 @@ export interface ZohoTicket {
 export async function getAccountTickets(serviceToken: string, accountId: string): Promise<ZohoTicket[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');
   const params = new URLSearchParams({
-    accountId,
     limit: '50',
     sortBy: 'modifiedTime',
   });
-  const res = await fetch(`${API_BASE}/tickets?${params.toString()}`, {
+  const res = await fetch(`${API_BASE}/accounts/${accountId}/tickets?${params.toString()}`, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
   const data = await res.json();
