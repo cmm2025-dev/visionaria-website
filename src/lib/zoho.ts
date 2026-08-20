@@ -64,7 +64,7 @@ interface ZohoContact {
 /** Looks up the Desk Contact record for a verified login email, using the service token. */
 export async function findContactByEmail(serviceToken: string, email: string): Promise<ZohoContact | null> {
   const orgId = requireEnv('ZOHO_ORG_ID');
-  const url = `${API_BASE}/contacts/search?email=${encodeURIComponent(email)}&include=account`;
+  const url = `${API_BASE}/contacts/search?email=${encodeURIComponent(email)}`;
   const res = await fetch(url, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
@@ -75,12 +75,22 @@ export async function findContactByEmail(serviceToken: string, email: string): P
   }
   const first = data?.data?.[0];
   if (!first) return null;
-  return {
-    id: first.id,
-    accountId: first.accountId,
-    accountName: first.account?.accountName ?? first.account?.name,
-    email: first.email,
-  };
+
+  let accountName: string | undefined;
+  if (first.accountId) {
+    const accRes = await fetch(`${API_BASE}/accounts/${first.accountId}`, {
+      headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
+    });
+    if (accRes.ok) {
+      const accData = await accRes.json();
+      accountName = accData?.accountName;
+      if (process.env.ZOHO_DEBUG === '1') {
+        console.log('zoho accounts/get', { status: accRes.status, data: JSON.stringify(accData).slice(0, 500) });
+      }
+    }
+  }
+
+  return { id: first.id, accountId: first.accountId, accountName, email: first.email };
 }
 
 export interface ZohoTicket {
