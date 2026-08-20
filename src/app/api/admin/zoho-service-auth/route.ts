@@ -10,15 +10,16 @@ export const runtime = 'nodejs';
  */
 export async function GET(req: NextRequest) {
   const setupSecret = process.env.ZOHO_SETUP_SECRET;
-  const key = req.nextUrl.searchParams.get('key');
-  if (!setupSecret || key !== setupSecret) {
-    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
-  }
+  if (!setupSecret) return NextResponse.json({ error: 'not_configured' }, { status: 500 });
 
   const code = req.nextUrl.searchParams.get('code');
   const redirectUri = `${req.nextUrl.origin}/api/admin/zoho-service-auth`;
 
   if (!code) {
+    // Initial visit: require the setup key explicitly, then hand off to Zoho with it as `state`.
+    const key = req.nextUrl.searchParams.get('key');
+    if (key !== setupSecret) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+
     const clientId = process.env.ZOHO_CLIENT_ID;
     if (!clientId) return NextResponse.json({ error: 'not_configured' }, { status: 500 });
     const params = new URLSearchParams({
@@ -33,6 +34,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`https://accounts.zoho.com/oauth/v2/auth?${params.toString()}`);
   }
 
+  // Callback from Zoho: it only round-trips `state`, not the original `key` query param.
   const state = req.nextUrl.searchParams.get('state');
   if (state !== setupSecret) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
