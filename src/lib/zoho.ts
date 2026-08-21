@@ -182,12 +182,12 @@ export async function getClientDocuments(serviceToken: string, accountId: string
   }
 
   return records
-    .filter((d: Record<string, unknown>) => d.AccountId === accountId)
+    .filter((d: Record<string, unknown>) => d.cf_account_id === accountId)
     .map((d: Record<string, unknown>) => ({
       id: d.id as string,
-      name: (d.name as string) ?? (d.repositoriosName as string) ?? 'Documento',
-      url: (d.Enlace as string) ?? null,
-      system: (d.Sistema as string) ?? null,
+      name: (d.name as string) ?? 'Documento',
+      url: (d.cf_enlace as string) ?? null,
+      system: (d.cf_sistema as string) ?? null,
     }));
 }
 
