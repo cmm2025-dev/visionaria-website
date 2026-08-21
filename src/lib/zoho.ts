@@ -182,13 +182,16 @@ export async function getClientDocuments(serviceToken: string, accountId: string
   }
 
   return records
-    .filter((d: Record<string, unknown>) => d.cf_account_id === accountId)
-    .map((d: Record<string, unknown>) => ({
-      id: d.id as string,
-      name: (d.name as string) ?? 'Documento',
-      url: (d.cf_enlace as string) ?? null,
-      system: (d.cf_sistema as string) ?? null,
-    }));
+    .filter((d: Record<string, unknown>) => (d.cf as Record<string, unknown> | undefined)?.cf_account_id === accountId)
+    .map((d: Record<string, unknown>) => {
+      const cf = (d.cf as Record<string, unknown>) ?? {};
+      return {
+        id: d.id as string,
+        name: (d.name as string) ?? 'Documento',
+        url: (cf.cf_enlace as string) ?? null,
+        system: (cf.cf_sistema as string) ?? null,
+      };
+    });
 }
 
 export type Semaphore = 'green' | 'yellow' | 'red';
