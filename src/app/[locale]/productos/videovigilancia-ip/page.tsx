@@ -7,7 +7,6 @@ import ScrollCue from '@/components/ScrollCue';
 const ICONS: Record<string, LucideIcon> = { Brain, Route, ScanFace, Users, AlertTriangle, Eye };
 
 interface Feature { icon: string; color: string; title: string; desc: string }
-interface Spec { label: string; value: string }
 interface Colored { color: string; title: string; desc: string }
 interface Stat { val: string; label: string; color: string }
 
@@ -17,7 +16,6 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
   const c = await getTranslations({ locale, namespace: 'common' });
 
   const analyticsFeatures = t.raw('analytics_features') as Feature[];
-  const specs = t.raw('specs') as Spec[];
   const agnosticBrands = t.raw('agnostic_brands') as string[];
   const iotFeatures = t.raw('iot_features') as Colored[];
   const whyBullets = t.raw('why_bullets') as string[];
@@ -101,37 +99,15 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
         <ScrollCue label={c('scroll_cue')} />
       </section>
 
-      {/* Especificaciones de la plataforma VMS */}
-      <section className="relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(240,148,34,0.08)', borderBottom: '1px solid rgba(240,148,34,0.08)' }}>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ mixBlendMode: 'screen', filter: 'brightness(0.6)' }}
-        >
+      {/* Plataforma VMS — video en pantalla completa, sin overlay */}
+      <section style={{ borderTop: '1px solid rgba(240,148,34,0.08)', borderBottom: '1px solid rgba(240,148,34,0.08)' }}>
+        <div className="text-center pt-16 pb-8 px-4">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>{t('specs_eyebrow')}</p>
+          <h2 className="text-3xl font-extrabold text-white">{t('specs_title')}</h2>
+        </div>
+        <video autoPlay muted loop playsInline className="w-full block">
           <source src="/ip-video-specs-bg.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(145deg, rgba(20,16,12,0.75) 0%, rgba(20,16,12,0.55) 60%, rgba(20,16,12,0.75) 100%)' }} />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-          <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>{t('specs_eyebrow')}</p>
-            <h2 className="text-3xl font-extrabold text-white">{t('specs_title')}</h2>
-          </div>
-          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'var(--border)', background: 'var(--card-bg)' }}>
-            {specs.map(({ label, value }, i) => (
-              <div
-                key={label}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-6 py-4"
-                style={i > 0 ? { borderTop: '1px solid var(--border)' } : undefined}
-              >
-                <span className="text-slate-400 text-sm">{label}</span>
-                <span className="text-white font-semibold text-sm">{value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* Agnósticos por diseño */}
