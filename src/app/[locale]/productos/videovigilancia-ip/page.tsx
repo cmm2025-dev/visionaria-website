@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, Brain, Route, ScanFace, Users, AlertTriangle, Eye, type LucideIcon } from 'lucide-react';
+import HeroVideoBackground from '@/components/HeroVideoBackground';
 import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = { Brain, Route, ScanFace, Users, AlertTriangle, Eye };
@@ -26,21 +27,33 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
     <div style={{ background: '#1E1B18', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <div className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 60%, #221E18 100%)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: 'radial-gradient(ellipse at 70% 50%, rgba(240,148,34,0.08) 0%, transparent 60%)',
-        }} />
+      <div className="relative overflow-hidden py-20 lg:py-28">
+        {/* Video background — desktop only, ver HeroVideoBackground */}
+        <HeroVideoBackground
+          sources={['/ip-video-hero-bg.mp4']}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            zIndex: 1,
+            background: 'linear-gradient(135deg, rgba(20,16,12,0.80) 0%, rgba(20,16,12,0.55) 50%, rgba(20,16,12,0.35) 100%)',
+          }}
+        />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative" style={{ zIndex: 2 }}>
           <div className="max-w-3xl">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422' }}>
+            <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: '#F09422', textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {t('hero_eyebrow')}
             </p>
-            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
+            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
               {t('hero_title_1')}<br />
               <span style={{ color: '#F09422' }}>{t('hero_title_2')}</span><br />
               {t('hero_title_3')}
             </h1>
-            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl">
+            <p className="mt-6 text-lg text-slate-300 leading-relaxed max-w-2xl" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
               {t('hero_desc')}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
