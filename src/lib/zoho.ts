@@ -159,21 +159,29 @@ const DOCS_MODULE = 'cm_repositorio_documental';
 
 /**
  * Fetches the client-specific technical documents from the "Repositorio Documental" custom
- * module. Custom modules only expose a plain list endpoint (no server-side field filtering like
- * contacts/search), so all records are fetched and matched against AccountId here instead.
+ * module. The plain list endpoint only returns id + layout (no custom field data), so each
+ * record's full detail has to be fetched individually before it can be matched against AccountId.
  */
 export async function getClientDocuments(serviceToken: string, accountId: string): Promise<ClientDocument[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');
-  const params = new URLSearchParams({ from: '0', limit: '100' });
-  const res = await fetch(`${API_BASE}/${DOCS_MODULE}?${params.toString()}`, {
-    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
-  });
-  const data = await res.json();
+  const authHeaders = { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId };
+
+  const listRes = await fetch(`${API_BASE}/${DOCS_MODULE}?from=0&limit=100`, { headers: authHeaders });
+  const listData = await listRes.json();
+  const ids = (Array.isArray(listData?.data) ? listData.data : []).map((d: Record<string, unknown>) => d.id as string);
+
+  const records = await Promise.all(
+    ids.map(async (id: string) => {
+      const res = await fetch(`${API_BASE}/${DOCS_MODULE}/${id}`, { headers: authHeaders });
+      return res.json();
+    })
+  );
+
   if (process.env.ZOHO_DEBUG === '1') {
-    console.log('zoho documents', { status: res.status, accountId, data: JSON.stringify(data).slice(0, 2000) });
+    console.log('zoho documents', { listStatus: listRes.status, accountId, ids, records: JSON.stringify(records).slice(0, 2000) });
   }
-  const rows = Array.isArray(data?.data) ? data.data : [];
-  return rows
+
+  return records
     .filter((d: Record<string, unknown>) => d.AccountId === accountId)
     .map((d: Record<string, unknown>) => ({
       id: d.id as string,
