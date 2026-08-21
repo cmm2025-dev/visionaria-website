@@ -6,8 +6,10 @@ export const runtime = 'nodejs';
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
-  const locale = req.nextUrl.searchParams.get('state') === 'en' ? 'en' : 'es';
-  const errorRedirect = NextResponse.redirect(new URL(`/${locale}/soporte/estado?error=1`, req.nextUrl.origin));
+  const [rawLocale, rawNext] = (req.nextUrl.searchParams.get('state') ?? '').split(':');
+  const locale = rawLocale === 'en' ? 'en' : 'es';
+  const page = rawNext === 'documentos' ? 'documentos' : 'estado';
+  const errorRedirect = NextResponse.redirect(new URL(`/${locale}/soporte/${page}?error=1`, req.nextUrl.origin));
 
   if (!code) return errorRedirect;
 
@@ -17,7 +19,7 @@ export async function GET(req: NextRequest) {
     const email = await getZohoUserEmail(access_token);
 
     const cookieValue = encodeSession({ email, issuedAt: Date.now() });
-    const res = NextResponse.redirect(new URL(`/${locale}/soporte/estado`, req.nextUrl.origin));
+    const res = NextResponse.redirect(new URL(`/${locale}/soporte/${page}`, req.nextUrl.origin));
     res.cookies.set(SESSION_COOKIE, cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

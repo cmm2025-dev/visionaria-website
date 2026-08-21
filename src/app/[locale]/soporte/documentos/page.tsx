@@ -62,7 +62,7 @@ export default function SupportDocumentsPage({ params }: { params: Promise<{ loc
           <div className="rounded-2xl p-10 border text-center" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
             <p className="text-slate-400 mb-6">{t('login_desc')}</p>
             <a
-              href={`/api/auth/zoho/login?locale=${locale}`}
+              href={`/api/auth/zoho/login?locale=${locale}&next=documentos`}
               className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all"
               style={{ background: '#F09422', color: '#1E1B18' }}
             >
