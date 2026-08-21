@@ -157,11 +157,15 @@ export interface ClientDocument {
 
 const DOCS_MODULE = 'cm_repositorio_documental';
 
-/** Fetches the client-specific technical documents from the "Repositorio Documental" custom module. */
+/**
+ * Fetches the client-specific technical documents from the "Repositorio Documental" custom
+ * module. Custom modules only expose a plain list endpoint (no server-side field filtering like
+ * contacts/search), so all records are fetched and matched against AccountId here instead.
+ */
 export async function getClientDocuments(serviceToken: string, accountId: string): Promise<ClientDocument[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');
-  const params = new URLSearchParams({ AccountId: accountId });
-  const res = await fetch(`${API_BASE}/${DOCS_MODULE}/search?${params.toString()}`, {
+  const params = new URLSearchParams({ from: '0', limit: '100' });
+  const res = await fetch(`${API_BASE}/${DOCS_MODULE}?${params.toString()}`, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
   const data = await res.json();
@@ -169,12 +173,14 @@ export async function getClientDocuments(serviceToken: string, accountId: string
     console.log('zoho documents', { status: res.status, accountId, data: JSON.stringify(data).slice(0, 2000) });
   }
   const rows = Array.isArray(data?.data) ? data.data : [];
-  return rows.map((d: Record<string, unknown>) => ({
-    id: d.id as string,
-    name: (d.name as string) ?? (d.repositoriosName as string) ?? 'Documento',
-    url: (d.Enlace as string) ?? null,
-    system: (d.Sistema as string) ?? null,
-  }));
+  return rows
+    .filter((d: Record<string, unknown>) => d.AccountId === accountId)
+    .map((d: Record<string, unknown>) => ({
+      id: d.id as string,
+      name: (d.name as string) ?? (d.repositoriosName as string) ?? 'Documento',
+      url: (d.Enlace as string) ?? null,
+      system: (d.Sistema as string) ?? null,
+    }));
 }
 
 export type Semaphore = 'green' | 'yellow' | 'red';
