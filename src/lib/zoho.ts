@@ -148,6 +148,35 @@ export async function getAccountTickets(serviceToken: string, accountId: string)
     }));
 }
 
+export interface ClientDocument {
+  id: string;
+  name: string;
+  url: string | null;
+  system: string | null;
+}
+
+const DOCS_MODULE = 'cm_repositorio_documental';
+
+/** Fetches the client-specific technical documents from the "Repositorio Documental" custom module. */
+export async function getClientDocuments(serviceToken: string, accountId: string): Promise<ClientDocument[]> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const params = new URLSearchParams({ AccountId: accountId });
+  const res = await fetch(`${API_BASE}/${DOCS_MODULE}/search?${params.toString()}`, {
+    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
+  });
+  const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho documents', { status: res.status, accountId, data: JSON.stringify(data).slice(0, 2000) });
+  }
+  const rows = Array.isArray(data?.data) ? data.data : [];
+  return rows.map((d: Record<string, unknown>) => ({
+    id: d.id as string,
+    name: (d.name as string) ?? (d.repositoriosName as string) ?? 'Documento',
+    url: (d.Enlace as string) ?? null,
+    system: (d.Sistema as string) ?? null,
+  }));
+}
+
 export type Semaphore = 'green' | 'yellow' | 'red';
 
 export interface SupportSnapshot {

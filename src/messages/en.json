@@ -184,13 +184,25 @@
     "title": "Technical Support",
     "subtitle": "Operations center available 7×24×365 for all our systems",
     "docs": "Technical Documentation",
-    "docs_desc": "Manuals, schematics and configuration guides for all Visionaria systems.",
+    "docs_desc": "Sign in with your authorized account to access manuals and guides for the systems installed at your institution.",
     "ticket": "Open Ticket",
     "ticket_desc": "Report a fault or request technical intervention. Response time guaranteed by contract.",
     "community": "Help Desk",
     "community_desc": "Chat with our team on WhatsApp for quick guidance and assistance. If your request needs follow-up, we'll log it as a ticket.",
     "status": "System Status",
     "status_desc": "Real-time monitoring of the operational status of all your installed systems."
+  },
+  "supportDocs": {
+    "eyebrow": "Client portal",
+    "title": "Technical Documentation",
+    "subtitle": "Manuals and configuration guides specific to the systems installed at your institution.",
+    "login_cta": "Sign in with Zoho",
+    "login_desc": "Sign in with your municipality or institution's authorized contact account.",
+    "logout": "Sign out",
+    "loading": "Loading documentation…",
+    "error_generic": "We couldn't load your documentation. Please try again in a few minutes.",
+    "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
+    "no_documents": "No documents have been published for your institution yet."
   },
   "supportStatus": {
     "eyebrow": "Client portal",

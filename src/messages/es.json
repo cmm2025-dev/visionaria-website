@@ -184,13 +184,25 @@
     "title": "Soporte Técnico",
     "subtitle": "Centro de operaciones disponible 7×24×365 para todos nuestros sistemas",
     "docs": "Documentación Técnica",
-    "docs_desc": "Manuales, esquemas y guías de configuración para todos los sistemas Visionaria.",
+    "docs_desc": "Accede con tu cuenta autorizada a los manuales y guías de los sistemas instalados en tu institución.",
     "ticket": "Abrir Ticket",
     "ticket_desc": "Reporta una falla o solicita intervención técnica. Tiempo de respuesta garantizado por contrato.",
     "community": "Mesa de Ayuda",
     "community_desc": "Conversa con nuestro equipo por WhatsApp para orientación y asistencia rápida. Si tu solicitud requiere seguimiento, la registraremos como ticket.",
     "status": "Estado de Sistemas",
     "status_desc": "Monitoreo en tiempo real del estado operacional de todos tus sistemas instalados."
+  },
+  "supportDocs": {
+    "eyebrow": "Portal de clientes",
+    "title": "Documentación Técnica",
+    "subtitle": "Manuales y guías de configuración específicos de los sistemas instalados en tu institución.",
+    "login_cta": "Iniciar sesión con Zoho",
+    "login_desc": "Accede con la cuenta de contacto autorizada de tu municipio o institución.",
+    "logout": "Cerrar sesión",
+    "loading": "Cargando documentación…",
+    "error_generic": "No pudimos cargar tu documentación. Intenta nuevamente en unos minutos.",
+    "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte.",
+    "no_documents": "Aún no hay documentos publicados para tu institución."
   },
   "supportStatus": {
     "eyebrow": "Portal de clientes",
