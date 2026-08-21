@@ -11,7 +11,7 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
   const cards = [
     { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: `/${locale}/soporte/documentos`, accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
     { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: 'https://visionaria.zohodesk.com/portal/', accent: '#3D8A82', iconBg: 'rgba(61,138,130,0.12)', external: true },
-    { icon: Users, title: t('community'), desc: t('community_desc'), href: 'https://wa.me/56968444579', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', external: true },
+    { icon: Users, title: t('community'), desc: t('community_desc'), href: 'https://wa.me/56229254140', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', external: true },
     { icon: Activity, title: t('status'), desc: t('status_desc'), href: `/${locale}/soporte/estado`, accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)' },
   ];
 
