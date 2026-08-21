@@ -102,8 +102,19 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* Especificaciones de la plataforma VMS */}
-      <section style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(240,148,34,0.08)', borderBottom: '1px solid rgba(240,148,34,0.08)' }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="relative overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(240,148,34,0.08)', borderBottom: '1px solid rgba(240,148,34,0.08)' }}>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ mixBlendMode: 'screen', filter: 'brightness(0.6)' }}
+        >
+          <source src="/ip-video-specs-bg.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(145deg, rgba(20,16,12,0.75) 0%, rgba(20,16,12,0.55) 60%, rgba(20,16,12,0.75) 100%)' }} />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
           <div className="text-center mb-12">
             <p className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#F09422' }}>{t('specs_eyebrow')}</p>
             <h2 className="text-3xl font-extrabold text-white">{t('specs_title')}</h2>
