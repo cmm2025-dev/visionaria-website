@@ -188,7 +188,7 @@
     "ticket": "Abrir Ticket",
     "ticket_desc": "Reporta una falla o solicita intervención técnica. Tiempo de respuesta garantizado por contrato.",
     "community": "Mesa de Ayuda",
-    "community_desc": "Atención directa con nuestros ingenieros especializados en seguridad electrónica e integración.",
+    "community_desc": "Conversa con nuestro equipo por WhatsApp para orientación y asistencia rápida. Si tu solicitud requiere seguimiento, la registraremos como ticket.",
     "status": "Estado de Sistemas",
     "status_desc": "Monitoreo en tiempo real del estado operacional de todos tus sistemas instalados."
   },

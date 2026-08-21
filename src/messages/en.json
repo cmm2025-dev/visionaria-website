@@ -188,7 +188,7 @@
     "ticket": "Open Ticket",
     "ticket_desc": "Report a fault or request technical intervention. Response time guaranteed by contract.",
     "community": "Help Desk",
-    "community_desc": "Direct assistance from our engineers specialized in electronic security and systems integration.",
+    "community_desc": "Chat with our team on WhatsApp for quick guidance and assistance. If your request needs follow-up, we'll log it as a ticket.",
     "status": "System Status",
     "status_desc": "Real-time monitoring of the operational status of all your installed systems."
   },
