@@ -986,5 +986,66 @@
     "final_cta_secondary": "View all solutions",
     "case_eyebrow": "Want to see a real case?",
     "case_title": "Asheville, USA — Post-storm response"
+  },
+  "ipVideo": {
+    "hero_eyebrow": "Solutions · IP Video Surveillance",
+    "hero_title_1": "Video with",
+    "hero_title_2": "real intelligence",
+    "hero_title_3": "not just recording",
+    "hero_desc": "Cameras stopped being just a visual record. Today they're smart sensors that detect behavior, recognize patterns and anticipate incidents before they escalate — integrated with world-class VMS platforms and your operation's full IoT ecosystem.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "See success stories",
+    "analytics_eyebrow": "Analytics & Artificial Intelligence",
+    "analytics_title": "Beyond recording: understanding what's happening",
+    "analytics_desc": "AI engines embedded on-camera (edge) or on-server process every scene in real time, generating actionable alerts instead of hours of unreviewed footage.",
+    "analytics_features": [
+      { "icon": "Brain", "color": "#F09422", "title": "Behavior detection", "desc": "Identifies loitering, sudden crowding, falls, fights or abandoned objects, triggering automatic alerts to the monitoring center." },
+      { "icon": "Route", "color": "#3D8A82", "title": "Pattern recognition", "desc": "Learns the normal flow of people and vehicles in a space to detect deviations and anomalies from typical behavior." },
+      { "icon": "ScanFace", "color": "#C4A882", "title": "Object classification", "desc": "Distinguishes people, vehicles, animals and objects with precision, drastically cutting false alarms from leaves, shadows or insects." },
+      { "icon": "Users", "color": "#34d399", "title": "Counting & occupancy", "desc": "Measures foot and vehicle traffic in real time for occupancy management, traffic analysis and data-driven urban planning." },
+      { "icon": "AlertTriangle", "color": "#ef4444", "title": "Perimeter intrusion", "desc": "Virtual lines and zones that trigger immediate alerts on unauthorized crossings, even in low-light conditions." },
+      { "icon": "Eye", "color": "#F09422", "title": "AI forensic search", "desc": "Finds a specific event in minutes among thousands of hours of footage, filtering by attributes like clothing color or vehicle type." }
+    ],
+    "specs_eyebrow": "VMS platform",
+    "specs_title": "Professional-grade infrastructure",
+    "specs": [
+      { "label": "Video compression", "value": "H.264 / H.265 / H.265+" },
+      { "label": "Supported resolution", "value": "Up to 4K / 8MP per camera" },
+      { "label": "Live viewing latency", "value": "< 500 ms" },
+      { "label": "Recording retention", "value": "Configurable — minimum 30 days under Chile's public CCTV regulations" },
+      { "label": "Camera protocols", "value": "ONVIF, RTSP and proprietary protocols" },
+      { "label": "System availability", "value": "99.9%" }
+    ],
+    "agnostic_eyebrow": "Vendor-agnostic by design",
+    "agnostic_title": "The solution first, the brand second",
+    "agnostic_desc": "We're not tied to a single manufacturer. We integrate and are certified partners of the world's leading video surveillance and VMS vendors — choosing on every project the equipment that best solves the client's specific problem, not the one that's most convenient for us to sell.",
+    "agnostic_brands": ["Genetec", "Milestone", "Dahua", "Hikvision", "Milesight"],
+    "agnostic_note": "This independence lets us compare objectively, avoid vendor lock-in, and protect our clients' long-term investment.",
+    "iot_eyebrow": "IoT + VMS",
+    "iot_title": "One panel for all your sensors",
+    "iot_desc": "The modern VMS no longer just manages cameras: it becomes the central console for your entire security IoT ecosystem — environmental sensors, access control, gunshot detection, panic buttons, license plate reading and video analytics, all correlated on a single timeline and displayed on the control center's VideoWall.",
+    "iot_features": [
+      { "color": "#F09422", "title": "Event correlation", "desc": "A door-open sensor plus a camera detecting motion at the same instant generates one prioritized alert, not two isolated events." },
+      { "color": "#3D8A82", "title": "Sensors for every environment", "desc": "WiFi/Zigbee indoors, 4G LTE/NB-IoT in urban outdoor settings, and LoRaWAN or satellite in remote areas — each sensor using the protocol that fits its location." },
+      { "color": "#C4A882", "title": "Open interoperability", "desc": "Standard protocols (ONVIF, MQTT, CoAP, REST APIs) let you add new devices without replacing existing infrastructure." },
+      { "color": "#34d399", "title": "Unified VideoWall visualization", "desc": "Cameras, CAD/PSIM maps and IoT dashboards share the same control center video wall, with one-click layout changes per operational scenario." }
+    ],
+    "why_eyebrow": "Why Visionaria",
+    "why_title": "Video surveillance that adapts to your operation",
+    "why_bullets": [
+      "Custom-tailored architecture: the right camera for every point, not a generic catalog.",
+      "AI analytics calibrated to the site's real context, reducing false alarms.",
+      "Native integration with CAD/PSIM, LPR and DAFR within the same Visionaria ecosystem.",
+      "Multi-brand technical support — a single provider for your entire video infrastructure."
+    ],
+    "why_stats": [
+      { "val": "5", "label": "Leading brands integrated", "color": "#F09422" },
+      { "val": "24/7", "label": "Monitoring and support", "color": "#3D8A82" },
+      { "val": "Edge + Server", "label": "Dual AI analytics", "color": "#C4A882" },
+      { "val": "ONVIF", "label": "Open interoperability", "color": "#34d399" }
+    ],
+    "final_cta_title": "Let's talk about your video surveillance project",
+    "final_cta_desc": "We analyze your operation and propose the camera architecture, analytics and IoT integration that best fits — with no ties to a single brand.",
+    "final_cta_secondary": "View all solutions"
   }
 }

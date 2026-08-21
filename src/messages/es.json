@@ -986,5 +986,66 @@
     "final_cta_secondary": "Ver todas las soluciones",
     "case_eyebrow": "¿Quieres ver un caso real?",
     "case_title": "Asheville, USA — Respuesta post-tormenta"
+  },
+  "ipVideo": {
+    "hero_eyebrow": "Soluciones · Videovigilancia IP",
+    "hero_title_1": "Video con",
+    "hero_title_2": "inteligencia real",
+    "hero_title_3": "no solo grabación",
+    "hero_desc": "Las cámaras dejaron de ser solo un registro visual. Hoy son sensores inteligentes que detectan comportamientos, reconocen patrones y anticipan incidentes antes de que escalen — integradas a plataformas VMS de clase mundial y al ecosistema IoT completo de tu operación.",
+    "cta_demo": "Solicitar demo",
+    "cta_cases": "Ver casos de éxito",
+    "analytics_eyebrow": "Analítica e Inteligencia Artificial",
+    "analytics_title": "Más allá de grabar: entender lo que pasa",
+    "analytics_desc": "Motores de IA embebidos en cámara (edge) o en servidor procesan cada escena en tiempo real, generando alertas accionables en vez de horas de video sin revisar.",
+    "analytics_features": [
+      { "icon": "Brain", "color": "#F09422", "title": "Detección de comportamiento", "desc": "Identifica merodeo, aglomeraciones repentinas, caídas, peleas o abandono de objetos, generando alertas automáticas al centro de monitoreo." },
+      { "icon": "Route", "color": "#3D8A82", "title": "Reconocimiento de patrones", "desc": "Aprende los flujos normales de personas y vehículos en un espacio para detectar desviaciones y anomalías respecto al comportamiento habitual." },
+      { "icon": "ScanFace", "color": "#C4A882", "title": "Clasificación de objetos", "desc": "Distingue personas, vehículos, animales y objetos con precisión, reduciendo drásticamente las falsas alarmas por hojas, sombras o insectos." },
+      { "icon": "Users", "color": "#34d399", "title": "Conteo y aforo", "desc": "Mide flujo de personas y vehículos en tiempo real para gestión de aforo, análisis de tránsito y planificación urbana basada en datos." },
+      { "icon": "AlertTriangle", "color": "#ef4444", "title": "Intrusión perimetral", "desc": "Líneas y zonas virtuales que disparan alertas inmediatas ante cruces no autorizados, incluso en condiciones de poca luz." },
+      { "icon": "Eye", "color": "#F09422", "title": "Búsqueda forense por IA", "desc": "Encuentra en minutos un evento específico entre miles de horas de grabación, filtrando por atributos como color de ropa o tipo de vehículo." }
+    ],
+    "specs_eyebrow": "Plataforma VMS",
+    "specs_title": "Infraestructura de nivel profesional",
+    "specs": [
+      { "label": "Compresión de video", "value": "H.264 / H.265 / H.265+" },
+      { "label": "Resolución soportada", "value": "Hasta 4K / 8MP por cámara" },
+      { "label": "Latencia en vivo", "value": "< 500 ms" },
+      { "label": "Retención de grabaciones", "value": "Configurable — mínimo 30 días según normativa CCTV pública en Chile" },
+      { "label": "Protocolos de cámara", "value": "ONVIF, RTSP y protocolos propietarios" },
+      { "label": "Disponibilidad del sistema", "value": "99.9%" }
+    ],
+    "agnostic_eyebrow": "Agnósticos por diseño",
+    "agnostic_title": "La solución primero, la marca después",
+    "agnostic_desc": "No estamos casados con un solo fabricante. Integramos y somos partners certificados de los líderes mundiales en videovigilancia y VMS — eligiendo en cada proyecto el equipo que mejor resuelve el problema específico del cliente, no el que más nos convenga vender.",
+    "agnostic_brands": ["Genetec", "Milestone", "Dahua", "Hikvision", "Milesight"],
+    "agnostic_note": "Esta independencia nos permite comparar objetivamente, evitar el 'vendor lock-in' y proteger la inversión de nuestros clientes a largo plazo.",
+    "iot_eyebrow": "IoT + VMS",
+    "iot_title": "Un solo panel para todos tus sensores",
+    "iot_desc": "El VMS moderno ya no gestiona solo cámaras: se convierte en la consola central de todo el ecosistema IoT de seguridad — sensores ambientales, control de acceso, detección de disparos, botones de pánico, lectura de patentes y analítica de video, todo correlacionado en una sola línea de tiempo y proyectado en el VideoWall del centro de control.",
+    "iot_features": [
+      { "color": "#F09422", "title": "Correlación de eventos", "desc": "Un sensor de apertura de puerta + una cámara detectando movimiento en el mismo instante genera una alerta priorizada, no dos eventos aislados." },
+      { "color": "#3D8A82", "title": "Sensores para cada entorno", "desc": "WiFi/Zigbee en interiores, 4G LTE/NB-IoT en entornos urbanos exteriores y LoRaWAN o satelital en zonas remotas — cada sensor con el protocolo que corresponde a su ubicación." },
+      { "color": "#C4A882", "title": "Interoperabilidad abierta", "desc": "Protocolos estándar (ONVIF, MQTT, CoAP, APIs REST) permiten sumar nuevos dispositivos sin reemplazar la infraestructura existente." },
+      { "color": "#34d399", "title": "Visualización unificada en VideoWall", "desc": "Cámaras, mapas del CAD/PSIM y dashboards IoT conviven en el mismo muro de pantallas del centro de control, con cambio de layout según el escenario operacional." }
+    ],
+    "why_eyebrow": "Por qué Visionaria",
+    "why_title": "Videovigilancia que se adapta a tu operación",
+    "why_bullets": [
+      "Diseño de arquitectura a medida: cámara correcta para cada punto, no un catálogo genérico.",
+      "Analítica de IA calibrada para el contexto real del sitio, reduciendo falsas alarmas.",
+      "Integración nativa con CAD/PSIM, LPR y DAFR dentro del mismo ecosistema Visionaria.",
+      "Soporte técnico multi-marca — un solo proveedor para toda tu infraestructura de video."
+    ],
+    "why_stats": [
+      { "val": "5", "label": "Marcas líderes integradas", "color": "#F09422" },
+      { "val": "24/7", "label": "Monitoreo y soporte", "color": "#3D8A82" },
+      { "val": "Edge + Server", "label": "Analítica dual IA", "color": "#C4A882" },
+      { "val": "ONVIF", "label": "Interoperabilidad abierta", "color": "#34d399" }
+    ],
+    "final_cta_title": "Hablemos de tu proyecto de videovigilancia",
+    "final_cta_desc": "Analizamos tu operación y te proponemos la arquitectura de cámaras, analítica e integración IoT que mejor se ajusta — sin ataduras a una sola marca.",
+    "final_cta_secondary": "Ver todas las soluciones"
   }
 }
