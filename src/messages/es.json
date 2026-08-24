@@ -353,7 +353,7 @@
     "lpr_scanning": "LEYENDO...",
     "lpr_registered": "✓ REGISTRADO",
     "events": [
-      { "time": "20:17:33", "msg": "Placa BKRD·54 alertada — vehículo robado", "color": "#ef4444" },
+      { "time": "20:17:33", "msg": "Coincidencia en lista de alertas — vehículo en búsqueda activa", "color": "#ef4444" },
       { "time": "20:17:28", "msg": "Drone UAV-01 en ruta — sector Maipú", "color": "#F09422" },
       { "time": "20:17:21", "msg": "Rostro ID confirmado — base PDI 94.7%", "color": "#34d399" }
     ],

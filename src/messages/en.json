@@ -353,7 +353,7 @@
     "lpr_scanning": "READING...",
     "lpr_registered": "✓ LOGGED",
     "events": [
-      { "time": "20:17:33", "msg": "Plate BKRD·54 flagged — stolen vehicle", "color": "#ef4444" },
+      { "time": "20:17:33", "msg": "Watchlist match — vehicle under active search", "color": "#ef4444" },
       { "time": "20:17:28", "msg": "Drone UAV-01 en route — Maipú sector", "color": "#F09422" },
       { "time": "20:17:21", "msg": "Face ID confirmed — PDI database 94.7%", "color": "#34d399" }
     ],
