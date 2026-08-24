@@ -33,7 +33,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           title={t('hero_title')}
           subtitle={t('hero_subtitle')}
           cta={t('hero_cta')}
-          cta2={t('hero_cta2')}
           locale={locale}
           contact={n('contact')}
         />

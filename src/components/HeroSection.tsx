@@ -11,7 +11,6 @@ interface HeroSectionProps {
   title: string;
   subtitle: string;
   cta: string;
-  cta2: string;
   locale: string;
   contact: string;
 }
@@ -19,7 +18,7 @@ interface HeroSectionProps {
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const DUR = '1.4s';
 
-export default function HeroSection({ title, subtitle, cta, cta2, locale }: HeroSectionProps) {
+export default function HeroSection({ title, subtitle, cta, locale }: HeroSectionProps) {
   const t = useTranslations('home');
   const [modalOpen, setModalOpen] = useState(false);
   const [settled, setSettled] = useState(false);
@@ -146,18 +145,6 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
                 }}
               >
                 {cta} <ArrowRight size={settled ? 11 : 15} />
-              </Link>
-              <Link
-                href={`/${locale}/productos`}
-                className="inline-flex items-center gap-2 font-semibold rounded-full text-white border hover:bg-white/5"
-                style={{
-                  borderColor: 'var(--border)',
-                  padding: settled ? '0.3rem 0.85rem' : '0.72rem 1.4rem',
-                  fontSize: settled ? '0.72rem' : '0.92rem',
-                  transition: `padding ${DUR} ${EASE}, font-size ${DUR} ${EASE}`,
-                }}
-              >
-                {cta2}
               </Link>
             </div>
           </div>

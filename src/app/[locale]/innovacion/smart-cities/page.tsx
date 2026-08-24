@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Shield, Camera, Car, KeyRound, Plane, Leaf, ArrowRight, CheckCircle, type LucideIcon } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = { Shield, Camera, Car, KeyRound, Plane, Leaf };
 
@@ -70,7 +69,6 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Intro retos */}
@@ -110,7 +108,6 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Módulos */}
@@ -155,7 +152,6 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             })}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Beneficios */}
@@ -176,7 +172,6 @@ export default async function SmartCitiesPage({ params }: { params: Promise<{ lo
             </div>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* CTA */}

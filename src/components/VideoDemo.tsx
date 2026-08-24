@@ -209,7 +209,6 @@ export default function VideoDemo({ videoSrc, poster, locale = 'es' }: VideoDemo
           </div>
         </div>
       </div>
-      <ScrollCue label={c('scroll_cue')} />
     </section>
   );
 }

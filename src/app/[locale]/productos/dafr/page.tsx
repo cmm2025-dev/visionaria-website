@@ -4,7 +4,6 @@ import { ArrowRight, CheckCircle, Clock, Radio, Video, Zap, type LucideIcon } fr
 import HeroVideoBackground from '@/components/HeroVideoBackground';
 import DAFRVideoPanel from '@/components/DAFRVideoPanel';
 import CaseVideoCard from '@/components/CaseVideoCard';
-import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = { Clock, Video, Radio, Zap };
 
@@ -83,7 +82,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Video demo */}
@@ -94,7 +92,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
           <p className="mt-3 text-slate-400">{t('video_desc')}</p>
         </div>
         <DAFRVideoPanel videoId="IfCDJXEi-w4" />
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Flujo operacional */}
@@ -128,7 +125,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               ))}
             </div>
           </div>
-          <ScrollCue label={c('scroll_cue')} />
         </div>
       </section>
 
@@ -152,7 +148,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             );
           })}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Beneficios clave */}
@@ -180,7 +175,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               ))}
             </div>
           </div>
-          <ScrollCue label={c('scroll_cue')} />
         </div>
       </section>
 
@@ -203,7 +197,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               </div>
             ))}
           </div>
-          <ScrollCue label={c('scroll_cue')} />
         </div>
       </section>
 
@@ -249,7 +242,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
               </div>
             ))}
           </div>
-          <ScrollCue label={c('scroll_cue')} />
         </div>
       </section>
 
@@ -281,7 +273,6 @@ export default async function DAFRPage({ params }: { params: Promise<{ locale: s
             ))}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Seguridad de datos */}

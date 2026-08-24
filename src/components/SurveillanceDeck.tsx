@@ -428,7 +428,6 @@ export default function SurveillanceDeck() {
         </div>
       </div>
 
-      <ScrollCue label={c('scroll_cue')} />
 
       <style jsx>{`
         @keyframes scanrow {

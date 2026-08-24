@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, Brain, Route, ScanFace, Users, AlertTriangle, Eye, type LucideIcon } from 'lucide-react';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
-import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = { Brain, Route, ScanFace, Users, AlertTriangle, Eye };
 
@@ -72,7 +71,6 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Analítica e IA */}
@@ -96,7 +94,6 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
             );
           })}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Plataforma VMS — video en pantalla completa, sin overlay */}
@@ -152,7 +149,6 @@ export default async function IPVideoPage({ params }: { params: Promise<{ locale
               ))}
             </div>
           </div>
-          <ScrollCue label={c('scroll_cue')} />
         </div>
       </section>
 

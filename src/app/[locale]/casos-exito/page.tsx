@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import ScrollCue from '@/components/ScrollCue';
 import ProjectsCarousel from '@/components/ProjectsCarousel';
 
 interface Case { company: string; industry: string; region: string; result: string; detail: string; accent: string }
@@ -27,7 +26,6 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Presencia nacional — stats bar */}
@@ -66,14 +64,10 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
                 <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: 'var(--muted)' }}>{t('result')}</p>
                 <p className="font-semibold text-sm leading-snug" style={{ color: accent }}>{result}</p>
                 <p className="text-xs text-slate-500 leading-relaxed flex-1">{detail}</p>
-                <div className="mt-2 inline-flex items-center gap-1 text-sm font-semibold transition-all group-hover:gap-2" style={{ color: 'var(--accent)' }}>
-                  {t('read_more')} <ArrowRight size={14} />
-                </div>
               </div>
             </Link>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Presencia regional */}
@@ -103,7 +97,6 @@ export default async function CasosPage({ params }: { params: Promise<{ locale: 
           </div>
           <p className="mt-6 text-xs text-slate-600 text-center">{t('presence_footnote')}</p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* CTA */}

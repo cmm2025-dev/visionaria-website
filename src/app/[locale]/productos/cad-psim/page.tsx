@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = {
   MonitorCheck, Layers, Camera, Car, Smartphone, Bell, Phone, Wind, MapPin, BarChart2,
@@ -78,7 +77,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </a>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Manifesto */}
@@ -103,7 +101,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
           </div>
         </div>
         <p className="font-bold text-white text-base">{t('manifesto_footer')}</p>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* El orden correcto */}
@@ -122,7 +119,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* La solución */}
@@ -171,7 +167,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             {t.rich('arch_footer', { strong: (chunks) => <strong className="text-slate-300">{chunks}</strong> })}
           </p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Capacidades */}
@@ -197,7 +192,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             })}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Integración tecnológica */}
@@ -212,7 +206,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </span>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Trazabilidad */}
@@ -238,7 +231,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             })}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Beneficios */}
@@ -256,7 +248,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             </div>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Para quién */}
@@ -273,7 +264,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
             ))}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Financiamiento */}
@@ -302,7 +292,6 @@ export default async function CadPsimPage({ params }: { params: Promise<{ locale
         <p className="text-slate-500 text-sm max-w-3xl">
           {t('financing_footnote')}
         </p>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* CTA */}

@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { FlaskConical, BrainCircuit, Cloud } from 'lucide-react';
 import Link from 'next/link';
-import ScrollCue from '@/components/ScrollCue';
 
 export default async function InnovacionPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -22,7 +21,6 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300">{t('subtitle')}</p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

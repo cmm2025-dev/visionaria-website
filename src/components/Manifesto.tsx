@@ -93,7 +93,6 @@ export default async function Manifesto({ locale }: { locale: string }) {
           ))}
         </div>
 
-      <ScrollCue label={t('scroll_cue')} />
       </div>
     </section>
   );

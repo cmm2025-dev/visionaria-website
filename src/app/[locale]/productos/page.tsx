@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server';
 import { ArrowRight, BarChart2, Link2, Plane, Layers } from 'lucide-react';
 import Link from 'next/link';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
-import ScrollCue from '@/components/ScrollCue';
 
 export default async function ProductosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -53,7 +52,6 @@ export default async function ProductosPage({ params }: { params: Promise<{ loca
             {t('subtitle')}
           </p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

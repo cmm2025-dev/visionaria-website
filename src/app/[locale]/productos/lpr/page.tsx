@@ -7,7 +7,6 @@ import {
 import Link from 'next/link';
 import LprHeroVisual from '@/components/LprHeroVisual';
 import HeroVideoBackground from '@/components/HeroVideoBackground';
-import ScrollCue from '@/components/ScrollCue';
 
 const ICONS: Record<string, LucideIcon> = {
   Car, Shield, Database, Search, BarChart2, Lock, FileText, MapPin, CheckCircle,
@@ -116,7 +115,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Ley CATI — sección destacada */}
@@ -162,7 +160,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Proyecto emblemático: SPD Región Metropolitana */}
@@ -219,7 +216,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Integraciones institucionales */}
@@ -253,7 +249,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Flujo de arquitectura */}
@@ -283,7 +278,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             {t('arch_footer')}
           </p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Capacidades */}
@@ -310,7 +304,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             );
           })}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Especificaciones técnicas */}
@@ -361,7 +354,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             </div>
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Casos de uso */}
@@ -391,7 +383,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             );
           })}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Notas de implementación */}
@@ -411,7 +402,6 @@ export default async function LprPage({ params }: { params: Promise<{ locale: st
             ))}
           </div>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* CTA */}

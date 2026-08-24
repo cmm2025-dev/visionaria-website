@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import ScrollCue from '@/components/ScrollCue';
 
 interface Institution { name: string; logo: string }
 interface Testimonial { quote: string; name: string; role: string }
@@ -32,7 +31,6 @@ export default async function ClientesPage({ params }: { params: Promise<{ local
             {t('subtitle')}
           </p>
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </div>
 
       {/* Caso de éxito — Chillán Viejo / GORE Ñuble */}
@@ -61,7 +59,6 @@ export default async function ClientesPage({ params }: { params: Promise<{ local
             </blockquote>
           ))}
         </div>
-        <ScrollCue label={c('scroll_cue')} />
       </section>
 
       {/* Emblemas institucionales */}
