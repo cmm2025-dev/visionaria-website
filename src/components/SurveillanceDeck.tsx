@@ -296,17 +296,10 @@ export default function SurveillanceDeck() {
             <div className="absolute inset-0 flex flex-col" style={{ top: 28 }}>
               <video
                 autoPlay muted loop playsInline
-                className="w-full flex-1 object-contain"
+                className="w-full h-full object-contain"
                 style={{ mixBlendMode: 'screen', filter: 'brightness(0.62)' }}
               >
                 <source src="/feeds/security-continuum.mp4" type="video/mp4" />
-              </video>
-              <video
-                autoPlay muted loop playsInline
-                className="w-full flex-1 object-cover"
-                style={{ filter: 'brightness(0.75)' }}
-              >
-                <source src="/feeds/variety-tiles.mp4" type="video/mp4" />
               </video>
             </div>
             <ScanlineOverlay />
