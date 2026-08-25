@@ -194,6 +194,122 @@ export async function getClientDocuments(serviceToken: string, accountId: string
     });
 }
 
+const INVENTORY_MODULE = 'cm_inventario_de_activos';
+
+export interface InventoryItem {
+  assetType: string;
+  totalCount: number;
+}
+
+/** Fetches the client's installed-asset inventory (cameras, PCs, servers, ...) for severity calculations. */
+export async function getClientInventory(serviceToken: string, accountId: string): Promise<InventoryItem[]> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const authHeaders = { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId };
+
+  const listRes = await fetch(`${API_BASE}/${INVENTORY_MODULE}?from=0&limit=100`, { headers: authHeaders });
+  const listData = await listRes.json();
+  const ids = (Array.isArray(listData?.data) ? listData.data : []).map((d: Record<string, unknown>) => d.id as string);
+
+  const records = await Promise.all(
+    ids.map(async (id: string) => {
+      const res = await fetch(`${API_BASE}/${INVENTORY_MODULE}/${id}`, { headers: authHeaders });
+      return res.json();
+    })
+  );
+
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho inventory', { listStatus: listRes.status, accountId, ids, records: JSON.stringify(records).slice(0, 2000) });
+  }
+
+  return records
+    .filter((d: Record<string, unknown>) => (d.cf as Record<string, unknown> | undefined)?.cf_account_id === accountId)
+    .map((d: Record<string, unknown>) => {
+      const cf = (d.cf as Record<string, unknown>) ?? {};
+      return {
+        assetType: (cf.cf_tipo_activo as string) ?? '',
+        totalCount: Number(cf.cf_cantidad_total ?? 0),
+      };
+    });
+}
+
+export interface NewTicketInput {
+  contactId: string;
+  subject: string;
+  description: string;
+  tipoFalla: string;
+  camarasAfectadas: number | null;
+  fallaGlobal: boolean;
+  ubicacion: string;
+  checklist: {
+    energiaNormal: boolean;
+    sinSiniestro: boolean;
+    anomaliaPersiste: boolean;
+    reinicioIntentado: boolean;
+    accesoInternet: boolean;
+  };
+  priority: 'Baja' | 'Media' | 'Alta';
+}
+
+/** Creates a real Zoho Desk ticket on behalf of an authenticated contact, via the service account. */
+export async function createTicket(serviceToken: string, input: NewTicketInput): Promise<{ id: string; ticketNumber: string }> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const departmentId = requireEnv('ZOHO_POSTVENTA_DEPARTMENT_ID');
+
+  const body = {
+    subject: input.subject,
+    description: input.description,
+    departmentId,
+    contactId: input.contactId,
+    priority: input.priority,
+    cf: {
+      cf_tipo_de_falla: input.tipoFalla,
+      cf_camaras_afectadas: input.camarasAfectadas,
+      cf_falla_global_del_sistema: input.fallaGlobal,
+      cf_ubicacion_o_camara_especifica: input.ubicacion,
+      cf_energia_electrica_normal: input.checklist.energiaNormal,
+      cf_sin_evidencia_de_siniestro: input.checklist.sinSiniestro,
+      cf_anomalia_persiste_1h: input.checklist.anomaliaPersiste,
+      cf_se_reinicio_el_equipo: input.checklist.reinicioIntentado,
+      cf_hay_acceso_a_internet: input.checklist.accesoInternet,
+    },
+  };
+
+  const res = await fetch(`${API_BASE}/tickets`, {
+    method: 'POST',
+    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho create ticket', { status: res.status, body, data: JSON.stringify(data).slice(0, 2000) });
+  }
+  if (!res.ok) throw new Error(`Zoho create ticket failed: ${JSON.stringify(data)}`);
+  return { id: data.id, ticketNumber: data.ticketNumber };
+}
+
+/** Maps fault type + affected-asset ratio to an automatic priority — the client never picks this directly. */
+export function computeTicketPriority(
+  tipoFalla: string,
+  camarasAfectadas: number | null,
+  fallaGlobal: boolean,
+  inventory: InventoryItem[]
+): 'Baja' | 'Media' | 'Alta' {
+  if (fallaGlobal) return 'Alta';
+
+  if (tipoFalla === 'Cámaras sin señal' && camarasAfectadas) {
+    const totalCameras = inventory.find(i => i.assetType.toLowerCase().includes('cámara') || i.assetType.toLowerCase().includes('camara'))?.totalCount ?? 0;
+    if (totalCameras > 0) {
+      const pct = (camarasAfectadas / totalCameras) * 100;
+      if (pct > 15) return 'Alta';
+      return 'Media';
+    }
+  }
+
+  if (tipoFalla === 'Falla de servidor-VMS') return 'Alta';
+  if (tipoFalla === 'Conectividad-red' || tipoFalla === 'Grabación-almacenamiento') return 'Media';
+  return 'Baja';
+}
+
 export type Semaphore = 'green' | 'yellow' | 'red';
 
 export interface SupportSnapshot {

@@ -5,7 +5,8 @@ export const runtime = 'nodejs';
 /** Kicks off the "Login with Zoho" flow used purely to verify the visitor's identity. */
 export function GET(req: NextRequest) {
   const locale = req.nextUrl.searchParams.get('locale') === 'en' ? 'en' : 'es';
-  const next = req.nextUrl.searchParams.get('next') === 'documentos' ? 'documentos' : 'estado';
+  const nextParam = req.nextUrl.searchParams.get('next');
+  const next = nextParam === 'documentos' || nextParam === 'nuevo-ticket' ? nextParam : 'estado';
   const clientId = process.env.ZOHO_CLIENT_ID;
   if (!clientId) return NextResponse.json({ error: 'not_configured' }, { status: 500 });
 

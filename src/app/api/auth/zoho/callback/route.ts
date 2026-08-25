@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
   const [rawLocale, rawNext] = (req.nextUrl.searchParams.get('state') ?? '').split(':');
   const locale = rawLocale === 'en' ? 'en' : 'es';
-  const page = rawNext === 'documentos' ? 'documentos' : 'estado';
+  const page = rawNext === 'documentos' || rawNext === 'nuevo-ticket' ? rawNext : 'estado';
   const errorRedirect = NextResponse.redirect(new URL(`/${locale}/soporte/${page}?error=1`, req.nextUrl.origin));
 
   if (!code) return errorRedirect;
