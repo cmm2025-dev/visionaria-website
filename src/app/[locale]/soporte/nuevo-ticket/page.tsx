@@ -6,12 +6,11 @@ import { LogOut, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const TIPOS_FALLA = [
-  'Cámaras sin señal',
-  'Falla de servidor-VMS',
-  'Conectividad-red',
-  'Grabación-almacenamiento',
-  'Consulta-capacitación',
-  'Otro',
+  'Camaras sin Señal',
+  'Falla de Servidores -VMS',
+  'Falla de Sistema de Grabacion',
+  'Falla en Estacion de Operador',
+  'Falla de Monitor VideoWall',
 ];
 
 interface Checklist {
@@ -189,7 +188,7 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
                 </select>
               </div>
 
-              {tipoFalla === 'Cámaras sin señal' && (
+              {tipoFalla === 'Camaras sin Señal' && (
                 <div>
                   <label className="text-sm text-slate-400 block mb-1.5">{t('field_camaras_afectadas')}</label>
                   <input

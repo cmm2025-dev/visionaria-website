@@ -263,12 +263,12 @@ export async function createTicket(serviceToken: string, input: NewTicketInput):
     priority: input.priority,
     cf: {
       cf_tipo_de_falla: input.tipoFalla,
-      cf_camaras_afectadas: input.camarasAfectadas,
+      cf_cantidad_de_puntos_afectados: input.camarasAfectadas,
       cf_falla_global_del_sistema: input.fallaGlobal,
-      cf_ubicacion_o_camara_especifica: input.ubicacion,
-      cf_energia_electrica_normal: input.checklist.energiaNormal,
+      cf_ubiccion_o_camara_especifica: input.ubicacion,
+      cf_energia_electrica_verificada_y_en_estado_normal: input.checklist.energiaNormal,
       cf_sin_evidencia_de_siniestro: input.checklist.sinSiniestro,
-      cf_anomalia_persiste_1h: input.checklist.anomaliaPersiste,
+      cf_anomalia_persiste_sobre_1h: input.checklist.anomaliaPersiste,
       cf_se_reinicio_el_equipo: input.checklist.reinicioIntentado,
       cf_hay_acceso_a_internet: input.checklist.accesoInternet,
     },
@@ -296,7 +296,7 @@ export function computeTicketPriority(
 ): 'Baja' | 'Media' | 'Alta' {
   if (fallaGlobal) return 'Alta';
 
-  if (tipoFalla === 'Cámaras sin señal' && camarasAfectadas) {
+  if (tipoFalla === 'Camaras sin Señal' && camarasAfectadas) {
     const totalCameras = inventory.find(i => i.assetType.toLowerCase().includes('cámara') || i.assetType.toLowerCase().includes('camara'))?.totalCount ?? 0;
     if (totalCameras > 0) {
       const pct = (camarasAfectadas / totalCameras) * 100;
@@ -305,8 +305,9 @@ export function computeTicketPriority(
     }
   }
 
-  if (tipoFalla === 'Falla de servidor-VMS') return 'Alta';
-  if (tipoFalla === 'Conectividad-red' || tipoFalla === 'Grabación-almacenamiento') return 'Media';
+  if (tipoFalla === 'Falla de Servidores -VMS') return 'Alta';
+  if (tipoFalla === 'Falla de Sistema de Grabacion' || tipoFalla === 'Falla de Monitor VideoWall') return 'Media';
+  if (tipoFalla === 'Falla en Estacion de Operador') return 'Media';
   return 'Baja';
 }
 

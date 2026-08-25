@@ -11,12 +11,11 @@ import {
 export const runtime = 'nodejs';
 
 const VALID_TIPOS = [
-  'Cámaras sin señal',
-  'Falla de servidor-VMS',
-  'Conectividad-red',
-  'Grabación-almacenamiento',
-  'Consulta-capacitación',
-  'Otro',
+  'Camaras sin Señal',
+  'Falla de Servidores -VMS',
+  'Falla de Sistema de Grabacion',
+  'Falla en Estacion de Operador',
+  'Falla de Monitor VideoWall',
 ];
 
 export async function POST(req: NextRequest) {
