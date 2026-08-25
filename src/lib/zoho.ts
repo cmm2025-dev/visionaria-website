@@ -247,7 +247,7 @@ export interface NewTicketInput {
     reinicioIntentado: boolean;
     accesoInternet: boolean;
   };
-  priority: 'Baja' | 'Media' | 'Alta';
+  priority: 'Low' | 'Medium' | 'High';
 }
 
 /** Creates a real Zoho Desk ticket on behalf of an authenticated contact, via the service account. */
@@ -279,12 +279,18 @@ export async function createTicket(serviceToken: string, input: NewTicketInput):
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  const data = await res.json();
+  const text = await res.text();
   if (process.env.ZOHO_DEBUG === '1') {
-    console.log('zoho create ticket', { status: res.status, body, data: JSON.stringify(data).slice(0, 2000) });
+    console.log('zoho create ticket', { status: res.status, body, text: text.slice(0, 2000) });
+  }
+  let data: Record<string, unknown>;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`Zoho create ticket returned non-JSON response (status ${res.status}): ${text.slice(0, 500)}`);
   }
   if (!res.ok) throw new Error(`Zoho create ticket failed: ${JSON.stringify(data)}`);
-  return { id: data.id, ticketNumber: data.ticketNumber };
+  return { id: data.id as string, ticketNumber: data.ticketNumber as string };
 }
 
 /** Maps fault type + affected-asset ratio to an automatic priority — the client never picks this directly. */
@@ -293,22 +299,22 @@ export function computeTicketPriority(
   camarasAfectadas: number | null,
   fallaGlobal: boolean,
   inventory: InventoryItem[]
-): 'Baja' | 'Media' | 'Alta' {
-  if (fallaGlobal) return 'Alta';
+): 'Low' | 'Medium' | 'High' {
+  if (fallaGlobal) return 'High';
 
   if (tipoFalla === 'Camaras sin Señal' && camarasAfectadas) {
     const totalCameras = inventory.find(i => i.assetType.toLowerCase().includes('cámara') || i.assetType.toLowerCase().includes('camara'))?.totalCount ?? 0;
     if (totalCameras > 0) {
       const pct = (camarasAfectadas / totalCameras) * 100;
-      if (pct > 15) return 'Alta';
-      return 'Media';
+      if (pct > 15) return 'High';
+      return 'Medium';
     }
   }
 
-  if (tipoFalla === 'Falla de Servidores -VMS') return 'Alta';
-  if (tipoFalla === 'Falla de Sistema de Grabacion' || tipoFalla === 'Falla de Monitor VideoWall') return 'Media';
-  if (tipoFalla === 'Falla en Estacion de Operador') return 'Media';
-  return 'Baja';
+  if (tipoFalla === 'Falla de Servidores -VMS') return 'High';
+  if (tipoFalla === 'Falla de Sistema de Grabacion' || tipoFalla === 'Falla de Monitor VideoWall') return 'Medium';
+  if (tipoFalla === 'Falla en Estacion de Operador') return 'Medium';
+  return 'Low';
 }
 
 export type Semaphore = 'green' | 'yellow' | 'red';
