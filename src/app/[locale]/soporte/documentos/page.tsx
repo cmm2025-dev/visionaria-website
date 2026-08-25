@@ -2,13 +2,19 @@
 
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
-import { FileText, LogOut, ExternalLink } from 'lucide-react';
+import { FileText, PlayCircle, LogOut, ExternalLink } from 'lucide-react';
 
 interface ClientDocument {
   id: string;
   name: string;
   url: string | null;
   system: string | null;
+}
+
+const VIDEO_HOST_OR_EXT = /dropbox\.com|youtube\.com|youtu\.be|vimeo\.com|\.(mp4|mov|webm|m4v)(\?|$)/i;
+
+function isVideoLink(url: string | null): boolean {
+  return !!url && VIDEO_HOST_OR_EXT.test(url);
 }
 
 export default function SupportDocumentsPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -99,25 +105,30 @@ export default function SupportDocumentsPage({ params }: { params: Promise<{ loc
               <p className="text-slate-500 text-sm">{t('no_documents')}</p>
             ) : (
               <div className="flex flex-col gap-3">
-                {documents.map(doc => (
-                  <a
-                    key={doc.id}
-                    href={doc.url ?? '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
-                    style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
-                  >
-                    <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
-                      <FileText size={20} style={{ color: '#F09422' }} />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white font-semibold text-sm">{doc.name}</p>
-                      {doc.system && <p className="text-xs text-slate-500 mt-0.5">{doc.system}</p>}
-                    </div>
-                    <ExternalLink size={16} className="text-slate-500 shrink-0" />
-                  </a>
-                ))}
+                {documents.map(doc => {
+                  const video = isVideoLink(doc.url);
+                  return (
+                    <a
+                      key={doc.id}
+                      href={doc.url ?? '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
+                      style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+                    >
+                      <div className="shrink-0 p-3 rounded-xl" style={{ background: video ? 'rgba(61,138,130,0.12)' : 'rgba(240,148,34,0.12)' }}>
+                        {video
+                          ? <PlayCircle size={20} style={{ color: '#3D8A82' }} />
+                          : <FileText size={20} style={{ color: '#F09422' }} />}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-white font-semibold text-sm">{doc.name}</p>
+                        {doc.system && <p className="text-xs text-slate-500 mt-0.5">{doc.system}</p>}
+                      </div>
+                      <ExternalLink size={16} className="text-slate-500 shrink-0" />
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
