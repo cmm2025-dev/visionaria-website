@@ -21,6 +21,12 @@ interface Checklist {
   accesoInternet: boolean;
 }
 
+const PRIORITY_STYLE: Record<string, { color: string; bg: string }> = {
+  Low: { color: '#3D8A82', bg: 'rgba(61,138,130,0.12)' },
+  Medium: { color: '#F09422', bg: 'rgba(240,148,34,0.12)' },
+  High: { color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
+};
+
 export default function NewTicketPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
   const t = useTranslations('newTicket');
@@ -127,6 +133,28 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
             <CheckCircle2 size={40} style={{ color: '#34d399' }} />
             <h2 className="text-xl font-bold text-white">{t('success_title')}</h2>
             <p className="text-slate-400">{t('success_desc', { ticketNumber: result.ticketNumber })}</p>
+
+            <div className="w-full mt-2 rounded-xl border text-left overflow-hidden" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex items-center justify-between px-5 py-3.5" style={{ background: PRIORITY_STYLE[result.priority].bg }}>
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--muted)' }}>{t('summary_priority')}</span>
+                <span className="text-sm font-bold" style={{ color: PRIORITY_STYLE[result.priority].color }}>{t(`priority_${result.priority.toLowerCase()}`)}</span>
+              </div>
+              <div className="flex flex-col divide-y" style={{ background: 'var(--background)' }}>
+                <div className="flex items-center justify-between px-5 py-3">
+                  <span className="text-xs text-slate-500">{t('summary_status')}</span>
+                  <span className="text-sm text-white font-medium">{t('summary_status_open')}</span>
+                </div>
+                <div className="flex items-center justify-between px-5 py-3">
+                  <span className="text-xs text-slate-500">{t('field_tipo_falla')}</span>
+                  <span className="text-sm text-white font-medium">{tipoFalla}</span>
+                </div>
+                <div className="flex items-center justify-between px-5 py-3">
+                  <span className="text-xs text-slate-500">{t('field_subject')}</span>
+                  <span className="text-sm text-white font-medium truncate max-w-[60%]">{subject}</span>
+                </div>
+              </div>
+            </div>
+
             <button
               onClick={() => router.push(`/${locale}/soporte/estado`)}
               className="mt-2 inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all"

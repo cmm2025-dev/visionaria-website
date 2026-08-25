@@ -1074,6 +1074,12 @@
     "success_title": "Ticket created",
     "success_desc": "Your request #{ticketNumber} was registered successfully. We'll be in touch shortly.",
     "view_status": "View my requests status",
+    "summary_priority": "Assigned priority",
+    "summary_status": "Status",
+    "summary_status_open": "Open",
+    "priority_low": "Low",
+    "priority_medium": "Medium",
+    "priority_high": "High",
     "error_generic": "We couldn't submit your ticket. Please try again in a few minutes.",
     "error_no_account": "Your account isn't linked to a registered client. Please contact support."
   }

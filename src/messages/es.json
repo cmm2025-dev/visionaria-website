@@ -1074,6 +1074,12 @@
     "success_title": "Ticket creado",
     "success_desc": "Tu solicitud #{ticketNumber} fue registrada correctamente. Te contactaremos a la brevedad.",
     "view_status": "Ver estado de mis solicitudes",
+    "summary_priority": "Prioridad asignada",
+    "summary_status": "Estado",
+    "summary_status_open": "Abierto",
+    "priority_low": "Baja",
+    "priority_medium": "Media",
+    "priority_high": "Alta",
     "error_generic": "No pudimos enviar tu ticket. Intenta nuevamente en unos minutos.",
     "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte."
   }
