@@ -110,7 +110,7 @@ export async function findContactByEmail(serviceToken: string, email: string): P
     email: first.email,
     canCreateTickets: !cf.cf_solo_visualizacion,
     additionalAccountIds,
-    fullAccess: Boolean(cf.cf_acceso_total_postventa),
+    fullAccess: Boolean(cf.cf_acceso_total_visionaria),
   };
 }
 
