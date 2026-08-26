@@ -2,7 +2,10 @@
 
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
-import { AlertTriangle, CheckCircle2, LogOut, ShieldAlert } from 'lucide-react';
+import {
+  AlertTriangle, CheckCircle2, LogOut, ShieldAlert, Camera, Server,
+  Router, Battery, Monitor, HardDrive, Clock, Ticket,
+} from 'lucide-react';
 import MagicLinkLogin from '@/components/MagicLinkLogin';
 
 interface Ticket {
@@ -13,6 +16,12 @@ interface Ticket {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   dueDate: string | null;
   isOverdue: boolean;
+  modifiedTime: string | null;
+}
+
+interface InventoryItem {
+  assetType: string;
+  totalCount: number;
 }
 
 interface Snapshot {
@@ -24,6 +33,7 @@ interface Snapshot {
   overdueCount: number;
   updatedAt: string;
   tickets: Ticket[];
+  inventory: InventoryItem[];
   isMultiAccount?: boolean;
   accounts?: (Snapshot & { accountId: string })[];
 }
@@ -41,6 +51,17 @@ const PRIORITY_COLOR: Record<string, string> = {
   urgent: '#ef4444',
 };
 
+/** Best-effort icon for a free-text inventory asset type (cf_tipo_activo) coming out of Zoho. */
+function iconForAsset(assetType: string) {
+  const v = assetType.toLowerCase();
+  if (v.includes('cámara') || v.includes('camara')) return Camera;
+  if (v.includes('servidor')) return Server;
+  if (v.includes('switch') || v.includes('red')) return Router;
+  if (v.includes('ups') || v.includes('energ')) return Battery;
+  if (v.includes('monitor') || v.includes('videowall')) return Monitor;
+  return HardDrive;
+}
+
 function formatRemaining(dueDate: string | null, locale: string): string | null {
   if (!dueDate) return null;
   const diffMs = new Date(dueDate).getTime() - Date.now();
@@ -48,6 +69,18 @@ function formatRemaining(dueDate: string | null, locale: string): string | null 
   const hours = Math.floor(diffMs / (1000 * 60 * 60));
   const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
   return locale === 'en' ? `${hours}h ${minutes}m` : `${hours} h ${minutes} min`;
+}
+
+function formatRelative(iso: string | null, locale: string): string {
+  if (!iso) return '';
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const minutes = Math.floor(diffMs / (1000 * 60));
+  if (minutes < 1) return locale === 'en' ? 'just now' : 'recién';
+  if (minutes < 60) return locale === 'en' ? `${minutes}m ago` : `hace ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return locale === 'en' ? `${hours}h ago` : `hace ${hours} h`;
+  const days = Math.floor(hours / 24);
+  return locale === 'en' ? `${days}d ago` : `hace ${days} d`;
 }
 
 export default function SupportStatusPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -79,18 +112,25 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
     setSnapshot(null);
   };
 
+  const displayed = snapshot?.isMultiAccount
+    ? snapshot.accounts?.find(a => a.accountId === selectedAccountId) ?? snapshot
+    : snapshot;
+  const recentEvents = displayed
+    ? [...displayed.tickets].sort((a, b) => (b.modifiedTime ?? '').localeCompare(a.modifiedTime ?? '')).slice(0, 6)
+    : [];
+
   return (
     <div>
       <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#34d399' }} />
-        <div className="max-w-5xl mx-auto relative">
+        <div className="max-w-6xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: '#34d399' }}>{t('eyebrow')}</p>
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300 max-w-2xl">{t('subtitle')}</p>
         </div>
       </div>
 
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {status === 'loading' && (
           <p className="text-slate-400 text-center py-16">{t('loading')}</p>
         )}
@@ -136,6 +176,7 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
               </button>
             </div>
 
+            {/* General status + KPI tiles */}
             <div className="rounded-2xl border overflow-hidden" style={{ borderColor: 'var(--border)', background: 'var(--card-bg)' }}>
               <div className="px-8 py-6 flex items-center gap-4" style={{ background: SEMAPHORE_STYLE[snapshot.semaphore].bg }}>
                 {(() => { const Icon = SEMAPHORE_STYLE[snapshot.semaphore].Icon; return <Icon size={28} style={{ color: SEMAPHORE_STYLE[snapshot.semaphore].color }} />; })()}
@@ -164,6 +205,7 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
               </div>
             </div>
 
+            {/* Multi-account client picker */}
             {snapshot.isMultiAccount && snapshot.accounts && (
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('breakdown_title')}</h3>
@@ -205,44 +247,90 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
               </div>
             )}
 
-            {(() => {
-              const selectedAccount = snapshot.accounts?.find(a => a.accountId === selectedAccountId);
-              const ticketsToShow = snapshot.isMultiAccount ? selectedAccount?.tickets ?? null : snapshot.tickets;
-              if (snapshot.isMultiAccount && !selectedAccount) return null;
-
-              return (
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>
-                    {snapshot.isMultiAccount ? `${t('tickets_title')} — ${selectedAccount!.clientName}` : t('tickets_title')}
-                  </h3>
-                  {!ticketsToShow || ticketsToShow.length === 0 ? (
-                    <p className="text-slate-500 text-sm">{t('no_tickets')}</p>
-                  ) : (
-                    <div className="flex flex-col gap-3">
-                      {ticketsToShow.map(ticket => {
-                        const remaining = formatRemaining(ticket.dueDate, locale);
+            {(!snapshot.isMultiAccount || displayed !== snapshot) && displayed && (
+              <>
+                {/* Installed assets */}
+                {displayed.inventory.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--muted)' }}>{t('assets_title')}</h3>
+                    <p className="text-xs text-slate-500 mb-4">{t('assets_hint')}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {displayed.inventory.map(item => {
+                        const Icon = iconForAsset(item.assetType);
                         return (
-                          <div key={ticket.id} className="rounded-xl p-5 border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                          <div key={item.assetType} className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                            <Icon size={20} style={{ color: '#34d399' }} />
                             <div>
-                              <p className="text-white font-semibold text-sm">#{ticket.ticketNumber} {ticket.subject}</p>
-                              <p className="text-xs text-slate-500 mt-1">{ticket.status}</p>
-                            </div>
-                            <div className="flex items-center gap-3 shrink-0">
-                              <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ color: PRIORITY_COLOR[ticket.priority] ?? '#F09422', background: 'rgba(255,255,255,0.06)' }}>
-                                {t(`priority_${ticket.priority.toLowerCase()}`)}
-                              </span>
-                              <span className="text-xs" style={{ color: ticket.isOverdue ? '#ef4444' : 'var(--muted)' }}>
-                                {ticket.isOverdue ? t('sla_overdue') : remaining ? `${t('sla_remaining')}: ${remaining}` : ''}
-                              </span>
+                              <p className="text-2xl font-extrabold text-white">{item.totalCount}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">{item.assetType}</p>
                             </div>
                           </div>
                         );
                       })}
                     </div>
-                  )}
+                  </div>
+                )}
+
+                {/* Two-column: ticket list + recent events */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('tickets_title')}</h3>
+                    {displayed.tickets.length === 0 ? (
+                      <p className="text-slate-500 text-sm">{t('no_tickets')}</p>
+                    ) : (
+                      <div className="flex flex-col gap-3">
+                        {displayed.tickets.map(ticket => {
+                          const remaining = formatRemaining(ticket.dueDate, locale);
+                          return (
+                            <div key={ticket.id} className="rounded-xl p-5 border flex flex-col gap-2" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                              <p className="text-white font-semibold text-sm">#{ticket.ticketNumber} {ticket.subject}</p>
+                              <div className="flex items-center justify-between">
+                                <p className="text-xs text-slate-500">{ticket.status}</p>
+                                <div className="flex items-center gap-3 shrink-0">
+                                  <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ color: PRIORITY_COLOR[ticket.priority] ?? '#F09422', background: 'rgba(255,255,255,0.06)' }}>
+                                    {t(`priority_${ticket.priority.toLowerCase()}`)}
+                                  </span>
+                                  <span className="text-xs" style={{ color: ticket.isOverdue ? '#ef4444' : 'var(--muted)' }}>
+                                    {ticket.isOverdue ? t('sla_overdue') : remaining ? `${t('sla_remaining')}: ${remaining}` : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('events_title')}</h3>
+                    {recentEvents.length === 0 ? (
+                      <p className="text-slate-500 text-sm">{t('no_events')}</p>
+                    ) : (
+                      <div className="rounded-xl border divide-y" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        {recentEvents.map(ticket => (
+                          <div key={ticket.id} className="px-5 py-4 flex items-start gap-3">
+                            <Ticket size={16} className="mt-0.5 shrink-0" style={{ color: PRIORITY_COLOR[ticket.priority] ?? '#F09422' }} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-white truncate">#{ticket.ticketNumber} {ticket.subject}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">{ticket.status}</p>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-slate-500 shrink-0">
+                              <Clock size={12} />
+                              {formatRelative(ticket.modifiedTime, locale)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              );
-            })()}
+              </>
+            )}
+
+            {snapshot.isMultiAccount && displayed === snapshot && (
+              <p className="text-xs text-slate-500">{t('breakdown_hint')}</p>
+            )}
           </div>
         )}
       </section>

@@ -4,9 +4,21 @@ import {
   computeSnapshot,
   findContactByEmail,
   getAccountTickets,
+  getClientInventory,
   getServiceAccessToken,
   resolveAccessibleAccounts,
+  type InventoryItem,
 } from '@/lib/zoho';
+
+function sumInventory(items: InventoryItem[][]): InventoryItem[] {
+  const totals = new Map<string, number>();
+  for (const list of items) {
+    for (const item of list) {
+      totals.set(item.assetType, (totals.get(item.assetType) ?? 0) + item.totalCount);
+    }
+  }
+  return Array.from(totals, ([assetType, totalCount]) => ({ assetType, totalCount }));
+}
 
 export const runtime = 'nodejs';
 
@@ -31,13 +43,16 @@ export async function GET(req: NextRequest) {
     // full-access view can span dozens of accounts, and firing them all simultaneously trips
     // Zoho's concurrent-API-call limit (429 TOO_MANY_REQUESTS).
     const CONCURRENCY = 4;
-    const perAccount: ({ accountId: string } & ReturnType<typeof computeSnapshot>)[] = [];
+    const perAccount: ({ accountId: string; inventory: InventoryItem[] } & ReturnType<typeof computeSnapshot>)[] = [];
     for (let i = 0; i < accessibleAccounts.length; i += CONCURRENCY) {
       const batch = accessibleAccounts.slice(i, i + CONCURRENCY);
       const results = await Promise.all(
         batch.map(async account => {
-          const tickets = await getAccountTickets(serviceToken, account.id);
-          return { accountId: account.id, ...computeSnapshot(account.name, tickets) };
+          const [tickets, inventory] = await Promise.all([
+            getAccountTickets(serviceToken, account.id),
+            getClientInventory(serviceToken, account.id),
+          ]);
+          return { accountId: account.id, inventory, ...computeSnapshot(account.name, tickets) };
         })
       );
       perAccount.push(...results);
@@ -48,9 +63,11 @@ export async function GET(req: NextRequest) {
     const aggregate = isMultiAccount
       ? computeSnapshot(aggregateLabel, perAccount.flatMap(a => a.tickets))
       : perAccount[0];
+    const aggregateInventory = isMultiAccount ? sumInventory(perAccount.map(a => a.inventory)) : perAccount[0].inventory;
 
     return NextResponse.json({
       ...aggregate,
+      inventory: aggregateInventory,
       isMultiAccount,
       accounts: isMultiAccount ? perAccount : undefined,
     });

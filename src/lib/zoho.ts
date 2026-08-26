@@ -209,6 +209,7 @@ export interface ZohoTicket {
   priority: Priority;
   dueDate: string | null;
   isOverdue: boolean;
+  modifiedTime: string | null;
 }
 
 /**
@@ -257,6 +258,7 @@ export async function getAccountTickets(serviceToken: string, accountId: string)
       priority: normalizePriority(t.priority),
       dueDate: (t.dueDate as string) ?? null,
       isOverdue: Boolean(t.isOverdue),
+      modifiedTime: (t.modifiedTime as string) ?? null,
     }));
 }
 
