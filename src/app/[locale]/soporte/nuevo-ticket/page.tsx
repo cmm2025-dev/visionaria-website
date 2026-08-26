@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import { LogOut, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import MagicLinkLogin from '@/components/MagicLinkLogin';
 
 const TIPOS_FALLA = [
   'Camaras sin Señal',
@@ -121,14 +122,18 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
 
         {status === 'unauthenticated' && (
           <div className="rounded-2xl p-10 border text-center" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
-            <p className="text-slate-400 mb-6">{t('login_desc')}</p>
-            <a
-              href={`/api/auth/zoho/login?locale=${locale}&next=nuevo-ticket`}
-              className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all"
-              style={{ background: '#F09422', color: '#1E1B18' }}
-            >
-              {t('login_cta')}
-            </a>
+            <MagicLinkLogin
+              locale={locale}
+              next="nuevo-ticket"
+              labels={{
+                description: t('login_desc'),
+                placeholder: t('login_placeholder'),
+                submit: t('login_cta'),
+                submitting: t('login_submitting'),
+                sentTitle: t('login_sent_title'),
+                sentDesc: t('login_sent_desc'),
+              }}
+            />
           </div>
         )}
 

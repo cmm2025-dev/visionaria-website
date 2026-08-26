@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, CheckCircle2, LogOut, ShieldAlert } from 'lucide-react';
+import MagicLinkLogin from '@/components/MagicLinkLogin';
 
 interface Ticket {
   id: string;
@@ -96,14 +97,18 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
 
         {status === 'unauthenticated' && (
           <div className="rounded-2xl p-10 border text-center" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
-            <p className="text-slate-400 mb-6">{t('login_desc')}</p>
-            <a
-              href={`/api/auth/zoho/login?locale=${locale}`}
-              className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full transition-all"
-              style={{ background: '#F09422', color: '#1E1B18' }}
-            >
-              {t('login_cta')}
-            </a>
+            <MagicLinkLogin
+              locale={locale}
+              next="estado"
+              labels={{
+                description: t('login_desc'),
+                placeholder: t('login_placeholder'),
+                submit: t('login_cta'),
+                submitting: t('login_submitting'),
+                sentTitle: t('login_sent_title'),
+                sentDesc: t('login_sent_desc'),
+              }}
+            />
           </div>
         )}
 

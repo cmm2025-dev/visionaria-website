@@ -1,21 +1,14 @@
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
 
-const SALT = 'visionaria-support-session-v1';
-
-function getKey(): Buffer {
+function getKey(salt: string): Buffer {
   const secret = process.env.SESSION_SECRET;
   if (!secret) throw new Error('SESSION_SECRET is not set');
-  return scryptSync(secret, SALT, 32);
+  return scryptSync(secret, salt, 32);
 }
 
-export interface SupportSession {
-  email: string;
-  issuedAt: number;
-}
-
-/** Encrypts a session payload into an opaque cookie value (AES-256-GCM, base64url). */
-export function encodeSession(payload: SupportSession): string {
-  const key = getKey();
+/** Encrypts a JSON-serializable payload into an opaque base64url token (AES-256-GCM). */
+function encrypt(salt: string, payload: unknown): string {
+  const key = getKey(salt);
   const iv = randomBytes(12);
   const cipher = createCipheriv('aes-256-gcm', key, iv);
   const json = Buffer.from(JSON.stringify(payload), 'utf8');
@@ -24,10 +17,10 @@ export function encodeSession(payload: SupportSession): string {
   return Buffer.concat([iv, tag, encrypted]).toString('base64url');
 }
 
-/** Decrypts a cookie value produced by encodeSession. Returns null if invalid/tampered/expired. */
-export function decodeSession(value: string, maxAgeMs = 1000 * 60 * 60 * 8): SupportSession | null {
+/** Decrypts a token produced by encrypt(). Returns null if invalid/tampered. */
+function decrypt<T>(salt: string, value: string): T | null {
   try {
-    const key = getKey();
+    const key = getKey(salt);
     const buf = Buffer.from(value, 'base64url');
     const iv = buf.subarray(0, 12);
     const tag = buf.subarray(12, 28);
@@ -35,13 +28,55 @@ export function decodeSession(value: string, maxAgeMs = 1000 * 60 * 60 * 8): Sup
     const decipher = createDecipheriv('aes-256-gcm', key, iv);
     decipher.setAuthTag(tag);
     const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
-    const payload = JSON.parse(decrypted.toString('utf8')) as SupportSession;
-    if (typeof payload.email !== 'string' || typeof payload.issuedAt !== 'number') return null;
-    if (Date.now() - payload.issuedAt > maxAgeMs) return null;
-    return payload;
+    return JSON.parse(decrypted.toString('utf8')) as T;
   } catch {
     return null;
   }
 }
 
+const SESSION_SALT = 'visionaria-support-session-v1';
+
+export interface SupportSession {
+  email: string;
+  issuedAt: number;
+}
+
+/** Encrypts a session payload into an opaque cookie value. */
+export function encodeSession(payload: SupportSession): string {
+  return encrypt(SESSION_SALT, payload);
+}
+
+/** Decrypts a cookie value produced by encodeSession. Returns null if invalid/tampered/expired. */
+export function decodeSession(value: string, maxAgeMs = 1000 * 60 * 60 * 8): SupportSession | null {
+  const payload = decrypt<SupportSession>(SESSION_SALT, value);
+  if (!payload || typeof payload.email !== 'string' || typeof payload.issuedAt !== 'number') return null;
+  if (Date.now() - payload.issuedAt > maxAgeMs) return null;
+  return payload;
+}
+
 export const SESSION_COOKIE = 'visionaria_support_session';
+
+const MAGIC_SALT = 'visionaria-magic-link-v1';
+
+export interface MagicLinkPayload {
+  email: string;
+  next: string;
+  locale: string;
+  issuedAt: number;
+}
+
+/**
+ * Encodes a short-lived, single-purpose magic-link token. Not tracked as "used" server-side
+ * (no persistent store) -- the short expiry window is the primary defense against replay.
+ */
+export function encodeMagicLink(payload: Omit<MagicLinkPayload, 'issuedAt'>): string {
+  return encrypt(MAGIC_SALT, { ...payload, issuedAt: Date.now() });
+}
+
+/** Decodes a magic-link token. Returns null if invalid/tampered/expired. */
+export function decodeMagicLink(value: string, maxAgeMs = 1000 * 60 * 15): MagicLinkPayload | null {
+  const payload = decrypt<MagicLinkPayload>(MAGIC_SALT, value);
+  if (!payload || typeof payload.email !== 'string' || typeof payload.issuedAt !== 'number') return null;
+  if (Date.now() - payload.issuedAt > maxAgeMs) return null;
+  return payload;
+}
