@@ -117,7 +117,7 @@ export async function findContactByEmail(serviceToken: string, email: string): P
 /** Lists every Account (used for the "full access" Visionaria-staff view). */
 export async function getAllAccounts(serviceToken: string): Promise<{ id: string; name: string }[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');
-  const res = await fetch(`${API_BASE}/accounts?from=0&limit=200`, {
+  const res = await fetch(`${API_BASE}/accounts?from=0&limit=100`, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
   const data = await res.json();
