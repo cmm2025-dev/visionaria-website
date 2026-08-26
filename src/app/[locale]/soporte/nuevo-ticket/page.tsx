@@ -89,7 +89,11 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
       });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error === 'no_account' ? t('error_no_account') : t('error_generic'));
+        setErrorMsg(
+          data.error === 'no_account' ? t('error_no_account')
+          : data.error === 'not_authorized' ? t('error_not_authorized')
+          : t('error_generic')
+        );
         setStatus('ready');
         return;
       }

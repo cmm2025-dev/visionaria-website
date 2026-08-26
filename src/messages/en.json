@@ -219,6 +219,7 @@
     "near_sla": "SLA about to expire",
     "overdue": "Overdue",
     "updated_at": "Last updated",
+    "breakdown_title": "Breakdown by client",
     "tickets_title": "Active requests",
     "no_tickets": "You have no active requests right now.",
     "sla_remaining": "SLA remaining",
@@ -1081,6 +1082,7 @@
     "priority_medium": "Medium",
     "priority_high": "High",
     "error_generic": "We couldn't submit your ticket. Please try again in a few minutes.",
-    "error_no_account": "Your account isn't linked to a registered client. Please contact support."
+    "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
+    "error_not_authorized": "Your account isn't authorized to create tickets. If you need to report an issue, contact your institution's authorized operator."
   }
 }

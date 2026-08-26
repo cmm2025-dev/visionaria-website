@@ -219,6 +219,7 @@
     "near_sla": "Próximas a vencer SLA",
     "overdue": "Vencidas",
     "updated_at": "Última actualización",
+    "breakdown_title": "Desglose por cliente",
     "tickets_title": "Solicitudes activas",
     "no_tickets": "No tienes solicitudes activas en este momento.",
     "sla_remaining": "SLA restante",
@@ -1081,6 +1082,7 @@
     "priority_medium": "Media",
     "priority_high": "Alta",
     "error_generic": "No pudimos enviar tu ticket. Intenta nuevamente en unos minutos.",
-    "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte."
+    "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte.",
+    "error_not_authorized": "Tu cuenta no tiene permiso para crear tickets. Si necesitas reportar una falla, contacta al operador autorizado de tu institución."
   }
 }

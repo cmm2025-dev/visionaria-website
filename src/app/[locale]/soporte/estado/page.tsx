@@ -23,6 +23,8 @@ interface Snapshot {
   overdueCount: number;
   updatedAt: string;
   tickets: Ticket[];
+  isMultiAccount?: boolean;
+  accounts?: (Snapshot & { accountId: string })[];
 }
 
 const SEMAPHORE_STYLE = {
@@ -155,6 +157,36 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
                 {t('updated_at')}: {new Date(snapshot.updatedAt).toLocaleString(locale === 'en' ? 'en-US' : 'es-CL')}
               </div>
             </div>
+
+            {snapshot.isMultiAccount && snapshot.accounts && (
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('breakdown_title')}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {snapshot.accounts.map(acc => {
+                    const style = SEMAPHORE_STYLE[acc.semaphore];
+                    const Icon = style.Icon;
+                    return (
+                      <div key={acc.accountId} className="rounded-xl border p-5 flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        <div className="flex items-center justify-between">
+                          <p className="text-white font-semibold text-sm">{acc.clientName}</p>
+                          <Icon size={16} style={{ color: style.color }} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-lg font-extrabold text-white">{acc.activeCount}</p>
+                            <p className="text-slate-500">{t('active')}</p>
+                          </div>
+                          <div>
+                            <p className="text-lg font-extrabold" style={{ color: acc.overdueCount > 0 ? '#ef4444' : 'white' }}>{acc.overdueCount}</p>
+                            <p className="text-slate-500">{t('overdue')}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div>
               <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('tickets_title')}</h3>

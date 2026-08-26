@@ -59,6 +59,12 @@ interface ZohoContact {
   accountId?: string;
   accountName?: string;
   email: string;
+  /** Only genuine site operators may open tickets — regional/executive viewers typically may not. */
+  canCreateTickets: boolean;
+  /** Extra Account IDs a regional client can see, beyond their own primary account. */
+  additionalAccountIds: string[];
+  /** Visionaria staff flag: see every client's data, not just their own account(s). */
+  fullAccess: boolean;
 }
 
 /** Looks up the Desk Contact record for a verified login email, using the service token. */
@@ -90,7 +96,57 @@ export async function findContactByEmail(serviceToken: string, email: string): P
     }
   }
 
-  return { id: first.id, accountId: first.accountId, accountName, email: first.email };
+  const cf = (first.cf as Record<string, unknown>) ?? {};
+  const additionalRaw = String(cf.cf_accounts_adicionales ?? '');
+  const additionalAccountIds = additionalRaw
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  return {
+    id: first.id,
+    accountId: first.accountId,
+    accountName,
+    email: first.email,
+    canCreateTickets: !cf.cf_solo_visualizacion,
+    additionalAccountIds,
+    fullAccess: Boolean(cf.cf_acceso_total_postventa),
+  };
+}
+
+/** Lists every Account (used for the "full access" Visionaria-staff view). */
+export async function getAllAccounts(serviceToken: string): Promise<{ id: string; name: string }[]> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const res = await fetch(`${API_BASE}/accounts?from=0&limit=200`, {
+    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
+  });
+  const data = await res.json();
+  const rows = Array.isArray(data?.data) ? data.data : [];
+  return rows.map((a: Record<string, unknown>) => ({ id: a.id as string, name: (a.accountName as string) ?? a.id as string }));
+}
+
+/** Resolves the full list of {id, name} Accounts a contact is allowed to see. */
+export async function resolveAccessibleAccounts(
+  serviceToken: string,
+  contact: ZohoContact
+): Promise<{ id: string; name: string }[]> {
+  if (contact.fullAccess) return getAllAccounts(serviceToken);
+
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const ids = [contact.accountId, ...contact.additionalAccountIds].filter(Boolean) as string[];
+  const uniqueIds = Array.from(new Set(ids));
+
+  const accounts = await Promise.all(
+    uniqueIds.map(async id => {
+      if (id === contact.accountId && contact.accountName) return { id, name: contact.accountName };
+      const res = await fetch(`${API_BASE}/accounts/${id}`, { headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId } });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return { id, name: (data?.accountName as string) ?? id };
+    })
+  );
+
+  return accounts.filter((a): a is { id: string; name: string } => a !== null);
 }
 
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';

@@ -48,6 +48,9 @@ export async function POST(req: NextRequest) {
     if (!contact || !contact.accountId) {
       return NextResponse.json({ error: 'no_account' }, { status: 404 });
     }
+    if (!contact.canCreateTickets) {
+      return NextResponse.json({ error: 'not_authorized' }, { status: 403 });
+    }
 
     const inventory = await getClientInventory(serviceToken, contact.accountId);
     const priority = computeTicketPriority(tipoFalla, camarasAfectadas, fallaGlobal, inventory);
