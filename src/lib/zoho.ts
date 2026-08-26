@@ -114,6 +114,53 @@ export async function findContactByEmail(serviceToken: string, email: string): P
   };
 }
 
+/**
+ * Looks up the Desk Contact record for an inbound WhatsApp sender's phone number, using the
+ * service token. Mirrors findContactByEmail — same nested-`cf` field reading, same "first match
+ * wins" behavior. Numbers should be compared in E.164 form; Zoho stores them however the agent
+ * typed them at Contact-creation time, so this may need loosening (last-N-digits match) once we
+ * see real phone values coming back from the channel.
+ */
+export async function findContactByPhone(serviceToken: string, phone: string): Promise<ZohoContact | null> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const url = `${API_BASE}/contacts/search?phone=${encodeURIComponent(phone)}`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
+  });
+  if (res.status === 204) return null;
+  const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho contacts/search (phone)', { status: res.status, phone, data: JSON.stringify(data).slice(0, 2000) });
+  }
+  const first = data?.data?.[0];
+  if (!first) return null;
+
+  let accountName: string | undefined;
+  if (first.accountId) {
+    const accRes = await fetch(`${API_BASE}/accounts/${first.accountId}`, {
+      headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
+    });
+    if (accRes.ok) {
+      const accData = await accRes.json();
+      accountName = accData?.accountName;
+    }
+  }
+
+  const cf = (first.cf as Record<string, unknown>) ?? {};
+  const additionalRaw = String(cf.cf_accounts_adicionales ?? '');
+  const additionalAccountIds = additionalRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+  return {
+    id: first.id,
+    accountId: first.accountId,
+    accountName,
+    email: first.email,
+    canCreateTickets: !cf.cf_solo_visualizacion,
+    additionalAccountIds,
+    fullAccess: Boolean(cf.cf_acceso_total_visionaria),
+  };
+}
+
 /** Lists every Account (used for the "full access" Visionaria-staff view). */
 export async function getAllAccounts(serviceToken: string): Promise<{ id: string; name: string }[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');
@@ -422,4 +469,92 @@ export function computeSnapshot(clientName: string, tickets: ZohoTicket[]): Supp
     updatedAt: new Date().toISOString(),
     tickets,
   };
+}
+
+// ---------------------------------------------------------------------------
+// WhatsApp channel support — reusable logic only. Not yet wired to a live
+// webhook: the WhatsApp Business number is still pending Meta/Zoho validation.
+// Once a channel is chosen (Zoho Desk's native WhatsApp channel, or the Meta
+// Cloud API directly), a webhook route calls these three functions in order:
+// findContactByPhone -> buildAgentContextSummary (posted for the agent) and
+// classifyInboundSeverity -> maybeAutoCreateTicket (only for high-severity
+// messages; everything else stays a plain conversation for the agent to
+// triage manually).
+// ---------------------------------------------------------------------------
+
+/**
+ * Plain-text context block meant to be attached to the inbound WhatsApp conversation (e.g. as an
+ * internal note) so the technical agent sees, at a glance, what this contact has open before
+ * replying — instead of having to look it up in Desk by hand.
+ */
+export async function buildAgentContextSummary(serviceToken: string, contact: ZohoContact): Promise<string> {
+  const accounts = await resolveAccessibleAccounts(serviceToken, contact);
+  if (accounts.length === 0) return `Contacto ${contact.email} sin cuenta asociada en Zoho Desk.`;
+
+  const snapshots = await Promise.all(
+    accounts.map(async account => {
+      const tickets = await getAccountTickets(serviceToken, account.id);
+      return computeSnapshot(account.name, tickets);
+    })
+  );
+
+  const lines = snapshots.map(s => {
+    const bits = [`${s.activeCount} activo(s)`];
+    if (s.highPriorityCount > 0) bits.push(`${s.highPriorityCount} de alta prioridad`);
+    if (s.overdueCount > 0) bits.push(`${s.overdueCount} vencido(s) de SLA`);
+    return `• ${s.clientName} [${s.semaphore.toUpperCase()}]: ${bits.join(', ')}`;
+  });
+
+  return [`Resumen de soporte — ${contact.email}`, ...lines].join('\n');
+}
+
+/**
+ * Keyword heuristic for freeform inbound WhatsApp text — mirrors the "falla global" / high-impact
+ * cases from computeTicketPriority, since a chat message has no structured tipoFalla/camarasAfectadas
+ * fields to work with. Deliberately conservative: false negatives just mean the agent triages the
+ * message by hand, which is the safe default; false positives create noise tickets, so keep this list
+ * tight rather than broad.
+ */
+const HIGH_SEVERITY_KEYWORDS = [
+  'sistema caido', 'sistema caído', 'todo caido', 'todo caído',
+  'sin señal total', 'sin senal total', 'todas las camaras', 'todas las cámaras',
+  'incendio', 'inundacion', 'inundación', 'robo', 'emergencia', 'siniestro',
+  'no hay video', 'perdimos todo', 'servidor caido', 'servidor caído',
+];
+
+export function classifyInboundSeverity(message: string): 'high' | 'normal' {
+  const normalized = message.toLowerCase();
+  return HIGH_SEVERITY_KEYWORDS.some(k => normalized.includes(k)) ? 'high' : 'normal';
+}
+
+/**
+ * Creates a ticket automatically only for high-severity inbound messages from a contact authorized
+ * to open tickets (canCreateTickets); everything else — low/medium severity, or a contact who's
+ * view-only — is left as a plain conversation for the agent to escalate manually if needed.
+ */
+export async function maybeAutoCreateTicket(
+  serviceToken: string,
+  contact: ZohoContact,
+  message: string
+): Promise<{ id: string; ticketNumber: string } | null> {
+  if (!contact.canCreateTickets) return null;
+  if (classifyInboundSeverity(message) !== 'high') return null;
+
+  return createTicket(serviceToken, {
+    contactId: contact.id,
+    subject: `[WhatsApp] Reporte de alta gravedad — ${contact.accountName ?? contact.email}`,
+    description: message,
+    tipoFalla: 'Falla de Servidores -VMS',
+    camarasAfectadas: null,
+    fallaGlobal: true,
+    ubicacion: '',
+    checklist: {
+      energiaNormal: false,
+      sinSiniestro: false,
+      anomaliaPersiste: false,
+      reinicioIntentado: false,
+      accesoInternet: false,
+    },
+    priority: 'High',
+  });
 }
