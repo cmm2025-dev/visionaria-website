@@ -54,6 +54,7 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
   const t = useTranslations('supportStatus');
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'error' | 'no_account' | 'ready'>('loading');
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -161,12 +162,23 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
             {snapshot.isMultiAccount && snapshot.accounts && (
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('breakdown_title')}</h3>
+                <p className="text-xs text-slate-500 mb-4">{t('breakdown_hint')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {snapshot.accounts.map(acc => {
                     const style = SEMAPHORE_STYLE[acc.semaphore];
                     const Icon = style.Icon;
+                    const selected = selectedAccountId === acc.accountId;
                     return (
-                      <div key={acc.accountId} className="rounded-xl border p-5 flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                      <button
+                        key={acc.accountId}
+                        onClick={() => setSelectedAccountId(selected ? null : acc.accountId)}
+                        className="text-left rounded-xl border p-5 flex flex-col gap-3 transition-all hover:glow-cyan-sm cursor-pointer"
+                        style={{
+                          background: 'var(--card-bg)',
+                          borderColor: selected ? style.color : 'var(--border)',
+                          boxShadow: selected ? `0 0 0 1px ${style.color}` : undefined,
+                        }}
+                      >
                         <div className="flex items-center justify-between">
                           <p className="text-white font-semibold text-sm">{acc.clientName}</p>
                           <Icon size={16} style={{ color: style.color }} />
@@ -181,41 +193,51 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
                             <p className="text-slate-500">{t('overdue')}</p>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
               </div>
             )}
 
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>{t('tickets_title')}</h3>
-              {snapshot.tickets.length === 0 ? (
-                <p className="text-slate-500 text-sm">{t('no_tickets')}</p>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {snapshot.tickets.map(ticket => {
-                    const remaining = formatRemaining(ticket.dueDate, locale);
-                    return (
-                      <div key={ticket.id} className="rounded-xl p-5 border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
-                        <div>
-                          <p className="text-white font-semibold text-sm">#{ticket.ticketNumber} {ticket.subject}</p>
-                          <p className="text-xs text-slate-500 mt-1">{ticket.status}</p>
-                        </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ color: PRIORITY_COLOR[ticket.priority] ?? '#F09422', background: 'rgba(255,255,255,0.06)' }}>
-                            {t(`priority_${ticket.priority.toLowerCase()}`)}
-                          </span>
-                          <span className="text-xs" style={{ color: ticket.isOverdue ? '#ef4444' : 'var(--muted)' }}>
-                            {ticket.isOverdue ? t('sla_overdue') : remaining ? `${t('sla_remaining')}: ${remaining}` : ''}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
+            {(() => {
+              const selectedAccount = snapshot.accounts?.find(a => a.accountId === selectedAccountId);
+              const ticketsToShow = snapshot.isMultiAccount ? selectedAccount?.tickets ?? null : snapshot.tickets;
+              if (snapshot.isMultiAccount && !selectedAccount) return null;
+
+              return (
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>
+                    {snapshot.isMultiAccount ? `${t('tickets_title')} — ${selectedAccount!.clientName}` : t('tickets_title')}
+                  </h3>
+                  {!ticketsToShow || ticketsToShow.length === 0 ? (
+                    <p className="text-slate-500 text-sm">{t('no_tickets')}</p>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {ticketsToShow.map(ticket => {
+                        const remaining = formatRemaining(ticket.dueDate, locale);
+                        return (
+                          <div key={ticket.id} className="rounded-xl p-5 border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                            <div>
+                              <p className="text-white font-semibold text-sm">#{ticket.ticketNumber} {ticket.subject}</p>
+                              <p className="text-xs text-slate-500 mt-1">{ticket.status}</p>
+                            </div>
+                            <div className="flex items-center gap-3 shrink-0">
+                              <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ color: PRIORITY_COLOR[ticket.priority] ?? '#F09422', background: 'rgba(255,255,255,0.06)' }}>
+                                {t(`priority_${ticket.priority.toLowerCase()}`)}
+                              </span>
+                              <span className="text-xs" style={{ color: ticket.isOverdue ? '#ef4444' : 'var(--muted)' }}>
+                                {ticket.isOverdue ? t('sla_overdue') : remaining ? `${t('sla_remaining')}: ${remaining}` : ''}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
           </div>
         )}
       </section>

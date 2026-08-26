@@ -220,6 +220,7 @@
     "overdue": "Overdue",
     "updated_at": "Last updated",
     "breakdown_title": "Breakdown by client",
+    "breakdown_hint": "Click a client to see their request details.",
     "tickets_title": "Active requests",
     "no_tickets": "You have no active requests right now.",
     "sla_remaining": "SLA remaining",

@@ -220,6 +220,7 @@
     "overdue": "Vencidas",
     "updated_at": "Última actualización",
     "breakdown_title": "Desglose por cliente",
+    "breakdown_hint": "Haz clic en un cliente para ver el detalle de sus solicitudes.",
     "tickets_title": "Solicitudes activas",
     "no_tickets": "No tienes solicitudes activas en este momento.",
     "sla_remaining": "SLA restante",
