@@ -121,6 +121,9 @@ export async function getAllAccounts(serviceToken: string): Promise<{ id: string
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
   const data = await res.json();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho accounts list', { status: res.status, data: JSON.stringify(data).slice(0, 2000) });
+  }
   const rows = Array.isArray(data?.data) ? data.data : [];
   return rows.map((a: Record<string, unknown>) => ({ id: a.id as string, name: (a.accountName as string) ?? a.id as string }));
 }
