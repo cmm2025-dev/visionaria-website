@@ -187,9 +187,15 @@ export async function getAccountTickets(serviceToken: string, accountId: string)
   const res = await fetch(`${API_BASE}/accounts/${accountId}/tickets?${params.toString()}`, {
     headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId },
   });
-  const data = await res.json();
+  const text = await res.text();
   if (process.env.ZOHO_DEBUG === '1') {
-    console.log('zoho tickets', { status: res.status, accountId, data: JSON.stringify(data).slice(0, 2000) });
+    console.log('zoho tickets', { status: res.status, accountId, text: text.slice(0, 2000) });
+  }
+  let data: Record<string, unknown>;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    return [];
   }
   const rows = Array.isArray(data?.data) ? data.data : [];
   return rows

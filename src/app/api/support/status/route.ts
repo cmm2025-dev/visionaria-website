@@ -27,12 +27,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'no_account' }, { status: 404 });
     }
 
-    const perAccount = await Promise.all(
-      accessibleAccounts.map(async account => {
-        const tickets = await getAccountTickets(serviceToken, account.id);
-        return { accountId: account.id, ...computeSnapshot(account.name, tickets) };
-      })
-    );
+    // Fetched with limited concurrency (not Promise.all over every account at once) -- a
+    // full-access view can span dozens of accounts, and firing them all simultaneously trips
+    // Zoho's concurrent-API-call limit (429 TOO_MANY_REQUESTS).
+    const CONCURRENCY = 4;
+    const perAccount: ({ accountId: string } & ReturnType<typeof computeSnapshot>)[] = [];
+    for (let i = 0; i < accessibleAccounts.length; i += CONCURRENCY) {
+      const batch = accessibleAccounts.slice(i, i + CONCURRENCY);
+      const results = await Promise.all(
+        batch.map(async account => {
+          const tickets = await getAccountTickets(serviceToken, account.id);
+          return { accountId: account.id, ...computeSnapshot(account.name, tickets) };
+        })
+      );
+      perAccount.push(...results);
+    }
 
     const isMultiAccount = perAccount.length > 1;
     const aggregateLabel = contact.fullAccess ? 'Postventa — todos los clientes' : 'Resumen regional';
