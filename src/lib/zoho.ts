@@ -296,7 +296,15 @@ export async function getClientDocuments(serviceToken: string, accountId: string
   }
 
   return records
-    .filter((d: Record<string, unknown>) => (d.cf as Record<string, unknown> | undefined)?.cf_account_id === accountId)
+    .filter((d: Record<string, unknown>) => {
+      const cf = (d.cf as Record<string, unknown>) ?? {};
+      if (cf.cf_account_id === accountId) return true;
+      // Shared documents (e.g. a training video for a technology several clients run in
+      // common, like "tecnología homóloga") list extra Account IDs here, comma-separated —
+      // same convention as the Contact's cf_accounts_adicionales field.
+      const sharedRaw = String(cf.cf_cuentas_compartidas ?? '');
+      return sharedRaw.split(',').map(s => s.trim()).includes(accountId);
+    })
     .map((d: Record<string, unknown>) => {
       const cf = (d.cf as Record<string, unknown>) ?? {};
       return {
