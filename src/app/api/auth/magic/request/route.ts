@@ -5,7 +5,7 @@ import { findContactByEmail, getServiceAccessToken } from '@/lib/zoho';
 
 export const runtime = 'nodejs';
 
-const VALID_NEXT = ['estado', 'documentos', 'nuevo-ticket'];
+const VALID_NEXT = ['estado', 'documentos', 'nuevo-ticket', 'mesa-ayuda'];
 
 function isValidEmail(e: string): boolean {
   return e.length <= 254 && /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(e);

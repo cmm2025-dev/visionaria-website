@@ -10,7 +10,7 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
   const cards = [
     { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: `/${locale}/soporte/documentos`, accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
     { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: `/${locale}/soporte/nuevo-ticket`, accent: '#3D8A82', iconBg: 'rgba(61,138,130,0.12)' },
-    { icon: Users, title: t('community'), desc: t('community_desc'), href: 'https://wa.me/56229254140', accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)', external: true },
+    { icon: Users, title: t('community'), desc: t('community_desc'), href: `/${locale}/soporte/mesa-ayuda`, accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)' },
     { icon: Activity, title: t('status'), desc: t('status_desc'), href: `/${locale}/soporte/estado`, accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)' },
   ];
 
@@ -25,11 +25,10 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
       </div>
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {cards.map(({ icon: Icon, title, desc, href, accent, iconBg, external }) => (
+          {cards.map(({ icon: Icon, title, desc, href, accent, iconBg }) => (
             <Link
               key={title}
               href={href}
-              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="group rounded-2xl p-10 border flex items-start gap-6 transition-all hover:glow-cyan-sm"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
             >

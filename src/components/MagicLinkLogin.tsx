@@ -5,7 +5,7 @@ import { Mail, CheckCircle2 } from 'lucide-react';
 
 interface MagicLinkLoginProps {
   locale: string;
-  next: 'estado' | 'documentos' | 'nuevo-ticket';
+  next: 'estado' | 'documentos' | 'nuevo-ticket' | 'mesa-ayuda';
   labels: {
     description: string;
     placeholder: string;

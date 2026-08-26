@@ -207,6 +207,22 @@
     "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte.",
     "no_documents": "Aún no hay documentos publicados para tu institución."
   },
+  "supportWhatsapp": {
+    "eyebrow": "Portal de clientes",
+    "title": "Mesa de Ayuda",
+    "subtitle": "Conversa con nuestro equipo por WhatsApp para orientación y asistencia rápida.",
+    "login_cta": "Enviar enlace de acceso",
+    "login_desc": "Ingresa el correo de contacto autorizado de tu municipio o institución y te enviaremos un enlace de acceso.",
+    "login_placeholder": "tu@institucion.cl",
+    "login_submitting": "Enviando…",
+    "login_sent_title": "Revisa tu correo",
+    "login_sent_desc": "Si tu correo está autorizado, te enviamos un enlace de acceso al Sistema de Ayuda Visionaria (expira en 15 minutos). Si no lo recibes en unos minutos, escríbenos por WhatsApp al +56 2 2925 4140.",
+    "logout": "Cerrar sesión",
+    "loading": "Verificando acceso…",
+    "ready_title": "Acceso confirmado",
+    "ready_desc": "Ya puedes abrir WhatsApp para conversar con nuestro equipo de soporte. Si tu consulta requiere seguimiento, la registraremos como ticket.",
+    "open_whatsapp": "Abrir WhatsApp"
+  },
   "supportStatus": {
     "eyebrow": "Portal de clientes",
     "title": "Estado de Sistemas",
