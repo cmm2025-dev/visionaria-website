@@ -29,10 +29,10 @@ export default function SupportHeroCarousel() {
           fill
           priority={i === 0}
           className="object-cover transition-opacity duration-1000"
-          style={{ opacity: i === active ? 0.4 : 0 }}
+          style={{ opacity: i === active ? 0.85 : 0 }}
         />
       ))}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(115deg, #1E1B18 25%, rgba(30,27,24,0.75) 55%, rgba(30,27,24,0.35) 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(115deg, #1E1B18 8%, rgba(30,27,24,0.55) 40%, rgba(30,27,24,0.1) 100%)' }} />
 
       <div className="absolute bottom-6 right-6 flex gap-2 pointer-events-auto">
         {SLIDES.map((src, i) => (
