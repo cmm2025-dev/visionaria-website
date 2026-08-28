@@ -71,14 +71,30 @@ export interface ZabbixHost {
   hostid: string;
   name: string;
   status: '0' | '1'; // 0 = monitored/enabled, 1 = disabled
+  tags?: { tag: string; value: string }[];
+  parentTemplates?: { templateid: string; name: string }[];
 }
 
-/** Lists every host in a client's Host Group — the basis for the "sitios" / "cámaras" counts. */
+/**
+ * Lists every host in a client's Host Group — the basis for the "sitios" / "cámaras" counts.
+ * Also pulls tags + parent templates: since host *names* follow no consistent convention across
+ * clients/technicians, those are the only reliable way to tell a camera apart from a server,
+ * switch, or P2P link (still being confirmed against real data before this is relied on).
+ */
 export async function getHostsInGroup(groupId: string): Promise<ZabbixHost[]> {
-  return zabbixRequest<ZabbixHost[]>('host.get', {
+  const raw = await zabbixRequest<Record<string, unknown>[]>('host.get', {
     output: ['hostid', 'name', 'status'],
+    selectTags: 'extend',
+    selectParentTemplates: ['templateid', 'name'],
     groupids: [groupId],
   });
+  return raw.map(h => ({
+    hostid: h.hostid as string,
+    name: h.name as string,
+    status: h.status as '0' | '1',
+    tags: h.tags as { tag: string; value: string }[] | undefined,
+    parentTemplates: h.parentTemplates as { templateid: string; name: string }[] | undefined,
+  }));
 }
 
 export type ZabbixSeverity = '0' | '1' | '2' | '3' | '4' | '5'; // Not classified .. Disaster
