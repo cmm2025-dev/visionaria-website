@@ -426,6 +426,87 @@ export async function createTicket(serviceToken: string, input: NewTicketInput):
   return { id: data.id as string, ticketNumber: data.ticketNumber as string };
 }
 
+const MONITORING_CONTACT_EMAIL = 'monitoreo@visionaria.cl';
+let cachedMonitoringContactId: string | null = null;
+
+/**
+ * Resolves the single system Contact used as the "reporter" on every proactive ticket Zabbix
+ * triggers automatically — there's no real end-user behind these, so we don't try to guess one.
+ * Creates the contact once (email monitoreo@visionaria.cl) if it doesn't exist yet, then caches
+ * its id for the life of the server process.
+ */
+export async function findOrCreateMonitoringContact(serviceToken: string): Promise<string> {
+  if (cachedMonitoringContactId) return cachedMonitoringContactId;
+
+  const existing = await findContactByEmail(serviceToken, MONITORING_CONTACT_EMAIL);
+  if (existing) {
+    cachedMonitoringContactId = existing.id;
+    return existing.id;
+  }
+
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const res = await fetch(`${API_BASE}/contacts`, {
+    method: 'POST',
+    headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ lastName: 'Monitoreo Automático', email: MONITORING_CONTACT_EMAIL }),
+  });
+  const text = await res.text();
+  if (process.env.ZOHO_DEBUG === '1') {
+    console.log('zoho create monitoring contact', { status: res.status, text: text.slice(0, 1000) });
+  }
+  let data: Record<string, unknown>;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error(`Zoho create monitoring contact returned non-JSON response (status ${res.status}): ${text.slice(0, 500)}`);
+  }
+  if (!res.ok) throw new Error(`Zoho create monitoring contact failed: ${JSON.stringify(data)}`);
+  cachedMonitoringContactId = data.id as string;
+  return data.id as string;
+}
+
+/**
+ * Creates a proactive ticket for a device-down / low-availability condition detected in Zabbix,
+ * unless a ticket with the same dedupe marker is already open for that account — Zabbix keeps
+ * re-notifying every poll while a problem stays active, and we don't want a new ticket each time.
+ * `dedupeMarker` should uniquely identify the specific condition (e.g. the affected host's name,
+ * or a fixed string for the account-wide camera-availability check).
+ */
+export async function createProactiveAlertTicket(
+  serviceToken: string,
+  input: {
+    accountId: string;
+    dedupeMarker: string;
+    subject: string;
+    description: string;
+    tipoFalla: string;
+    camarasAfectadas: number | null;
+  }
+): Promise<{ id: string; ticketNumber: string } | null> {
+  const openTickets = await getAccountTickets(serviceToken, input.accountId);
+  const alreadyOpen = openTickets.some(t => t.subject.includes(input.dedupeMarker));
+  if (alreadyOpen) return null;
+
+  const contactId = await findOrCreateMonitoringContact(serviceToken);
+  return createTicket(serviceToken, {
+    contactId,
+    subject: `${input.subject} [${input.dedupeMarker}]`,
+    description: input.description,
+    tipoFalla: input.tipoFalla,
+    camarasAfectadas: input.camarasAfectadas,
+    fallaGlobal: true,
+    ubicacion: input.dedupeMarker,
+    checklist: {
+      energiaNormal: false,
+      sinSiniestro: false,
+      anomaliaPersiste: false,
+      reinicioIntentado: false,
+      accesoInternet: false,
+    },
+    priority: 'High',
+  });
+}
+
 /** Maps fault type + affected-asset ratio to an automatic priority — the client never picks this directly. */
 export function computeTicketPriority(
   tipoFalla: string,

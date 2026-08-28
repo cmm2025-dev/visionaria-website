@@ -247,3 +247,71 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
     disponibilidadPct: cameras.length > 0 ? Math.round((camerasOnline / cameras.length) * 1000) / 10 : 100,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Proactive alerting — detects conditions worth an automatic Zoho ticket:
+// a critical server/archiver or UPS down, or camera availability below 80%.
+// ---------------------------------------------------------------------------
+
+export type CriticalKind = 'server' | 'ups' | 'camaras';
+
+export interface CriticalCondition {
+  kind: CriticalKind;
+  /** Unique per condition — used as the Zoho ticket dedupe marker, so re-polling doesn't spam tickets. */
+  label: string;
+  ageSeconds: number;
+}
+
+/** ARCHIVER/IDRAC/DIRECTORY hosts are recording/domain servers; UPS hosts are electrical backup. */
+function classifyCriticalInfra(name: string): 'server' | 'ups' | null {
+  if (/\b(ARCHIVER|IDRAC|DIRECTORY)\b/i.test(name)) return 'server';
+  if (/\bUPS\b/i.test(name)) return 'ups';
+  return null;
+}
+
+/**
+ * Finds conditions that have been active for at least `sustainedSeconds` (default 5 min) — using
+ * each problem's own Zabbix `clock` as the "since" timestamp, so no extra state needs to be
+ * persisted just to know how long something has been down.
+ */
+export async function getCriticalConditions(
+  clientName: string,
+  groupId: string,
+  sustainedSeconds = 300
+): Promise<{ snapshot: AccountZabbixSnapshot; conditions: CriticalCondition[] }> {
+  const hosts = await getHostsInGroup(groupId);
+  const problems = await getActiveProblems(hosts.map(h => h.hostid));
+  const nowSec = Math.floor(Date.now() / 1000);
+  const hostById = new Map(hosts.map(h => [h.hostid, h]));
+
+  const seenInfraHosts = new Set<string>();
+  const conditions: CriticalCondition[] = [];
+  let maxCameraRelatedAge = 0;
+
+  for (const problem of problems) {
+    const host = hostById.get(problem.hostid);
+    if (!host) continue;
+    const age = nowSec - Number(problem.clock);
+
+    const infraKind = classifyCriticalInfra(host.name);
+    if (infraKind && age >= sustainedSeconds && !seenInfraHosts.has(host.name)) {
+      seenInfraHosts.add(host.name);
+      conditions.push({ kind: infraKind, label: host.name, ageSeconds: age });
+    }
+
+    if (classifyHostKind(host.name) === 'camera' || /\bHSU\b/i.test(host.name)) {
+      maxCameraRelatedAge = Math.max(maxCameraRelatedAge, age);
+    }
+  }
+
+  const snapshot = await computeAccountSnapshot(clientName, groupId);
+  if (snapshot.camarasTotal > 0 && snapshot.disponibilidadPct < 80 && maxCameraRelatedAge >= sustainedSeconds) {
+    conditions.push({
+      kind: 'camaras',
+      label: `disponibilidad-camaras-${clientName}`,
+      ageSeconds: maxCameraRelatedAge,
+    });
+  }
+
+  return { snapshot, conditions };
+}
