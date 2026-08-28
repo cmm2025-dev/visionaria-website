@@ -107,13 +107,24 @@ export interface ZabbixProblem {
   clock: string; // unix timestamp (seconds) as string
 }
 
-/** Active (unresolved) problems for a set of hosts — feeds "incidentes activos" and the semaphore. */
+/**
+ * Active (unresolved) problems for a set of hosts — feeds "incidentes activos" and the
+ * per-camera online/offline check.
+ *
+ * Only severities >= Average (3) by default — NOT every unresolved problem. Real data pulled
+ * from this API showed problems left unresolved since 2021 (years of low-severity noise like
+ * "RSS Balance" or link-speed-change notices nobody ever acknowledged). Counting all of those
+ * as "incidentes activos" would make the indicator meaningless. Zabbix's own Problems view
+ * defaults to a "Minimum severity: High" filter for the same reason — this mirrors that, one
+ * notch more permissive to still catch prolonged real outages.
+ */
 export async function getActiveProblems(hostIds: string[]): Promise<ZabbixProblem[]> {
   if (hostIds.length === 0) return [];
   const raw = await zabbixRequest<Record<string, unknown>[]>('problem.get', {
     output: ['eventid', 'name', 'severity', 'clock'],
     hostids: hostIds,
-    selectHosts: ['hostid'],
+    selectHosts: 'extend',
+    severities: ['3', '4', '5'],
     recent: false,
   });
   return raw.map(p => ({
@@ -123,4 +134,77 @@ export async function getActiveProblems(hostIds: string[]): Promise<ZabbixProble
     clock: p.clock as string,
     hostid: (p.hosts as { hostid: string }[])?.[0]?.hostid ?? '',
   }));
+}
+
+// ---------------------------------------------------------------------------
+// Host classification — BEST-EFFORT HEURISTIC, not a guaranteed rule.
+//
+// Zabbix hosts have no tags or templates set that indicate device type (confirmed against real
+// data: parentTemplates is empty on every host, and the few tags present just repeat the client
+// name). The only signal available today is the free-text host name, which technicians typed by
+// hand with no enforced convention — this works for clients that happen to follow the "CN_### PTZ"
+// pattern (confirmed for Puente Alto) and may need per-client tuning for others.
+//
+// Follow-up (tracked separately, not blocking this MVP): write technicians a standardization
+// guide — e.g. a "Cliente" host tag plus a "Tipo" tag (camera/server/switch/link) — so this
+// classification can move from heuristic to authoritative.
+// ---------------------------------------------------------------------------
+
+export type DeviceKind = 'camera' | 'infra';
+
+/** Guesses a host's device type from its name. See the caveats above before trusting this blindly. */
+export function classifyHostKind(name: string): DeviceKind {
+  return /\bPTZ\b/i.test(name) ? 'camera' : 'infra';
+}
+
+/** Extracts the site identifier (e.g. "CN_110") a host belongs to, if its name follows that pattern. */
+export function extractSiteId(name: string): string | null {
+  const match = name.match(/\bCN_\d+\b/i);
+  return match ? match[0].toUpperCase() : null;
+}
+
+export interface AccountZabbixSnapshot {
+  clientName: string;
+  estadoGeneral: 'OPERATIVO' | 'CON_INCIDENCIAS';
+  camarasOnline: number;
+  camarasTotal: number;
+  sitiosOnline: number;
+  sitiosTotal: number;
+  incidentesActivos: number;
+  /** Simple proxy: % of cameras currently reachable. Not a true rolling 30-day SLA calculation. */
+  disponibilidadPct: number;
+}
+
+/**
+ * Computes the 6 MVP dashboard indicators for one client's Host Group. "Grabación" (storage %)
+ * is deliberately left out for now — it needs a real item key (disk usage per archiver host)
+ * that hasn't been identified yet.
+ */
+export async function computeAccountSnapshot(clientName: string, groupId: string): Promise<AccountZabbixSnapshot> {
+  const hosts = await getHostsInGroup(groupId);
+  const cameras = hosts.filter(h => classifyHostKind(h.name) === 'camera');
+  const problems = await getActiveProblems(hosts.map(h => h.hostid));
+  const hostIdsWithProblems = new Set(problems.map(p => p.hostid));
+
+  const camerasOnline = cameras.filter(c => !hostIdsWithProblems.has(c.hostid)).length;
+
+  const siteIds = new Set<string>();
+  const siteIdsOnline = new Set<string>();
+  for (const camera of cameras) {
+    const siteId = extractSiteId(camera.name);
+    if (!siteId) continue;
+    siteIds.add(siteId);
+    if (!hostIdsWithProblems.has(camera.hostid)) siteIdsOnline.add(siteId);
+  }
+
+  return {
+    clientName,
+    estadoGeneral: problems.length === 0 ? 'OPERATIVO' : 'CON_INCIDENCIAS',
+    camarasOnline: camerasOnline,
+    camarasTotal: cameras.length,
+    sitiosOnline: siteIdsOnline.size,
+    sitiosTotal: siteIds.size,
+    incidentesActivos: problems.length,
+    disponibilidadPct: cameras.length > 0 ? Math.round((camerasOnline / cameras.length) * 1000) / 10 : 100,
+  };
 }

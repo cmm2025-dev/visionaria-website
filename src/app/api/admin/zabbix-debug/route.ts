@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllHostGroups, getHostsInGroup, getActiveProblems } from '@/lib/zabbix';
+import { getAllHostGroups, getHostsInGroup, getActiveProblems, computeAccountSnapshot } from '@/lib/zabbix';
 
 export const runtime = 'nodejs';
 
@@ -29,9 +29,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'group_not_found', groups }, { status: 404 });
     }
 
+    const snapshot = await computeAccountSnapshot(group.name, group.groupid);
+
+    if (req.nextUrl.searchParams.get('full') !== '1') {
+      return NextResponse.json({ group, snapshot });
+    }
+
     const hosts = await getHostsInGroup(group.groupid);
     const problems = await getActiveProblems(hosts.map(h => h.hostid));
-    return NextResponse.json({ group, hosts, problems });
+    return NextResponse.json({ group, snapshot, hosts, problems });
   } catch (err) {
     return NextResponse.json({ error: 'zabbix_error', message: String(err) }, { status: 502 });
   }
