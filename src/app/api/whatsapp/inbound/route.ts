@@ -32,6 +32,16 @@ export const runtime = 'nodejs';
  * how the above gets resolved.
  */
 export async function POST(req: NextRequest) {
+  // Discovery mode: log whatever arrives, in whatever shape, without assuming anything about
+  // it or running any real logic — this is how we find out the actual payload Zoho's webhook
+  // automation sends, the same way every other Zoho field/shape in this project got confirmed.
+  if (process.env.WHATSAPP_WEBHOOK_DISCOVERY === '1') {
+    const rawText = await req.text();
+    const headers = Object.fromEntries(req.headers.entries());
+    console.log('WHATSAPP_INBOUND_DISCOVERY', JSON.stringify({ headers, body: rawText }).slice(0, 4000));
+    return NextResponse.json({ ok: true, discovery: true });
+  }
+
   if (process.env.WHATSAPP_WEBHOOK_ENABLED !== '1') {
     return NextResponse.json({ error: 'not_configured' }, { status: 501 });
   }
