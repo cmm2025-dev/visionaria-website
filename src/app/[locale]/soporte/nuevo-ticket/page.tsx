@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { LogOut, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import MagicLinkLogin from '@/components/MagicLinkLogin';
+import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
 const TIPOS_FALLA = [
   'Camaras sin Señal',
@@ -108,8 +109,8 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#3D8A82' }} />
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: '#1E1B18' }}>
+        <SupportHeroCarousel accent="#3D8A82" />
         <div className="max-w-3xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: '#3D8A82' }}>{t('eyebrow')}</p>
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

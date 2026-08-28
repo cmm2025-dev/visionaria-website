@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import { FileText, PlayCircle, LogOut, ExternalLink } from 'lucide-react';
 import MagicLinkLogin from '@/components/MagicLinkLogin';
+import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
 interface ClientDocument {
   id: string;
@@ -51,8 +52,8 @@ export default function SupportDocumentsPage({ params }: { params: Promise<{ loc
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#F09422' }} />
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: '#1E1B18' }}>
+        <SupportHeroCarousel accent="#F09422" />
         <div className="max-w-5xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: '#F09422' }}>{t('eyebrow')}</p>
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

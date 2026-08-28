@@ -7,6 +7,7 @@ import {
   Router, Battery, Monitor, HardDrive, Clock, Ticket,
 } from 'lucide-react';
 import MagicLinkLogin from '@/components/MagicLinkLogin';
+import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
 interface Ticket {
   id: string;
@@ -121,8 +122,8 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
 
   return (
     <div>
-      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #28221A 0%, #1E1B18 100%)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: '#34d399' }} />
+      <div className="text-white py-20 px-4 relative overflow-hidden" style={{ background: '#1E1B18' }}>
+        <SupportHeroCarousel accent="#34d399" />
         <div className="max-w-6xl mx-auto relative">
           <p className="text-xs font-bold tracking-[0.3em] uppercase mb-2" style={{ color: '#34d399' }}>{t('eyebrow')}</p>
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>

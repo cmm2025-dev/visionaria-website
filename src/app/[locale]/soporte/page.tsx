@@ -18,7 +18,7 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
   return (
     <div>
       <div className="text-white py-28 px-4 relative overflow-hidden" style={{ background: '#1E1B18' }}>
-        <SupportHeroCarousel />
+        <SupportHeroCarousel accent="#F09422" />
         <div className="max-w-7xl mx-auto relative">
           <h1 className="text-4xl font-extrabold">{t('title')}</h1>
           <p className="mt-3 text-lg text-slate-300 max-w-xl">{t('subtitle')}</p>
