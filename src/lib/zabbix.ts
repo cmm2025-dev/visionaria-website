@@ -51,6 +51,13 @@ export interface ZabbixHostGroup {
   name: string;
 }
 
+/** Lists every Host Group — used once during setup to read the real names to fill into cf_zabbix_nombre. */
+export async function getAllHostGroups(): Promise<ZabbixHostGroup[]> {
+  return zabbixRequest<ZabbixHostGroup[]>('hostgroup.get', {
+    output: ['groupid', 'name'],
+  });
+}
+
 /** Resolves a client's Zabbix Host Group by exact name (stored per-Account in Zoho as cf_zabbix_host_group). */
 export async function getHostGroupByName(name: string): Promise<ZabbixHostGroup | null> {
   const groups = await zabbixRequest<ZabbixHostGroup[]>('hostgroup.get', {
