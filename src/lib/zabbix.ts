@@ -205,11 +205,16 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
 
   // A camera's own PTZ host rarely carries the problem itself — connectivity issues land on its
   // paired HSU radio host instead (confirmed against real data: 131 active problems, 0 of them
-  // on a PTZ hostid). So "is this site down" has to look at every host sharing the same CN_XXX
-  // site id, not just the camera host in isolation.
+  // on a PTZ hostid). So a camera counts as down if its own host OR its paired HSU radio has a
+  // problem — deliberately NOT any other equipment sharing the site id (switches, UPS, backbone
+  // P2P links), which would over-flag cameras as offline for shared infrastructure that doesn't
+  // necessarily take that specific camera down. This is a functional/executive dashboard, not a
+  // precise technical one — bias toward showing a camera as operational unless there's a fairly
+  // direct signal it isn't.
   const siteIdsWithProblems = new Set<string>();
   for (const host of hosts) {
     if (!hostIdsWithProblems.has(host.hostid)) continue;
+    if (!/\bHSU\b/i.test(host.name) && classifyHostKind(host.name) !== 'camera') continue;
     const siteId = extractSiteId(host.name);
     if (siteId) siteIdsWithProblems.add(siteId);
   }
