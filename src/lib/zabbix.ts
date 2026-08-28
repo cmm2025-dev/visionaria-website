@@ -121,18 +121,35 @@ export interface ZabbixProblem {
 export async function getActiveProblems(hostIds: string[]): Promise<ZabbixProblem[]> {
   if (hostIds.length === 0) return [];
   const raw = await zabbixRequest<Record<string, unknown>[]>('problem.get', {
-    output: ['eventid', 'name', 'severity', 'clock'],
+    output: ['eventid', 'name', 'severity', 'clock', 'objectid'],
     hostids: hostIds,
-    selectHosts: 'extend',
     severities: ['3', '4', '5'],
     recent: false,
   });
+
+  // problem.get's selectHosts came back empty on every row against this Zabbix instance
+  // (confirmed against real data — not a fluke). objectid is the triggerid that raised the
+  // problem, and trigger.get reliably resolves that to its host, so go through that instead.
+  const triggerIds = Array.from(new Set(raw.map(p => p.objectid as string).filter(Boolean)));
+  const triggerHostMap = new Map<string, string>();
+  if (triggerIds.length > 0) {
+    const triggers = await zabbixRequest<Record<string, unknown>[]>('trigger.get', {
+      output: ['triggerid'],
+      triggerids: triggerIds,
+      selectHosts: ['hostid'],
+    });
+    for (const t of triggers) {
+      const hostid = (t.hosts as { hostid: string }[])?.[0]?.hostid;
+      if (hostid) triggerHostMap.set(t.triggerid as string, hostid);
+    }
+  }
+
   return raw.map(p => ({
     eventid: p.eventid as string,
     name: p.name as string,
     severity: p.severity as ZabbixSeverity,
     clock: p.clock as string,
-    hostid: (p.hosts as { hostid: string }[])?.[0]?.hostid ?? '',
+    hostid: triggerHostMap.get(p.objectid as string) ?? '',
   }));
 }
 
@@ -186,7 +203,24 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
   const problems = await getActiveProblems(hosts.map(h => h.hostid));
   const hostIdsWithProblems = new Set(problems.map(p => p.hostid));
 
-  const camerasOnline = cameras.filter(c => !hostIdsWithProblems.has(c.hostid)).length;
+  // A camera's own PTZ host rarely carries the problem itself — connectivity issues land on its
+  // paired HSU radio host instead (confirmed against real data: 131 active problems, 0 of them
+  // on a PTZ hostid). So "is this site down" has to look at every host sharing the same CN_XXX
+  // site id, not just the camera host in isolation.
+  const siteIdsWithProblems = new Set<string>();
+  for (const host of hosts) {
+    if (!hostIdsWithProblems.has(host.hostid)) continue;
+    const siteId = extractSiteId(host.name);
+    if (siteId) siteIdsWithProblems.add(siteId);
+  }
+
+  const isCameraOnline = (camera: ZabbixHost) => {
+    const siteId = extractSiteId(camera.name);
+    if (siteId && siteIdsWithProblems.has(siteId)) return false;
+    return !hostIdsWithProblems.has(camera.hostid);
+  };
+
+  const camerasOnline = cameras.filter(isCameraOnline).length;
 
   const siteIds = new Set<string>();
   const siteIdsOnline = new Set<string>();
@@ -194,7 +228,7 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
     const siteId = extractSiteId(camera.name);
     if (!siteId) continue;
     siteIds.add(siteId);
-    if (!hostIdsWithProblems.has(camera.hostid)) siteIdsOnline.add(siteId);
+    if (isCameraOnline(camera)) siteIdsOnline.add(siteId);
   }
 
   return {
