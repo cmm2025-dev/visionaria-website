@@ -161,6 +161,17 @@ export async function findContactByPhone(serviceToken: string, phone: string): P
   };
 }
 
+/** Reads an Account's cf_zabbix_nombre — the exact Zabbix Host Group name for that client, if set. */
+export async function getAccountZabbixGroup(serviceToken: string, accountId: string): Promise<string | null> {
+  const orgId = requireEnv('ZOHO_ORG_ID');
+  const res = await fetch(`${API_BASE}/accounts/${accountId}`, { headers: { Authorization: `Zoho-oauthtoken ${serviceToken}`, orgId } });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const cf = (data?.cf as Record<string, unknown>) ?? {};
+  const value = cf.cf_zabbix_nombre;
+  return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
 /** Lists every Account (used for the "full access" Visionaria-staff view). */
 export async function getAllAccounts(serviceToken: string): Promise<{ id: string; name: string }[]> {
   const orgId = requireEnv('ZOHO_ORG_ID');

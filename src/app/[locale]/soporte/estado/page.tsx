@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   AlertTriangle, CheckCircle2, LogOut, ShieldAlert, Camera, Server,
-  Router, Battery, Monitor, HardDrive, Clock, Ticket,
+  Router, Battery, Monitor, HardDrive, Clock, Ticket, MapPin, Activity, Gauge,
 } from 'lucide-react';
 import MagicLinkLogin from '@/components/MagicLinkLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
@@ -25,6 +25,16 @@ interface InventoryItem {
   totalCount: number;
 }
 
+interface ZabbixSnapshot {
+  estadoGeneral: 'OPERATIVO' | 'CON_INCIDENCIAS';
+  camarasOnline: number;
+  camarasTotal: number;
+  sitiosOnline: number;
+  sitiosTotal: number;
+  incidentesActivos: number;
+  disponibilidadPct: number;
+}
+
 interface Snapshot {
   clientName: string;
   semaphore: 'green' | 'yellow' | 'red';
@@ -35,6 +45,7 @@ interface Snapshot {
   updatedAt: string;
   tickets: Ticket[];
   inventory: InventoryItem[];
+  zabbix: ZabbixSnapshot | null;
   isMultiAccount?: boolean;
   accounts?: (Snapshot & { accountId: string })[];
 }
@@ -250,6 +261,53 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
 
             {(!snapshot.isMultiAccount || displayed !== snapshot) && displayed && (
               <>
+                {/* Live monitoring (Zabbix) */}
+                {displayed.zabbix && (
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--muted)' }}>{t('monitoring_title')}</h3>
+                    <p className="text-xs text-slate-500 mb-4">{t('monitoring_hint')}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                      <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: displayed.zabbix.estadoGeneral === 'OPERATIVO' ? '#34d399' : '#F09422' }}>
+                        <Activity size={20} style={{ color: displayed.zabbix.estadoGeneral === 'OPERATIVO' ? '#34d399' : '#F09422' }} />
+                        <div>
+                          <p className="text-lg font-extrabold" style={{ color: displayed.zabbix.estadoGeneral === 'OPERATIVO' ? '#34d399' : '#F09422' }}>
+                            {displayed.zabbix.estadoGeneral === 'OPERATIVO' ? t('monitoring_operativo') : t('monitoring_incidencias')}
+                          </p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_estado_general')}</p>
+                        </div>
+                      </div>
+                      <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        <Camera size={20} style={{ color: '#34d399' }} />
+                        <div>
+                          <p className="text-2xl font-extrabold text-white">{displayed.zabbix.camarasOnline} / {displayed.zabbix.camarasTotal}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_camaras')}</p>
+                        </div>
+                      </div>
+                      <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        <MapPin size={20} style={{ color: '#34d399' }} />
+                        <div>
+                          <p className="text-2xl font-extrabold text-white">{displayed.zabbix.sitiosOnline} / {displayed.zabbix.sitiosTotal}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_sitios')}</p>
+                        </div>
+                      </div>
+                      <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        <AlertTriangle size={20} style={{ color: displayed.zabbix.incidentesActivos > 0 ? '#F09422' : '#34d399' }} />
+                        <div>
+                          <p className="text-2xl font-extrabold text-white">{displayed.zabbix.incidentesActivos}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_incidentes')}</p>
+                        </div>
+                      </div>
+                      <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
+                        <Gauge size={20} style={{ color: '#34d399' }} />
+                        <div>
+                          <p className="text-2xl font-extrabold text-white">{displayed.zabbix.disponibilidadPct}%</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_disponibilidad')}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Installed assets */}
                 {displayed.inventory.length > 0 && (
                   <div>
