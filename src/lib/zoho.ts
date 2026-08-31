@@ -7,6 +7,16 @@ function requireEnv(name: string): string {
   return v;
 }
 
+/**
+ * Zoho Desk checkbox custom fields can come back as the string "false" rather than a real JSON
+ * boolean — and `Boolean("false")` is `true` in JS, since any non-empty string is truthy. That
+ * silently flips every unchecked checkbox to "on" if read with a plain Boolean()/truthiness
+ * check. Always read a cf_ checkbox field through this helper instead.
+ */
+function isChecked(value: unknown): boolean {
+  return value === true || value === 'true';
+}
+
 /** Exchanges an OAuth authorization code (end-user login flow) for a short-lived access token. */
 export async function exchangeCodeForToken(code: string, redirectUri: string): Promise<{ access_token: string }> {
   const params = new URLSearchParams({
@@ -108,9 +118,9 @@ export async function findContactByEmail(serviceToken: string, email: string): P
     accountId: first.accountId,
     accountName,
     email: first.email,
-    canCreateTickets: !cf.cf_solo_visualizacion,
+    canCreateTickets: !isChecked(cf.cf_solo_visualizacion),
     additionalAccountIds,
-    fullAccess: Boolean(cf.cf_acceso_total_visionaria),
+    fullAccess: isChecked(cf.cf_acceso_total_visionaria),
   };
 }
 
@@ -155,9 +165,9 @@ export async function findContactByPhone(serviceToken: string, phone: string): P
     accountId: first.accountId,
     accountName,
     email: first.email,
-    canCreateTickets: !cf.cf_solo_visualizacion,
+    canCreateTickets: !isChecked(cf.cf_solo_visualizacion),
     additionalAccountIds,
-    fullAccess: Boolean(cf.cf_acceso_total_visionaria),
+    fullAccess: isChecked(cf.cf_acceso_total_visionaria),
   };
 }
 
