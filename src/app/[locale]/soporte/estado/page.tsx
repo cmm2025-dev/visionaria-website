@@ -31,6 +31,8 @@ interface ZabbixSnapshot {
   camarasTotal: number;
   sitiosOnline: number;
   sitiosTotal: number;
+  servidoresOnline: number;
+  servidoresTotal: number;
   incidentesActivos: number;
   disponibilidadPct: number;
 }
@@ -266,7 +268,7 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
                   <div>
                     <h3 className="text-sm font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--muted)' }}>{t('monitoring_title')}</h3>
                     <p className="text-xs text-slate-500 mb-4">{t('monitoring_hint')}</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                       <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: displayed.zabbix.estadoGeneral === 'OPERATIVO' ? '#34d399' : '#F09422' }}>
                         <Activity size={20} style={{ color: displayed.zabbix.estadoGeneral === 'OPERATIVO' ? '#34d399' : '#F09422' }} />
                         <div>
@@ -288,6 +290,21 @@ export default function SupportStatusPage({ params }: { params: Promise<{ locale
                         <div>
                           <p className="text-2xl font-extrabold text-white">{displayed.zabbix.sitiosOnline} / {displayed.zabbix.sitiosTotal}</p>
                           <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_sitios')}</p>
+                        </div>
+                      </div>
+                      <div
+                        className="rounded-xl p-5 border flex flex-col gap-3"
+                        style={{
+                          background: 'var(--card-bg)',
+                          borderColor: displayed.zabbix.servidoresOnline < displayed.zabbix.servidoresTotal ? '#ef4444' : 'var(--border)',
+                        }}
+                      >
+                        <Server size={20} style={{ color: displayed.zabbix.servidoresOnline < displayed.zabbix.servidoresTotal ? '#ef4444' : '#34d399' }} />
+                        <div>
+                          <p className="text-2xl font-extrabold" style={{ color: displayed.zabbix.servidoresOnline < displayed.zabbix.servidoresTotal ? '#ef4444' : 'white' }}>
+                            {displayed.zabbix.servidoresOnline} / {displayed.zabbix.servidoresTotal}
+                          </p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t('monitoring_servidores')}</p>
                         </div>
                       </div>
                       <div className="rounded-xl p-5 border flex flex-col gap-3" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>

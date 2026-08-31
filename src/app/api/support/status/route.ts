@@ -46,10 +46,12 @@ function sumZabbix(clientName: string, snapshots: AccountZabbixSnapshot[]): Acco
       camarasTotal: acc.camarasTotal + s.camarasTotal,
       sitiosOnline: acc.sitiosOnline + s.sitiosOnline,
       sitiosTotal: acc.sitiosTotal + s.sitiosTotal,
+      servidoresOnline: acc.servidoresOnline + s.servidoresOnline,
+      servidoresTotal: acc.servidoresTotal + s.servidoresTotal,
       incidentesActivos: acc.incidentesActivos + s.incidentesActivos,
       disponibilidadPct: 0, // recomputed below
     }),
-    { clientName, estadoGeneral: 'OPERATIVO', camarasOnline: 0, camarasTotal: 0, sitiosOnline: 0, sitiosTotal: 0, incidentesActivos: 0, disponibilidadPct: 100 } as AccountZabbixSnapshot
+    { clientName, estadoGeneral: 'OPERATIVO', camarasOnline: 0, camarasTotal: 0, sitiosOnline: 0, sitiosTotal: 0, servidoresOnline: 0, servidoresTotal: 0, incidentesActivos: 0, disponibilidadPct: 100 } as AccountZabbixSnapshot
   );
 }
 

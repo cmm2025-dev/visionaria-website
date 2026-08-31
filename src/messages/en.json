@@ -254,6 +254,7 @@
     "monitoring_incidencias": "With Incidents",
     "monitoring_camaras": "Cameras Online",
     "monitoring_sitios": "Sites Online",
+    "monitoring_servidores": "Servers",
     "monitoring_incidentes": "Active Incidents",
     "monitoring_disponibilidad": "Availability",
     "events_title": "Recent Events",

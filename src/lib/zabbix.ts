@@ -187,6 +187,9 @@ export interface AccountZabbixSnapshot {
   camarasTotal: number;
   sitiosOnline: number;
   sitiosTotal: number;
+  /** Servers/archivers + UPS/power hosts — always critical, no tolerance threshold like cameras have. */
+  servidoresOnline: number;
+  servidoresTotal: number;
   incidentesActivos: number;
   /** Simple proxy: % of cameras currently reachable. Not a true rolling 30-day SLA calculation. */
   disponibilidadPct: number;
@@ -236,6 +239,12 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
     if (isCameraOnline(camera)) siteIdsOnline.add(siteId);
   }
 
+  // Servers/archivers (ARCHIVER, IDRAC, DIRECTORY) and UPS/power hosts — always treated as
+  // critical infrastructure, unlike cameras there's no tolerance threshold: any active problem
+  // on one of these means it counts as down.
+  const infraHosts = hosts.filter(h => classifyCriticalInfra(h.name) !== null);
+  const infraOnline = infraHosts.filter(h => !hostIdsWithProblems.has(h.hostid)).length;
+
   return {
     clientName,
     estadoGeneral: problems.length === 0 ? 'OPERATIVO' : 'CON_INCIDENCIAS',
@@ -243,6 +252,8 @@ export async function computeAccountSnapshot(clientName: string, groupId: string
     camarasTotal: cameras.length,
     sitiosOnline: siteIdsOnline.size,
     sitiosTotal: siteIds.size,
+    servidoresOnline: infraOnline,
+    servidoresTotal: infraHosts.length,
     incidentesActivos: problems.length,
     disponibilidadPct: cameras.length > 0 ? Math.round((camerasOnline / cameras.length) * 1000) / 10 : 100,
   };
