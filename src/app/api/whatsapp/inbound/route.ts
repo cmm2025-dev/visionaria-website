@@ -15,9 +15,9 @@ export const runtime = 'nodejs';
 /**
  * Inbound WhatsApp Business webhook — NOT YET LIVE.
  *
- * Requires a matching WHATSAPP_WEBHOOK_SECRET (sent by the caller as the X-Webhook-Secret
- * header) once WHATSAPP_WEBHOOK_ENABLED='1' — otherwise still disabled because two things
- * are unresolved:
+ * Requires a matching WHATSAPP_WEBHOOK_SECRET (sent by the caller as the ?secret= query
+ * param — Zoho's webhook config has no custom-headers option) once WHATSAPP_WEBHOOK_ENABLED='1'
+ * — otherwise still disabled because two things are unresolved:
  *
  *   1. Payload shape: whichever channel ends up calling this (Zoho Desk's native WhatsApp
  *      channel via an automation/webhook, or the Meta Cloud API directly) has its own real
@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
 
   // Shared-secret check: without this, anyone who finds this URL could POST a fabricated
   // {"from": "<known client phone>", "text": "..."} and drive the questionnaire to completion,
-  // creating real tickets. Configure the same value as an HTTP header on the caller's side (e.g.
-  // Zoho's webhook "Custom Headers") — header name/value are ours to define since we control the
-  // receiving end.
-  const providedSecret = req.headers.get('x-webhook-secret');
+  // creating real tickets. Passed as a query param (?secret=...) rather than a header — Zoho's
+  // webhook config screen has a Callback URL field but no custom-headers option, while it does
+  // let you type the full URL including query string.
+  const providedSecret = req.nextUrl.searchParams.get('secret');
   const expectedSecret = process.env.WHATSAPP_WEBHOOK_SECRET;
   if (!expectedSecret || providedSecret !== expectedSecret) {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 });
