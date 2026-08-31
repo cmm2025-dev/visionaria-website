@@ -1,9 +1,18 @@
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
 
+// scryptSync is deliberately expensive (CPU-bound, blocks the event loop) -- fine to pay once,
+// not on every encode/decode call. SESSION_SECRET and each salt are both constants for the life
+// of the process, so the derived key never changes; cache it per salt instead of re-deriving.
+const keyCache = new Map<string, Buffer>();
+
 function getKey(salt: string): Buffer {
+  const cached = keyCache.get(salt);
+  if (cached) return cached;
   const secret = process.env.SESSION_SECRET;
   if (!secret) throw new Error('SESSION_SECRET is not set');
-  return scryptSync(secret, salt, 32);
+  const key = scryptSync(secret, salt, 32);
+  keyCache.set(salt, key);
+  return key;
 }
 
 /** Encrypts a JSON-serializable payload into an opaque base64url token (AES-256-GCM). */

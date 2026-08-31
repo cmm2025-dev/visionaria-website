@@ -17,31 +17,6 @@ function isChecked(value: unknown): boolean {
   return value === true || value === 'true';
 }
 
-/** Exchanges an OAuth authorization code (end-user login flow) for a short-lived access token. */
-export async function exchangeCodeForToken(code: string, redirectUri: string): Promise<{ access_token: string }> {
-  const params = new URLSearchParams({
-    grant_type: 'authorization_code',
-    client_id: requireEnv('ZOHO_CLIENT_ID'),
-    client_secret: requireEnv('ZOHO_CLIENT_SECRET'),
-    redirect_uri: redirectUri,
-    code,
-  });
-  const res = await fetch(`${ACCOUNTS_BASE}/oauth/v2/token`, { method: 'POST', body: params });
-  const data = await res.json();
-  if (!res.ok || !data.access_token) throw new Error(`Zoho token exchange failed: ${JSON.stringify(data)}`);
-  return data;
-}
-
-/** Resolves the display email of the account that just completed the Zoho login flow. */
-export async function getZohoUserEmail(accessToken: string): Promise<string> {
-  const res = await fetch(`${ACCOUNTS_BASE}/oauth/user/info`, {
-    headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
-  });
-  const data = await res.json();
-  if (!res.ok || !data.Email) throw new Error(`Zoho user info failed: ${JSON.stringify(data)}`);
-  return data.Email as string;
-}
-
 let cachedServiceToken: { token: string; expiresAt: number } | null = null;
 
 /**
@@ -526,13 +501,18 @@ export function computeTicketPriority(
 ): 'Low' | 'Medium' | 'High' {
   if (fallaGlobal) return 'High';
 
-  if (tipoFalla === 'Camaras sin Señal' && camarasAfectadas) {
-    const totalCameras = inventory.find(i => i.assetType.toLowerCase().includes('cámara') || i.assetType.toLowerCase().includes('camara'))?.totalCount ?? 0;
-    if (totalCameras > 0) {
-      const pct = (camarasAfectadas / totalCameras) * 100;
-      if (pct > 15) return 'High';
-      return 'Medium';
+  if (tipoFalla === 'Camaras sin Señal') {
+    // "Cameras down" is never actually Low priority — missing/zero camarasAfectadas (a blank
+    // count, or no matching inventory to compare against) falls through to Medium rather than
+    // silently landing on the generic Low default below.
+    if (camarasAfectadas != null) {
+      const totalCameras = inventory.find(i => i.assetType.toLowerCase().includes('cámara') || i.assetType.toLowerCase().includes('camara'))?.totalCount ?? 0;
+      if (totalCameras > 0) {
+        const pct = (camarasAfectadas / totalCameras) * 100;
+        if (pct > 15) return 'High';
+      }
     }
+    return 'Medium';
   }
 
   if (tipoFalla === 'Falla de Servidores -VMS') return 'High';
@@ -584,14 +564,11 @@ export function computeSnapshot(clientName: string, tickets: ZohoTicket[]): Supp
 }
 
 // ---------------------------------------------------------------------------
-// WhatsApp channel support — reusable logic only. Not yet wired to a live
-// webhook: the WhatsApp Business number is still pending Meta/Zoho validation.
-// Once a channel is chosen (Zoho Desk's native WhatsApp channel, or the Meta
-// Cloud API directly), a webhook route calls these three functions in order:
-// findContactByPhone -> buildAgentContextSummary (posted for the agent) and
-// classifyInboundSeverity -> maybeAutoCreateTicket (only for high-severity
-// messages; everything else stays a plain conversation for the agent to
-// triage manually).
+// WhatsApp channel support. The live webhook (src/app/api/whatsapp/inbound/route.ts)
+// calls findContactByPhone, then buildAgentContextSummary below to post context for the
+// agent, then drives the structured menu/questionnaire in src/lib/whatsappFlow.ts — a
+// ticket is only created once that flow reaches its explicit confirmation step, not from
+// freeform message content.
 // ---------------------------------------------------------------------------
 
 /**
@@ -620,53 +597,3 @@ export async function buildAgentContextSummary(serviceToken: string, contact: Zo
   return [`Resumen de soporte — ${contact.email}`, ...lines].join('\n');
 }
 
-/**
- * Keyword heuristic for freeform inbound WhatsApp text — mirrors the "falla global" / high-impact
- * cases from computeTicketPriority, since a chat message has no structured tipoFalla/camarasAfectadas
- * fields to work with. Deliberately conservative: false negatives just mean the agent triages the
- * message by hand, which is the safe default; false positives create noise tickets, so keep this list
- * tight rather than broad.
- */
-const HIGH_SEVERITY_KEYWORDS = [
-  'sistema caido', 'sistema caído', 'todo caido', 'todo caído',
-  'sin señal total', 'sin senal total', 'todas las camaras', 'todas las cámaras',
-  'incendio', 'inundacion', 'inundación', 'robo', 'emergencia', 'siniestro',
-  'no hay video', 'perdimos todo', 'servidor caido', 'servidor caído',
-];
-
-export function classifyInboundSeverity(message: string): 'high' | 'normal' {
-  const normalized = message.toLowerCase();
-  return HIGH_SEVERITY_KEYWORDS.some(k => normalized.includes(k)) ? 'high' : 'normal';
-}
-
-/**
- * Creates a ticket automatically only for high-severity inbound messages from a contact authorized
- * to open tickets (canCreateTickets); everything else — low/medium severity, or a contact who's
- * view-only — is left as a plain conversation for the agent to escalate manually if needed.
- */
-export async function maybeAutoCreateTicket(
-  serviceToken: string,
-  contact: ZohoContact,
-  message: string
-): Promise<{ id: string; ticketNumber: string } | null> {
-  if (!contact.canCreateTickets) return null;
-  if (classifyInboundSeverity(message) !== 'high') return null;
-
-  return createTicket(serviceToken, {
-    contactId: contact.id,
-    subject: `[WhatsApp] Reporte de alta gravedad — ${contact.accountName ?? contact.email}`,
-    description: message,
-    tipoFalla: 'Falla de Servidores -VMS',
-    camarasAfectadas: null,
-    fallaGlobal: true,
-    ubicacion: '',
-    checklist: {
-      energiaNormal: false,
-      sinSiniestro: false,
-      anomaliaPersiste: false,
-      reinicioIntentado: false,
-      accesoInternet: false,
-    },
-    priority: 'High',
-  });
-}

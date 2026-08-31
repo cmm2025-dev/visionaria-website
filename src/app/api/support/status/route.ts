@@ -102,8 +102,10 @@ export async function GET(req: NextRequest) {
     const aggregateZabbix = isMultiAccount
       ? sumZabbix(aggregateLabel, zabbixSnapshots)
       : perAccount[0].zabbix;
-    if (aggregateZabbix && aggregateZabbix.camarasTotal > 0) {
-      aggregateZabbix.disponibilidadPct = Math.round((aggregateZabbix.camarasOnline / aggregateZabbix.camarasTotal) * 1000) / 10;
+    if (aggregateZabbix) {
+      aggregateZabbix.disponibilidadPct = aggregateZabbix.camarasTotal > 0
+        ? Math.round((aggregateZabbix.camarasOnline / aggregateZabbix.camarasTotal) * 1000) / 10
+        : 100; // no cameras to report on — matches computeAccountSnapshot's single-account default, not "everything down"
     }
 
     return NextResponse.json({

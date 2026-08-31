@@ -63,7 +63,9 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
   }, []);
 
   const checklistComplete = Object.values(checklist).every(Boolean);
-  const canSubmit = subject.trim().length > 0 && tipoFalla && checklistComplete;
+  const camarasAfectadasRequired = tipoFalla === 'Camaras sin Señal';
+  const canSubmit = subject.trim().length > 0 && tipoFalla && checklistComplete
+    && (!camarasAfectadasRequired || camarasAfectadas.trim().length > 0);
 
   const handleLogout = async () => {
     await fetch('/api/auth/zoho/logout', { method: 'POST' });
@@ -232,6 +234,7 @@ export default function NewTicketPage({ params }: { params: Promise<{ locale: st
                   <input
                     type="number"
                     min={0}
+                    required
                     value={camarasAfectadas}
                     onChange={e => setCamarasAfectadas(e.target.value)}
                     className="w-full rounded-lg px-4 py-2.5 border text-white text-sm"

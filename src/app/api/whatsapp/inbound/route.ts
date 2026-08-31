@@ -15,7 +15,9 @@ export const runtime = 'nodejs';
 /**
  * Inbound WhatsApp Business webhook — NOT YET LIVE.
  *
- * Still disabled (WHATSAPP_WEBHOOK_ENABLED!=='1') because two things are unresolved:
+ * Requires a matching WHATSAPP_WEBHOOK_SECRET (sent by the caller as the X-Webhook-Secret
+ * header) once WHATSAPP_WEBHOOK_ENABLED='1' — otherwise still disabled because two things
+ * are unresolved:
  *
  *   1. Payload shape: whichever channel ends up calling this (Zoho Desk's native WhatsApp
  *      channel via an automation/webhook, or the Meta Cloud API directly) has its own real
@@ -46,6 +48,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'not_configured' }, { status: 501 });
   }
 
+  // Shared-secret check: without this, anyone who finds this URL could POST a fabricated
+  // {"from": "<known client phone>", "text": "..."} and drive the questionnaire to completion,
+  // creating real tickets. Configure the same value as an HTTP header on the caller's side (e.g.
+  // Zoho's webhook "Custom Headers") — header name/value are ours to define since we control the
+  // receiving end.
+  const providedSecret = req.headers.get('x-webhook-secret');
+  const expectedSecret = process.env.WHATSAPP_WEBHOOK_SECRET;
+  if (!expectedSecret || providedSecret !== expectedSecret) {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  }
+
   const body = await req.json();
   const senderPhone: string | undefined = body?.from;
   const messageText: string | undefined = body?.text;
@@ -62,15 +75,20 @@ export async function POST(req: NextRequest) {
   const priorState = await getConversationState(senderPhone);
   const result = priorState ? handleMessage(priorState, messageText) : startConversation();
 
+  // Check the permission at the moment the client enters the fault-report flow (right after
+  // choosing menu option "2"), not after they've already answered the whole questionnaire —
+  // no point making a view-only contact answer 6+ questions just to reject them at the end.
+  const enteringReportFlow = result.state?.step === 'tipoFalla' && (!priorState || priorState.step === 'menu');
+  if (enteringReportFlow && !contact.canCreateTickets) {
+    await clearConversationState(senderPhone);
+    return NextResponse.json({
+      ok: true,
+      reply: 'Tu cuenta no está habilitada para generar solicitudes de soporte. Un agente revisará tu mensaje.',
+    });
+  }
+
   if (result.action === 'create_ticket' && result.ticketInput) {
     await clearConversationState(senderPhone);
-
-    if (!contact.canCreateTickets) {
-      return NextResponse.json({
-        ok: true,
-        reply: 'Tu cuenta no está habilitada para generar solicitudes de soporte. Un agente revisará tu mensaje.',
-      });
-    }
 
     const inventory = contact.accountId ? await getClientInventory(serviceToken, contact.accountId) : [];
     const priority = computeTicketPriority(
