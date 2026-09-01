@@ -44,6 +44,7 @@ export default function Footer({ locale, tagline, rights, nav, linksTitle, resou
                 { href: `/${locale}/noticias`, label: nav.news },
                 { href: `/${locale}/soporte`, label: nav.support },
                 { href: `/${locale}/contacto`, label: nav.contact },
+                { href: `/${locale}/intranet`, label: nav.intranet },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="hover:text-[#00d4ff] transition-colors">

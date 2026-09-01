@@ -7,7 +7,8 @@
     "news": "Noticias",
     "clients": "Clientes",
     "support": "Soporte",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "intranet": "Intranet"
   },
   "home": {
     "hero_title": "Integramos tecnología para proteger a las personas",
@@ -1127,5 +1128,24 @@
     "error_generic": "No pudimos enviar tu ticket. Intenta nuevamente en unos minutos.",
     "error_no_account": "Tu cuenta no está asociada a ningún cliente registrado. Contacta a soporte.",
     "error_not_authorized": "Tu cuenta no tiene permiso para crear tickets. Si necesitas reportar una falla, contacta al operador autorizado de tu institución."
+  },
+  "intranet": {
+    "eyebrow": "Acceso interno",
+    "title": "Intranet Visionaria",
+    "subtitle": "Documentos, enlaces y recursos internos para el personal de la empresa.",
+    "loading": "Cargando…",
+    "login_desc": "Ingresa tu correo @visionaria.cl para recibir un enlace de acceso.",
+    "login_placeholder": "tu.nombre@visionaria.cl",
+    "login_cta": "Enviar enlace de acceso",
+    "login_submitting": "Enviando…",
+    "login_sent_title": "Revisa tu correo",
+    "login_sent_desc": "Si tu correo pertenece al dominio de la empresa, te enviamos un enlace de acceso válido por 15 minutos.",
+    "error_generic": "Ocurrió un error al cargar la Intranet. Intenta nuevamente.",
+    "logout": "Cerrar sesión",
+    "welcome": "Hola, {email}",
+    "edit_hint": "Estos enlaces son un punto de partida — pídele al equipo que los actualice con los documentos y recursos reales.",
+    "link_placeholder_1": "Manuales y procedimientos internos",
+    "link_placeholder_2": "Directorio de contactos del equipo",
+    "link_placeholder_3": "Políticas y documentos de RR.HH."
   }
 }

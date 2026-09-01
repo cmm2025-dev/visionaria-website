@@ -7,7 +7,8 @@
     "news": "News",
     "clients": "Clients",
     "support": "Support",
-    "contact": "Contact"
+    "contact": "Contact",
+    "intranet": "Intranet"
   },
   "home": {
     "hero_title": "We integrate technology to protect people",
@@ -1127,5 +1128,24 @@
     "error_generic": "We couldn't submit your ticket. Please try again in a few minutes.",
     "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
     "error_not_authorized": "Your account isn't authorized to create tickets. If you need to report an issue, contact your institution's authorized operator."
+  },
+  "intranet": {
+    "eyebrow": "Internal access",
+    "title": "Visionaria Intranet",
+    "subtitle": "Internal documents, links and resources for company staff.",
+    "loading": "Loading…",
+    "login_desc": "Enter your @visionaria.cl email to receive a sign-in link.",
+    "login_placeholder": "your.name@visionaria.cl",
+    "login_cta": "Send sign-in link",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email belongs to the company domain, we sent you a sign-in link valid for 15 minutes.",
+    "error_generic": "Something went wrong loading the Intranet. Please try again.",
+    "logout": "Sign out",
+    "welcome": "Hi, {email}",
+    "edit_hint": "These links are a starting point — ask the team to update them with the real documents and resources.",
+    "link_placeholder_1": "Internal manuals and procedures",
+    "link_placeholder_2": "Team contact directory",
+    "link_placeholder_3": "HR policies and documents"
   }
 }

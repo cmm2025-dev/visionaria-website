@@ -89,3 +89,50 @@ export function decodeMagicLink(value: string, maxAgeMs = 1000 * 60 * 15): Magic
   if (Date.now() - payload.issuedAt > maxAgeMs) return null;
   return payload;
 }
+
+// Intranet (staff) auth uses its own salts and cookie, kept separate from the client-support
+// session above -- a token or cookie minted for one must never be usable to authenticate the other.
+
+const INTRANET_MAGIC_SALT = 'visionaria-intranet-magic-link-v1';
+
+export interface IntranetMagicLinkPayload {
+  email: string;
+  locale: string;
+  issuedAt: number;
+}
+
+export function encodeIntranetMagicLink(payload: Omit<IntranetMagicLinkPayload, 'issuedAt'>): string {
+  return encrypt(INTRANET_MAGIC_SALT, { ...payload, issuedAt: Date.now() });
+}
+
+export function decodeIntranetMagicLink(value: string, maxAgeMs = 1000 * 60 * 15): IntranetMagicLinkPayload | null {
+  const payload = decrypt<IntranetMagicLinkPayload>(INTRANET_MAGIC_SALT, value);
+  if (!payload || typeof payload.email !== 'string' || typeof payload.issuedAt !== 'number') return null;
+  if (Date.now() - payload.issuedAt > maxAgeMs) return null;
+  return payload;
+}
+
+const INTRANET_SESSION_SALT = 'visionaria-intranet-session-v1';
+
+export interface IntranetSession {
+  email: string;
+  issuedAt: number;
+}
+
+export function encodeIntranetSession(payload: IntranetSession): string {
+  return encrypt(INTRANET_SESSION_SALT, payload);
+}
+
+export function decodeIntranetSession(value: string, maxAgeMs = 1000 * 60 * 60 * 8): IntranetSession | null {
+  const payload = decrypt<IntranetSession>(INTRANET_SESSION_SALT, value);
+  if (!payload || typeof payload.email !== 'string' || typeof payload.issuedAt !== 'number') return null;
+  if (Date.now() - payload.issuedAt > maxAgeMs) return null;
+  return payload;
+}
+
+export const INTRANET_SESSION_COOKIE = 'visionaria_intranet_session';
+
+/** Staff are recognized by company email domain -- no separate roster to maintain. */
+export function isStaffEmail(email: string): boolean {
+  return /^[^@\s]+@visionaria\.cl$/i.test(email.trim());
+}
