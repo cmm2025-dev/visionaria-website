@@ -136,3 +136,12 @@ export const INTRANET_SESSION_COOKIE = 'visionaria_intranet_session';
 export function isStaffEmail(email: string): boolean {
   return /^[^@\s]+@visionaria\.cl$/i.test(email.trim());
 }
+
+/** A short, explicit allowlist (env var, comma-separated) of who can edit intranet content. */
+export function isIntranetAdmin(email: string): boolean {
+  const allowlist = (process.env.INTRANET_ADMIN_EMAILS ?? '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+  return allowlist.includes(email.trim().toLowerCase());
+}

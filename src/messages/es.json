@@ -1143,9 +1143,20 @@
     "error_generic": "Ocurrió un error al cargar la Intranet. Intenta nuevamente.",
     "logout": "Cerrar sesión",
     "welcome": "Hola, {email}",
-    "edit_hint": "Estos enlaces son un punto de partida — pídele al equipo que los actualice con los documentos y recursos reales.",
-    "link_placeholder_1": "Manuales y procedimientos internos",
-    "link_placeholder_2": "Directorio de contactos del equipo",
-    "link_placeholder_3": "Políticas y documentos de RR.HH."
+    "no_links": "Todavía no hay contenido publicado.",
+    "edit_content": "Editar contenido",
+    "back_to_intranet": "Volver a la Intranet",
+    "admin_eyebrow": "Panel de edición",
+    "admin_title": "Editar contenido de la Intranet",
+    "admin_subtitle": "Agrega, edita o elimina los enlaces y documentos que ve el personal. Los cambios se publican al instante, sin tocar código ni el sitio en Vercel/GitHub.",
+    "admin_forbidden": "Tu cuenta no tiene permiso para editar el contenido de la Intranet.",
+    "admin_label_placeholder": "Nombre del enlace (ej: Manual de instalación)",
+    "admin_url_placeholder": "https://...",
+    "admin_remove": "Eliminar",
+    "admin_add": "Agregar enlace",
+    "admin_save": "Guardar cambios",
+    "admin_saving": "Guardando…",
+    "admin_saved": "Cambios publicados",
+    "admin_save_error": "No se pudo guardar. Intenta nuevamente."
   }
 }

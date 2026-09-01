@@ -2,29 +2,23 @@
 
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
-import { FileText, LogOut, ExternalLink, LayoutGrid } from 'lucide-react';
+import Link from 'next/link';
+import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil } from 'lucide-react';
 import IntranetLogin from '@/components/IntranetLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
 interface IntranetLink {
-  labelKey: string;
+  id: string;
+  label: string;
   url: string;
 }
-
-/**
- * Placeholder set of internal links/documents. Visionaria staff should replace these entries
- * with the actual internal resources (policies, manuals, tools) once decided.
- */
-const LINKS: IntranetLink[] = [
-  { labelKey: 'link_placeholder_1', url: '#' },
-  { labelKey: 'link_placeholder_2', url: '#' },
-  { labelKey: 'link_placeholder_3', url: '#' },
-];
 
 export default function IntranetPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
   const t = useTranslations('intranet');
   const [email, setEmail] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [links, setLinks] = useState<IntranetLink[]>([]);
   const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'error' | 'ready'>('loading');
 
   useEffect(() => {
@@ -36,6 +30,12 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
         if (!res.ok) return setStatus('error');
         const data = await res.json();
         setEmail(data.email);
+        setIsAdmin(!!data.isAdmin);
+        const linksRes = await fetch('/api/intranet/content');
+        if (cancelled) return;
+        if (!linksRes.ok) return setStatus('error');
+        const linksData = await linksRes.json();
+        setLinks(linksData.links);
         setStatus('ready');
       })
       .catch(() => !cancelled && setStatus('error'));
@@ -99,36 +99,49 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
                 <LayoutGrid size={22} style={{ color: '#F09422' }} />
                 {t('welcome', { email: email ?? '' })}
               </h2>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
-              >
-                <LogOut size={14} /> {t('logout')}
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              {LINKS.map(link => (
-                <a
-                  key={link.labelKey}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
-                  style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+              <div className="flex items-center gap-4">
+                {isAdmin && (
+                  <Link
+                    href={`/${locale}/intranet/admin`}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
+                    style={{ color: '#F09422' }}
+                  >
+                    <Pencil size={14} /> {t('edit_content')}
+                  </Link>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
                 >
-                  <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
-                    <FileText size={20} style={{ color: '#F09422' }} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-white font-semibold text-sm">{t(link.labelKey)}</p>
-                  </div>
-                  <ExternalLink size={16} className="text-slate-500 shrink-0" />
-                </a>
-              ))}
+                  <LogOut size={14} /> {t('logout')}
+                </button>
+              </div>
             </div>
 
-            <p className="text-slate-500 text-xs">{t('edit_hint')}</p>
+            {links.length === 0 ? (
+              <p className="text-slate-500 text-sm">{t('no_links')}</p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {links.map(link => (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
+                    style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+                  >
+                    <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
+                      <FileText size={20} style={{ color: '#F09422' }} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white font-semibold text-sm">{link.label}</p>
+                    </div>
+                    <ExternalLink size={16} className="text-slate-500 shrink-0" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </section>
