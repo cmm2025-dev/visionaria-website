@@ -43,6 +43,7 @@ export default function Footer({ locale, tagline, rights, nav, linksTitle, resou
               {[
                 { href: `/${locale}/noticias`, label: nav.news },
                 { href: `/${locale}/soporte`, label: nav.support },
+                { href: `/${locale}/soporte/continuidad-operacional`, label: nav.continuity },
                 { href: `/${locale}/contacto`, label: nav.contact },
                 { href: `/${locale}/intranet`, label: nav.intranet },
               ].map(({ href, label }) => (

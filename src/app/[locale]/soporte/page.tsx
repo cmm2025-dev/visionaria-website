@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { BookOpen, TicketCheck, Users, Activity } from 'lucide-react';
+import { BookOpen, TicketCheck, Users, Activity, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
@@ -7,12 +7,14 @@ export default async function SoportePage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'support' });
   const c = await getTranslations({ locale, namespace: 'common' });
+  const ct = await getTranslations({ locale, namespace: 'continuity' });
 
   const cards = [
     { icon: BookOpen, title: t('docs'), desc: t('docs_desc'), href: `/${locale}/soporte/documentos`, accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
     { icon: TicketCheck, title: t('ticket'), desc: t('ticket_desc'), href: `/${locale}/soporte/nuevo-ticket`, accent: '#3D8A82', iconBg: 'rgba(61,138,130,0.12)' },
     { icon: Users, title: t('community'), desc: t('community_desc'), href: `/${locale}/soporte/mesa-ayuda`, accent: '#C4A882', iconBg: 'rgba(196,168,130,0.12)' },
     { icon: Activity, title: t('status'), desc: t('status_desc'), href: `/${locale}/soporte/estado`, accent: '#34d399', iconBg: 'rgba(52,211,153,0.12)' },
+    { icon: ShieldCheck, title: ct('eyebrow'), desc: ct('subtitle'), href: `/${locale}/soporte/continuidad-operacional`, accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)' },
   ];
 
   return (

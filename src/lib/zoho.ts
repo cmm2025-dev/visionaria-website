@@ -295,6 +295,9 @@ export async function getClientDocuments(serviceToken: string, accountId: string
     .filter((d: Record<string, unknown>) => {
       const cf = (d.cf as Record<string, unknown>) ?? {};
       if (cf.cf_account_id === accountId) return true;
+      // A document flagged "visible for all" (e.g. general institutional notices, policy
+      // communications) shows up for every account regardless of ownership or sharing list.
+      if (isChecked(cf.cf_visible_para_todos)) return true;
       // Shared documents (e.g. a training video for a technology several clients run in
       // common, like "tecnología homóloga") list extra Account IDs here, comma-separated —
       // same convention as the Contact's cf_accounts_adicionales field.
