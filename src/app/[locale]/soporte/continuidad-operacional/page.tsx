@@ -142,6 +142,7 @@ export default async function ContinuidadOperacionalPage({ params }: { params: P
         <div className="flex flex-col gap-4">
           <SectionHeading number="5" eyebrow={t('s5_eyebrow')} title={t('s5_title')} />
           <p className="text-slate-300 leading-relaxed">{t('s5_intro')}</p>
+          <p className="text-slate-400 text-sm leading-relaxed">{t('s5_plan_note')}</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {pillars.map(({ icon: Icon, title, body }) => (
               <div key={title} className="rounded-xl p-4 border" style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}>
@@ -217,8 +218,7 @@ export default async function ContinuidadOperacionalPage({ params }: { params: P
 
         <div className="text-center flex flex-col items-center gap-1 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
           <p className="text-slate-300 text-sm">{t('signature_body')}</p>
-          <p className="text-white font-semibold mt-4">{t('signature_name')}</p>
-          <p className="text-slate-500 text-sm">{t('signature_role')}</p>
+          <p className="text-white font-semibold mt-4">{t('signature_role')}</p>
           <p className="text-slate-500 text-xs mt-6">{t('reference_framework')}</p>
         </div>
       </section>
