@@ -3,6 +3,25 @@ import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
+// This is a verification control, not forensic photography -- resolution past this is never needed,
+// and shrinking every photo keeps uploads fast on weak field signal.
+const MAX_DIMENSION=1600,JPEG_QUALITY=0.8;
+function compressImage(file){
+  return new Promise(resolve=>{
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{
+      try{
+        const scale=Math.min(1,MAX_DIMENSION/Math.max(img.naturalWidth,img.naturalHeight));
+        const w=Math.round(img.naturalWidth*scale),h=Math.round(img.naturalHeight*scale);
+        const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        canvas.toBlob(blob=>{URL.revokeObjectURL(url);resolve(blob);},'image/jpeg',JPEG_QUALITY);
+      }catch{URL.revokeObjectURL(url);resolve(null);}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};
+    img.src=url;
+  });
+}
 let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',slugs:{}};
 try{config={...config,slugs:(JSON.parse(localStorage.getItem(KEY)||'{}').slugs)||{}}}catch{}
 let points=[],photos=[],draft=[],filter='all',busy=false,toastTimer,previewURLs=[],recordURLs=[],largeURL,storageReady=false;
@@ -46,7 +65,12 @@ function renderDraft(){
 function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
 function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
 async function refresh(){photos=await getAll();$('nav-count').textContent=photos.length;renderRecords();renderDraft();}
-async function addFiles(list){formError('');const accepted=[];for(const file of list){try{if(file.size===0||file.size>25*1024*1024)throw new Error('Cada foto debe pesar entre 1 byte y 25 MB.');const extension=extensionFor(file);accepted.push({blob:file,extension,registeredAt:new Date().toISOString()});}catch(error){formError(error.message);}}
+async function addFiles(list){formError('');const accepted=[];for(const file of list){try{
+    if(file.size===0||file.size>25*1024*1024)throw new Error('Cada foto debe pesar entre 1 byte y 25 MB.');
+    const originalExtension=extensionFor(file);
+    const compressed=await compressImage(file);
+    accepted.push(compressed?{blob:compressed,extension:'jpg',registeredAt:new Date().toISOString()}:{blob:file,extension:originalExtension,registeredAt:new Date().toISOString()});
+  }catch(error){formError(error.message);}}
   if(draft.length+accepted.length>20){formError('Puedes guardar hasta 20 fotografías por registro. Guarda este grupo antes de continuar.');return;}draft.push(...accepted);renderDraft();}
 function lockComposer(locked){for(const id of ['commune','date','point-search','point','activity','note','take-photo','add-files','discard'])$(id).disabled=locked;}
 async function saveCapture(event){event.preventDefault();if(busy)return;formError('');try{
