@@ -137,20 +137,20 @@ export function isStaffEmail(email: string): boolean {
   return /^[^@\s]+@visionaria\.cl$/i.test(email.trim());
 }
 
-/** A short, explicit allowlist (env var, comma-separated) of who can edit intranet content. */
-export function isIntranetAdmin(email: string): boolean {
-  const allowlist = (process.env.INTRANET_ADMIN_EMAILS ?? '')
-    .split(',')
+/** Accepts comma or semicolon as the separator -- email clients paste lists with either. */
+function parseEmailAllowlist(raw: string): string[] {
+  return raw
+    .split(/[,;]/)
     .map(e => e.trim().toLowerCase())
     .filter(Boolean);
-  return allowlist.includes(email.trim().toLowerCase());
 }
 
-/** A short, explicit allowlist (env var, comma-separated) of field technicians authorized for Evidencias. */
+/** A short, explicit allowlist (env var) of who can edit intranet content. */
+export function isIntranetAdmin(email: string): boolean {
+  return parseEmailAllowlist(process.env.INTRANET_ADMIN_EMAILS ?? '').includes(email.trim().toLowerCase());
+}
+
+/** A short, explicit allowlist (env var) of field technicians authorized for Evidencias. */
 export function isEvidenciasTech(email: string): boolean {
-  const allowlist = (process.env.EVIDENCIAS_TECH_EMAILS ?? '')
-    .split(',')
-    .map(e => e.trim().toLowerCase())
-    .filter(Boolean);
-  return allowlist.includes(email.trim().toLowerCase());
+  return parseEmailAllowlist(process.env.EVIDENCIAS_TECH_EMAILS ?? '').includes(email.trim().toLowerCase());
 }
