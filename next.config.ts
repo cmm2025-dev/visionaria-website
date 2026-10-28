@@ -16,7 +16,9 @@ const csp = [
   "media-src 'self' blob:",
   "font-src 'self'",
   "frame-src 'self' https://www.youtube-nocookie.com",
-  "connect-src 'self'",
+  // api/content.dropboxapi.com: Evidencias de Terreno uploads go straight from the browser to
+  // Dropbox (never through our own server) so they aren't bound by Vercel's serverless body-size cap.
+  "connect-src 'self' https://api.dropboxapi.com https://content.dropboxapi.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
