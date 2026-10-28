@@ -11,7 +11,7 @@ async function ensureToken(){
 }
 export function session(){return cached();}
 export class DropboxError extends Error{constructor(message,status,detail){super(message);this.status=status;this.detail=detail;}}
-function asciiJson(value){return JSON.stringify(value).replace(/[\u007f-￿]/g,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'));}
+function asciiJson(value){return JSON.stringify(value).replace(/[\u007f-\uffff]/g,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'));}
 export async function api(route,body,{root=true,binary=null,args=null,retried=false}={}){
   const s=await ensureToken();
   const headers={Authorization:'Bearer '+s.token,'Content-Type':binary?'application/octet-stream':'application/json'};
@@ -19,8 +19,10 @@ export async function api(route,body,{root=true,binary=null,args=null,retried=fa
   if(args)headers['Dropbox-API-Arg']=asciiJson(args);
   const response=await fetch((binary?'https://content.dropboxapi.com/2/':'https://api.dropboxapi.com/2/')+route,{method:'POST',headers,body:binary??JSON.stringify(body),signal:AbortSignal.timeout(90000)});
   if(response.status===401&&!retried){sessionStorage.removeItem(SESSION);return api(route,body,{root,binary,args,retried:true});}
-  const data=await response.json().catch(()=>({}));
-  if(!response.ok){throw new DropboxError(response.status===429?'Dropbox pide esperar. Reintenta más tarde.':data.error_summary??'Dropbox no pudo completar la operación.',response.status,data);}
+  // Dropbox sends some errors (notably 400s) as plain text, not JSON -- keep the raw text so the
+  // real cause reaches the technician instead of a generic message.
+  const text=await response.text();let data={};try{data=JSON.parse(text)}catch{}
+  if(!response.ok){throw new DropboxError(response.status===429?'Dropbox pide esperar. Reintenta más tarde.':data.error_summary??`Dropbox respondió ${response.status}: ${text.slice(0,300)||'sin detalle'}`,response.status,data);}
   return data;
 }
 export async function verifyFolder(path){const d=await api('files/get_metadata',{path});if(d['.tag']!=='folder')throw new Error('El destino no es una carpeta.');return d;}
