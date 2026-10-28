@@ -16,18 +16,24 @@
    <div class="capture-layout"><div>
     <form id="capture-form" novalidate>
      <section class="card context-card"><div class="section-title"><span class="step">01</span><div><h2>¿Dónde estás trabajando?</h2><p>El proyecto y la carpeta se asignan automáticamente.</p></div></div>
+      <div class="mode-switch" role="radiogroup" aria-label="Tipo de registro"><label class="active"><input type="radio" name="mode" value="activity" checked>Etapa o novedad</label><label><input type="radio" name="mode" value="protocol">Protocolo fotográfico</label></div>
       <div class="field-row"><label>Comuna<select id="commune" required><option>Antofagasta</option><option>Calama</option><option>Tocopilla</option></select></label><label>Fecha del hecho<input id="date" type="date" required></label></div>
       <label class="point-label">Punto de instalación<span class="field-hint">Busca por código o dirección</span><input id="point-search" type="search" placeholder="Ej. ANT-006 o Salvador Allende" autocomplete="off" aria-label="Buscar punto"><select id="point" size="1" required aria-describedby="point-address"><option value="">Selecciona un punto</option></select></label>
       <div class="point-address" id="point-address"><svg><use href="#i-pin"/></svg><span>Selecciona un punto del catálogo del proyecto.</span></div>
-      <div class="field-row activity-row"><label>Actividad o hecho<select id="activity" required></select></label><label>Fotografiado por<input id="author" maxlength="90" autocomplete="off" required></label></div>
+      <div class="field-row activity-row"><label id="activity-field">Actividad o hecho<select id="activity" required></select></label><label>Fotografiado por<input id="author" maxlength="90" autocomplete="off" required></label></div>
+      <label class="check-label" id="antenna-field" hidden><input id="proto-antenna" type="checkbox">Este punto tiene antena (radioenlace)</label>
       <label>Observación <span class="optional" id="note-optional">opcional para etapas</span><textarea id="note" rows="2" maxlength="1000" placeholder="Un detalle que ayude a entender la evidencia…"></textarea></label>
      </section>
-     <section class="card photos-card"><div class="section-title"><span class="step">02</span><div><h2>Captura la evidencia</h2><p>Una selección de punto y actividad para todas las fotos.</p></div><span class="photo-count" id="photo-count">0 fotos</span></div>
+     <section class="card photos-card" id="photos-card"><div class="section-title"><span class="step">02</span><div><h2>Captura la evidencia</h2><p>Una selección de punto y actividad para todas las fotos.</p></div><span class="photo-count" id="photo-count">0 fotos</span></div>
       <div id="photo-empty" class="photo-empty"><div class="camera-illustration"><svg><use href="#i-camera"/></svg><span class="mini-check">✓</span></div><h3>Cada foto se nombra sola</h3><p>Enfoca el trabajo. El nombre y la carpeta<br>quedan a cargo del sistema.</p></div>
       <div id="photo-previews" class="photo-previews"></div>
       <div class="camera-buttons"><button type="button" id="take-photo" class="btn btn-camera"><svg><use href="#i-camera"/></svg>Tomar fotografía</button><button type="button" id="add-files" class="btn btn-secondary"><svg><use href="#i-plus"/></svg>Desde galería</button></div>
       <input id="camera-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment" hidden><input id="gallery-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden>
       <div class="capture-bottom"><span><svg><use href="#i-check"/></svg>Nombres automáticos · Sello con fecha y ubicación</span><button type="button" id="discard" class="text-button" hidden>Descartar selección</button></div>
+     </section>
+     <section class="card photos-card" id="protocol-card" hidden><div class="section-title"><span class="step">02</span><div><h2>Protocolo fotográfico</h2><p>Registra las tomas que se pueden hacer en esta etapa. Las demás, en la visita correspondiente.</p></div><span class="photo-count" id="proto-count">0 tomas</span></div>
+      <div id="proto-slots" class="proto-slots"></div>
+      <input id="proto-camera-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment" hidden><input id="proto-gallery-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden>
      </section>
      <div id="form-error" class="form-error" role="alert" hidden></div>
      <div class="submit-row"><div><strong id="submit-caption">Tu evidencia, en el lugar correcto.</strong><p id="submit-detail">Se guardará primero en este dispositivo.</p></div><button id="save-capture" class="btn btn-primary" type="submit" disabled>Guardar evidencia<svg><use href="#i-arrow"/></svg></button></div>

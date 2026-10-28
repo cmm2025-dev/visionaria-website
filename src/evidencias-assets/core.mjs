@@ -37,3 +37,15 @@ export async function makeZip(files){
   const end=new Uint8Array(22),e=new DataView(end.buffer);e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);
   return new Blob([...parts,...central,end],{type:'application/zip'});
 }
+// Installation photo protocol requested by Operaciones (camera pole diagram). Slugs sort in diagram order.
+// Each shot is tied to the stage where it is still visible: grounding gets buried, connector and teflon get sealed.
+export const PROTOCOL = [
+  {code:'1.1',group:'General',label:'Panorámica',slug:'11_general_panoramica',stage:'al quedar operativo'},
+  {code:'2.1',group:'Antena',label:'Hacia donde está orientada',slug:'21_antena_orientacion',stage:'al quedar operativo',antenna:true},
+  {code:'2.2',group:'Antena',label:'Copla (prensa)',slug:'22_antena_copla',stage:'en el montaje de tecnología',antenna:true},
+  {code:'3.1',group:'Cámara',label:'Panorámica',slug:'31_camara_panoramica',stage:'al quedar operativo'},
+  {code:'3.2',group:'Cámara',label:'Conector',slug:'32_camara_conector',stage:'en conexión eléctrica o montaje, antes de sellar'},
+  {code:'3.3',group:'Cámara',label:'Teflón',slug:'33_camara_teflon',stage:'en conexión eléctrica o montaje, antes de sellar'},
+  {code:'4',group:'Gabinete eléctrico',label:'Gabinete eléctrico',slug:'40_gabinete',stage:'en la conexión eléctrica'},
+  {code:'5',group:'Tierra de protección',label:'Tierra de protección',slug:'50_tierra',stage:'en excavación u hormigón, antes de cubrir'},
+];

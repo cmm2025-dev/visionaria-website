@@ -1,4 +1,4 @@
-import {ACTIVITIES,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
+import {ACTIVITIES,PROTOCOL,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -61,6 +61,50 @@ function requestFix(){
 let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',slugs:{}};
 try{config={...config,slugs:(JSON.parse(localStorage.getItem(KEY)||'{}').slugs)||{}}}catch{}
 let points=[],photos=[],draft=[],filter='all',busy=false,toastTimer,previewURLs=[],recordURLs=[],largeURL,storageReady=false;
+let mode='activity',protoDraft={},protoSlot=null,protoURLs=[];
+const slotTitle=s=>s.group===s.label?s.label:`${s.group} · ${s.label}`;
+const protoSlots=()=>PROTOCOL.filter(s=>!s.antenna||$('proto-antenna').checked);
+const protoTotal=()=>protoSlots().reduce((n,s)=>n+(protoDraft[s.code]?.length||0),0);
+function validateProtocol(m){
+  const point=points.find(p=>p.code===m.point&&p.commune===m.commune);
+  if(!point)throw new Error('El protocolo requiere un punto específico del catálogo.');
+  if(/por definir/i.test(point.situation))throw new Error('Este punto requiere confirmación de la Dirección antes de registrar el protocolo.');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(m.date)||Number.isNaN(Date.parse(m.date))||new Date(m.date+'T12:00:00Z').toISOString().slice(0,10)!==m.date||m.date>chileDate())throw new Error('La fecha del hecho debe ser válida y no futura.');
+  if(!m.author)throw new Error('No se pudo identificar al técnico. Vuelve a iniciar sesión en la Intranet.');
+}
+function renderProtocol(){
+  protoURLs.forEach(URL.revokeObjectURL);protoURLs=[];
+  const slots=protoSlots();
+  $('proto-slots').innerHTML=slots.map(s=>{const items=protoDraft[s.code]||[];return `<div class="proto-slot${items.length?' done':''}"><div class="proto-head"><div><strong>${esc(s.code)} · ${esc(slotTitle(s))}${items.length?` · ${items.length} foto${items.length===1?'':'s'}`:''}</strong><span class="field-hint">Fotografiar ${esc(s.stage)}</span></div><div class="proto-actions"><button type="button" class="btn btn-camera" data-proto-camera="${esc(s.code)}"><svg><use href="#i-camera"/></svg>Cámara</button><button type="button" class="btn btn-secondary" data-proto-gallery="${esc(s.code)}"><svg><use href="#i-plus"/></svg>Galería</button></div></div>${items.length?`<div class="proto-thumbs">${items.map((item,i)=>{const url=URL.createObjectURL(item.blob);protoURLs.push(url);return `<div class="photo-tile"><img src="${url}" alt="${esc(s.code)} foto ${i+1}"><button type="button" class="remove-photo" data-proto-remove="${esc(s.code)}|${i}" aria-label="Quitar fotografía">×</button></div>`}).join('')}</div>`:''}</div>`}).join('');
+  $('proto-count').textContent=`${slots.filter(s=>protoDraft[s.code]?.length).length}/${slots.length} tomas`;
+  renderDraft();
+}
+function setMode(next){
+  mode=next;
+  document.querySelectorAll('.mode-switch label').forEach(l=>l.classList.toggle('active',l.querySelector('input').value===mode));
+  $('activity-field').hidden=mode==='protocol';$('antenna-field').hidden=mode!=='protocol';
+  $('photos-card').hidden=mode==='protocol';$('protocol-card').hidden=mode!=='protocol';
+  formError('');renderContext();renderProtocol();
+}
+async function finalizePhoto(file,m,activityLabel){
+  const lines=[`${m.point} · ${activityLabel} · ${m.commune}`,`Hecho ${m.date.split('-').reverse().join('-')} · Registro ${chileDateTime(file.registeredAt)}`,gpsLabel(file.gps,file.gpsSource),m.author];
+  let blob=await processImage(file.blob,lines),extension='jpg';
+  if(blob&&file.gps)blob=await withExif(blob,file.gps);
+  if(!blob){blob=file.blob;extension=file.originalExtension;}
+  return {...file,blob,extension};
+}
+async function saveProtocol(){
+  const m=meta();validateProtocol(m);
+  const slots=protoSlots().filter(s=>protoDraft[s.code]?.length);
+  if(!slots.length)throw new Error('Toma al menos una fotografía del protocolo.');
+  const batch=randomId(),folder=currentFolder();
+  busy=true;lockComposer(true);renderDraft();
+  const prepared=[];for(const slot of slots)for(const file of protoDraft[slot.code])prepared.push({slot,file:await finalizePhoto(file,m,`${slot.code} ${slotTitle(slot)}`)});
+  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const {slot,file} of prepared){const base=baseName(m.point,m.date,slot.slug),index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,activity:`Protocolo ${slot.code} ${slotTitle(slot)}`,type:'Protocolo',slot:slot.code,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
+  protoDraft={};renderProtocol();await refresh();toast('Protocolo guardado en este dispositivo. Enviando a Dropbox…');showView('records');
+  busy=false;lockComposer(false);renderDraft();renderRecords();
+  if(navigator.onLine)await syncPhotos(rows.map(r=>r.id));
+}
 const locks=(key,fn)=>navigator.locks?navigator.locks.request(key,fn):fn();
 const slugFor=activity=>config.slugs[activity.label]||activity.slug;
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,6500);}
@@ -83,9 +127,9 @@ function renderContext(){
   $('destination-description').textContent=config.pilot?'Prueba protegida: se usará Fotos/_PILOTO_CAPTURA.':'La comuna determina dónde se guardan tus fotografías.';
   document.querySelector('.path-root').textContent=config.root.replace(/^\//,'');
   let base;try{base=currentBase()}catch{}
-  $('name-example').textContent=base?base+'.jpg':'PUNTO_fecha_actividad.jpg';
-  $('note-optional').textContent=act?.type==='Novedad'?'obligatoria para novedades':'opcional para etapas';
-  $('note').required=act?.type==='Novedad';
+  $('name-example').textContent=mode==='protocol'?`${m.point&&m.point!=='GENERAL'?m.point+'_'+m.date:'PUNTO_fecha'}_31_camara_panoramica.jpg`:base?base+'.jpg':'PUNTO_fecha_actividad.jpg';
+  $('note-optional').textContent=mode==='protocol'?'opcional':act?.type==='Novedad'?'obligatoria para novedades':'opcional para etapas';
+  $('note').required=mode!=='protocol'&&act?.type==='Novedad';
   renderDraft();
 }
 function nextIndex(base,folder,local=photos){let index=1;while(local.some(p=>p.base===base&&p.folder===folder&&p.index===index))index++;return index;}
@@ -94,31 +138,29 @@ function renderDraft(){
   $('photo-count').textContent=draft.length+' foto'+(draft.length===1?'':'s');$('photo-empty').hidden=draft.length>0;$('discard').hidden=!draft.length;
   let base;try{base=currentBase()}catch{};let index=base?nextIndex(base,currentFolder()):1;
   $('photo-previews').innerHTML=draft.map((item,i)=>{const url=URL.createObjectURL(item.blob);previewURLs.push(url);return `<div class="photo-tile"><img src="${url}" alt="Fotografía ${i+1}" data-draft-preview="${i}"><button type="button" class="remove-photo" data-remove="${i}" aria-label="Quitar fotografía ${i+1}">×</button><code>${esc(base?filename(base,index+i,item.extension):'Nombre automático al seleccionar punto')}</code></div>`}).join('');
-  $('save-capture').disabled=!draft.length||busy||!storageReady;
+  $('save-capture').disabled=!(mode==='protocol'?protoTotal():draft.length)||busy||!storageReady;
   $('save-capture').innerHTML=(busy?'Guardando…':'Guardar y enviar')+'<svg><use href="#i-arrow"/></svg>';
   $('submit-detail').textContent='Primero se guarda aquí; luego se confirma la recepción en Dropbox.';
 }
 function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
 function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
 async function refresh(){photos=await getAll();$('nav-count').textContent=photos.length;renderRecords();renderDraft();}
-async function addFiles(list,source){formError('');
+async function collectFiles(list,source){formError('');
   const slow=setTimeout(()=>toast('Obteniendo ubicación GPS…'),1500);const fix=await(pendingFix??requestFix());clearTimeout(slow);pendingFix=null;
   const accepted=[];for(const file of list){try{
     if(file.size===0||file.size>25*1024*1024)throw new Error('Cada foto debe pesar entre 1 byte y 25 MB.');
     accepted.push({blob:file,extension:'jpg',originalExtension:extensionFor(file),registeredAt:new Date().toISOString(),gps:fix,gpsSource:source});
   }catch(error){formError(error.message);}}
+  return accepted;}
+async function addFiles(list,source){const accepted=await collectFiles(list,source);
   if(draft.length+accepted.length>20){formError('Puedes guardar hasta 20 fotografías por registro. Guarda este grupo antes de continuar.');return;}draft.push(...accepted);renderDraft();}
-function lockComposer(locked){for(const id of ['commune','date','point-search','point','activity','note','take-photo','add-files','discard'])$(id).disabled=locked;}
-async function saveCapture(event){event.preventDefault();if(busy)return;formError('');try{
+function lockComposer(locked){for(const id of ['commune','date','point-search','point','activity','note','take-photo','add-files','discard','proto-antenna'])$(id).disabled=locked;document.querySelectorAll('input[name="mode"],#proto-slots button').forEach(el=>el.disabled=locked);}
+async function saveCapture(event){event.preventDefault();if(busy)return;formError('');
+  if(mode==='protocol'){try{await saveProtocol();}catch(error){formError('No se completó el guardado: '+error.message);busy=false;lockComposer(false);renderDraft();}return;}
+  try{
   const m=meta(),act=validateCapture(m,points);if(!draft.length)throw new Error('Toma o selecciona al menos una fotografía.');const batch=randomId(),folder=currentFolder(),base=baseName(m.point,m.date,slugFor(act));
   busy=true;lockComposer(true);renderDraft();
-  const prepared=[];for(const file of draft){
-    const lines=[`${m.point} · ${m.activity} · ${m.commune}`,`Hecho ${m.date.split('-').reverse().join('-')} · Registro ${chileDateTime(file.registeredAt)}`,gpsLabel(file.gps,file.gpsSource),m.author];
-    let blob=await processImage(file.blob,lines),extension='jpg';
-    if(blob&&file.gps)blob=await withExif(blob,file.gps);
-    if(!blob){blob=file.blob;extension=file.originalExtension;}
-    prepared.push({...file,blob,extension});
-  }
+  const prepared=[];for(const file of draft)prepared.push(await finalizePhoto(file,m,m.activity));
   const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const file of prepared){const index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,type:act.type,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
   draft=[];await refresh();toast('Guardado en este dispositivo. Enviando a Dropbox…');showView('records');
   busy=false;lockComposer(false);renderDraft();renderRecords();
@@ -129,7 +171,7 @@ function renderRecords(){
   $('stat-total').textContent=photos.length;$('stat-sent').textContent=photos.filter(p=>p.status==='sent').length;$('stat-pending').textContent=photos.filter(p=>p.status!=='sent').length;
   const groups=new Map();for(const p of [...photos].sort((a,b)=>b.savedAt.localeCompare(a.savedAt))){if(!groups.has(p.batch))groups.set(p.batch,[]);groups.get(p.batch).push(p);}
   let entries=[...groups.values()];if(filter==='sent')entries=entries.filter(g=>g.every(p=>p.status==='sent'));if(filter==='pending')entries=entries.filter(g=>g.some(p=>p.status!=='sent'));
-  $('records-list').innerHTML=entries.length?entries.map(group=>{const p=group[0],sent=group.filter(p=>p.status==='sent').length,errors=group.filter(p=>p.error),complete=sent===group.length;return `<article class="record"><div class="record-top"><div><h3>${esc(p.point)} <span style="font-weight:400;color:#a4ae98">/</span> ${esc(p.activity)}</h3><div class="record-meta">${esc(p.commune)} · ${esc(p.date.split('-').reverse().join('-'))} · ${esc(p.author)}${p.pilot?' · Prueba':''} · ${p.gps?'GPS ±'+esc(p.gps.accuracy)+' m':'Sin GPS'}</div></div><span class="status ${complete?'sent':errors.length?'error':''}">${complete?'Recibido en Dropbox':sent?`${sent}/${group.length} enviadas`:'Pendiente de envío'}</span></div>${p.note?`<p class="record-note">${esc(p.note)}</p>`:''}<div class="record-photos">${group.map(photo=>{const url=URL.createObjectURL(photo.blob);recordURLs.push(url);return `<button type="button" class="record-photo" data-preview="${photo.id}" aria-label="Ver ${esc(photo.name)}"><img src="${url}" alt="Evidencia ${esc(photo.point)}"><span>${photo.status==='sent'?'✓ Dropbox':'○ En dispositivo'}</span></button>`}).join('')}</div><div class="record-path">${esc(p.folder)}/<br>${esc(group.map(p=>p.name).join(' · '))}</div>${errors.length?`<div class="record-error">${esc(errors[0].error)} Tus fotos siguen guardadas en este dispositivo.</div>`:''}<div class="record-actions">${!complete?`<button type="button" class="text-button" data-send="${p.batch}">Enviar a Dropbox</button>`:''}<button type="button" class="text-button" data-download="${p.batch}">Descargar fotos y ficha</button><button type="button" class="text-button" data-delete="${p.batch}">Eliminar copia local</button></div></article>`}).join(''):'<div class="empty-records"><svg><use href="#i-grid"/></svg><h3>Aquí comienza tu registro.</h3><p>Las fotografías que guardes aparecerán aquí.</p></div>';
+  $('records-list').innerHTML=entries.length?entries.map(group=>{const p=group[0],sent=group.filter(p=>p.status==='sent').length,errors=group.filter(p=>p.error),complete=sent===group.length;return `<article class="record"><div class="record-top"><div><h3>${esc(p.point)} <span style="font-weight:400;color:#a4ae98">/</span> ${esc(p.type==='Protocolo'?`Protocolo fotográfico · ${new Set(group.map(x=>x.slot)).size} toma(s)`:p.activity)}</h3><div class="record-meta">${esc(p.commune)} · ${esc(p.date.split('-').reverse().join('-'))} · ${esc(p.author)}${p.pilot?' · Prueba':''} · ${p.gps?'GPS ±'+esc(p.gps.accuracy)+' m':'Sin GPS'}</div></div><span class="status ${complete?'sent':errors.length?'error':''}">${complete?'Recibido en Dropbox':sent?`${sent}/${group.length} enviadas`:'Pendiente de envío'}</span></div>${p.note?`<p class="record-note">${esc(p.note)}</p>`:''}<div class="record-photos">${group.map(photo=>{const url=URL.createObjectURL(photo.blob);recordURLs.push(url);return `<button type="button" class="record-photo" data-preview="${photo.id}" aria-label="Ver ${esc(photo.name)}"><img src="${url}" alt="Evidencia ${esc(photo.point)}"><span>${photo.slot?esc(photo.slot)+' · ':''}${photo.status==='sent'?'✓ Dropbox':'○ En dispositivo'}</span></button>`}).join('')}</div><div class="record-path">${esc(p.folder)}/<br>${esc(group.map(p=>p.name).join(' · '))}</div>${errors.length?`<div class="record-error">${esc(errors[0].error)} Tus fotos siguen guardadas en este dispositivo.</div>`:''}<div class="record-actions">${!complete?`<button type="button" class="text-button" data-send="${p.batch}">Enviar a Dropbox</button>`:''}<button type="button" class="text-button" data-download="${p.batch}">Descargar fotos y ficha</button><button type="button" class="text-button" data-delete="${p.batch}">Eliminar copia local</button></div></article>`}).join(''):'<div class="empty-records"><svg><use href="#i-grid"/></svg><h3>Aquí comienza tu registro.</h3><p>Las fotografías que guardes aparecerán aquí.</p></div>';
   $('sync-all').disabled=busy||!photos.some(p=>p.status!=='sent');$('export-all').disabled=busy||!photos.length;
 }
 async function syncPhotos(ids=null){
@@ -176,9 +218,21 @@ $('sync-all').addEventListener('click',()=>syncPhotos());$('export-all').addEven
 $('settings-form').addEventListener('submit',e=>{e.preventDefault();try{const slugs={};document.querySelectorAll('[data-slug-index]').forEach(input=>{if(!/^[a-z0-9_]+$/.test(input.value))throw new Error('Los sufijos admiten letras minúsculas, números y guiones bajos.');slugs[ACTIVITIES[Number(input.dataset.slugIndex)].label]=input.value;});config={...config,slugs};localStorage.setItem(KEY,JSON.stringify({slugs}));renderContext();$('settings-dialog').close();toast('Configuración guardada. Los registros anteriores conservan su destino.');}catch(error){$('settings-result').textContent=error.message;}});
 $('verify-folder').addEventListener('click',async()=>{try{$('settings-result').textContent='Verificando…';const folder=currentFolder();await dropbox.verifyFolder(folder);$('settings-result').textContent='Carpeta encontrada: '+folder+'. Los permisos de escritura se comprobarán al enviar.';}catch(error){$('settings-result').textContent='No se pudo verificar: '+error.message;}});
 $('connection').addEventListener('click',openSettings);
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener('change',()=>setMode(r.value)));
+$('proto-antenna').addEventListener('change',renderProtocol);
+$('proto-slots').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;
+  if(b.dataset.protoRemove){const [code,i]=b.dataset.protoRemove.split('|');protoDraft[code].splice(Number(i),1);renderProtocol();return;}
+  const code=b.dataset.protoCamera||b.dataset.protoGallery;if(!code)return;
+  try{validateProtocol(meta());formError('');}catch(err){formError(err.message);return;}
+  protoSlot=code;pendingFix=requestFix();$(b.dataset.protoCamera?'proto-camera-input':'proto-gallery-input').click();});
+for(const id of ['proto-camera-input','proto-gallery-input'])$(id).addEventListener('change',async e=>{
+  const items=await collectFiles(e.target.files,id==='proto-camera-input'?'camera':'gallery');e.target.value='';
+  if(!protoSlot||!items.length)return;
+  if(protoTotal()+items.length>20){formError('Puedes guardar hasta 20 fotografías por registro. Guarda este grupo antes de continuar.');return;}
+  (protoDraft[protoSlot]??=[]).push(...items);renderProtocol();});
 function network(){const online=navigator.onLine;$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}`;}
 window.addEventListener('online',()=>{network();toast('Volvió la conexión. Puedes enviar las evidencias pendientes.');});window.addEventListener('offline',network);
-window.addEventListener('beforeunload',e=>{if(draft.length||busy){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(draft.length||protoTotal()||busy){e.preventDefault();e.returnValue='';}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();}});
 async function init(){
   $('date').value=chileDate();$('date').max=chileDate();
