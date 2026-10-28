@@ -41,7 +41,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }];
+    return [
+      { source: '/(.*)', headers: securityHeaders },
+      // Evidencias de Terreno stamps each photo with the phone's GPS position; geolocation stays
+      // blocked everywhere else. Later entries override earlier ones for the same header key.
+      {
+        source: '/api/evidencias/:path*',
+        headers: [{ key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' }],
+      },
+    ];
   },
 };
 
