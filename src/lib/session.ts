@@ -145,3 +145,12 @@ export function isIntranetAdmin(email: string): boolean {
     .filter(Boolean);
   return allowlist.includes(email.trim().toLowerCase());
 }
+
+/** A short, explicit allowlist (env var, comma-separated) of field technicians authorized for Evidencias. */
+export function isEvidenciasTech(email: string): boolean {
+  const allowlist = (process.env.EVIDENCIAS_TECH_EMAILS ?? '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
+  return allowlist.includes(email.trim().toLowerCase());
+}

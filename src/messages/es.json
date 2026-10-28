@@ -1145,6 +1145,8 @@
     "logout": "Cerrar sesión",
     "welcome": "Hola, {email}",
     "no_links": "Todavía no hay contenido publicado.",
+    "evidencias_title": "Evidencias de terreno",
+    "evidencias_desc": "Captura y envía fotografías de terreno · DPR Antofagasta",
     "edit_content": "Editar contenido",
     "back_to_intranet": "Volver a la Intranet",
     "admin_eyebrow": "Panel de edición",

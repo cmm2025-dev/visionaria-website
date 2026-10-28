@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil } from 'lucide-react';
+import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil, Camera } from 'lucide-react';
 import IntranetLogin from '@/components/IntranetLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
@@ -18,6 +18,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
   const t = useTranslations('intranet');
   const [email, setEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isEvidenciasTech, setIsEvidenciasTech] = useState(false);
   const [links, setLinks] = useState<IntranetLink[]>([]);
   const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'error' | 'ready'>('loading');
 
@@ -31,6 +32,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
         const data = await res.json();
         setEmail(data.email);
         setIsAdmin(!!data.isAdmin);
+        setIsEvidenciasTech(!!data.isEvidenciasTech);
         const linksRes = await fetch('/api/intranet/content');
         if (cancelled) return;
         if (!linksRes.ok) return setStatus('error');
@@ -117,6 +119,26 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
                 </button>
               </div>
             </div>
+
+            {isEvidenciasTech && (
+              // This is a standalone HTML document served by a route handler, not a Next.js page --
+              // a <Link> would try to client-route it into the React tree instead of navigating for real.
+              // eslint-disable-next-line @next/next/no-html-link-for-pages
+              <a
+                href="/api/evidencias/app"
+                className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
+                style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+              >
+                <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
+                  <Camera size={20} style={{ color: '#F09422' }} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-white font-semibold text-sm">{t('evidencias_title')}</p>
+                  <p className="text-slate-500 text-xs mt-0.5">{t('evidencias_desc')}</p>
+                </div>
+                <ExternalLink size={16} className="text-slate-500 shrink-0" />
+              </a>
+            )}
 
             {links.length === 0 ? (
               <p className="text-slate-500 text-sm">{t('no_links')}</p>

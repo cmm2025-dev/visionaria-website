@@ -1145,6 +1145,8 @@
     "logout": "Sign out",
     "welcome": "Hi, {email}",
     "no_links": "No content published yet.",
+    "evidencias_title": "Field evidence capture",
+    "evidencias_desc": "Capture and submit field photos · DPR Antofagasta",
     "edit_content": "Edit content",
     "back_to_intranet": "Back to the Intranet",
     "admin_eyebrow": "Editing panel",
