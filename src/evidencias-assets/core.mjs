@@ -1,8 +1,11 @@
 export const COMMUNES = ['Antofagasta', 'Calama', 'Tocopilla'];
 export const ACTIVITIES = [
-  ['Excavación','excavacion','Etapa'],['Hormigón','hormigon','Etapa'],['Izaje','izaje','Etapa'],['Grout','grout','Etapa'],['Preempalme','preempalme','Etapa'],['Conexión eléctrica','conexion_electrica','Etapa'],['Montaje tecnología','montaje_tecnologia','Etapa'],['Fusión FO','fusion_fo','Etapa'],['Operativo','operativo','Etapa'],
-  ['Bloqueo','bloqueo','Novedad'],['Accidente o incidente','accidente','Novedad'],['Permiso o inspección','permiso','Novedad'],['Interferencia','interferencia','Novedad'],['Vecinos','vecinos','Novedad'],['Clima','clima','Novedad'],['Material o equipo','material','Novedad'],['Visita o reunión','visita','Novedad'],['Otro','otro','Novedad']
+  ['Excavación','excavacion','Etapa'],['Hormigón','hormigon','Etapa'],['Izaje','izaje','Etapa'],['Grout','grout','Etapa'],['Preempalme','preempalme','Etapa'],['Conexión eléctrica','conexion','Etapa'],['Montaje tecnología','montaje','Etapa'],['Fusión FO','fusion','Etapa'],['Operativo','operativo','Etapa'],
+  ['Bloqueo','bloqueo','Novedad'],['Accidente o incidente','incidente','Novedad'],['Permiso o inspección','permiso','Novedad'],['Interferencia','interferencia','Novedad'],['Vecinos o comunidad','vecinos','Novedad'],['Clima','clima','Novedad'],['Material o equipo','material','Novedad'],['Visita o reunión','visita','Novedad'],['Otro','otro','Novedad']
 ].map(([label,slug,type])=>({label,slug,type}));
+// Labels and slugs mirror the planilla de terreno (sheet «Listas», columns Hecho and Archivo): the planilla
+// rebuilds each photo name from them, so any drift here leaves the photo unmatched.
+export const EXECUTORS = ['Equipo propio','Cuadrilla OOCC propia','Contratista OOCC','Contratista fibra','Contratista eléctrico','Distribuidora','Otro'];
 export function chileDate(date=new Date()) {
   const p=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Santiago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
   const get=t=>p.find(x=>x.type===t).value;
@@ -23,6 +26,8 @@ export function validateCapture(meta,points,{today=chileDate()}={}){
   if(point&&/por definir/i.test(point.situation)&&act.type==='Etapa')throw new Error('Este punto requiere confirmación de la Dirección antes de registrar una etapa.');
   if(!/^\d{4}-\d{2}-\d{2}$/.test(meta.date)||Number.isNaN(Date.parse(meta.date))||new Date(meta.date+'T12:00:00Z').toISOString().slice(0,10)!==meta.date||meta.date>today)throw new Error('La fecha del hecho debe ser válida y no futura.');
   if(!meta.author?.trim())throw new Error('Indica quién toma las fotografías.');
+  if(act.type==='Etapa'&&!meta.executor)throw new Error('Indica quién ejecutó la etapa.');
+  if(meta.executor&&!EXECUTORS.includes(meta.executor))throw new Error('Selecciona quién ejecutó desde la lista.');
   if(act.type==='Novedad'&&!meta.note?.trim())throw new Error('Describe brevemente la novedad.');
   return act;
 }
@@ -39,6 +44,7 @@ export async function makeZip(files){
 }
 // Installation photo protocol requested by Operaciones (camera pole diagram). Slugs sort in diagram order.
 // Each shot is tied to the stage where it is still visible: grounding gets buried, connector and teflon get sealed.
+// `quality` is the name the planilla's «Calidad» sheet expects for that record (PUNTO_fecha_<quality>).
 export const PROTOCOL = [
   {code:'1.1',group:'General',label:'Panorámica',slug:'11_general_panoramica',stage:'al quedar operativo'},
   {code:'2.1',group:'Antena',label:'Hacia donde está orientada',slug:'21_antena_orientacion',stage:'al quedar operativo',antenna:true},
@@ -46,6 +52,6 @@ export const PROTOCOL = [
   {code:'3.1',group:'Cámara',label:'Panorámica',slug:'31_camara_panoramica',stage:'al quedar operativo'},
   {code:'3.2',group:'Cámara',label:'Conector',slug:'32_camara_conector',stage:'en conexión eléctrica o montaje, antes de sellar'},
   {code:'3.3',group:'Cámara',label:'Teflón',slug:'33_camara_teflon',stage:'en conexión eléctrica o montaje, antes de sellar'},
-  {code:'4',group:'Gabinete eléctrico',label:'Gabinete eléctrico',slug:'40_gabinete',stage:'en la conexión eléctrica'},
+  {code:'4',group:'Gabinete eléctrico',label:'Gabinete eléctrico',slug:'40_gabinete',quality:'gabinete',stage:'en la conexión eléctrica'},
   {code:'5',group:'Tierra de protección',label:'Tierra de protección',slug:'50_tierra',stage:'en excavación u hormigón, antes de cubrir'},
 ];

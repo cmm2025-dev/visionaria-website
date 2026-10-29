@@ -1,0 +1,16 @@
+{
+  "dropbox": {
+    "app_key": "",
+    "app_secret": "",
+    "refresh_token": ""
+  },
+  "soffice": "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
+  "carpeta_trabajo": "C:\\ParteDiario\\trabajo",
+  "minutos_de_reposo": 15,
+  "comunas": {
+    "Tocopilla": {
+      "cola": "/Proyectos/2026-DPR-ANF_OPERACIONES/Común/Cola parte diario/_PILOTO/Tocopilla",
+      "planilla": "/Ruta/a/la/COPIA/de/prueba/DPR-04-PL-003_Planilla_de_terreno_Tocopilla.xlsx"
+    }
+  }
+}

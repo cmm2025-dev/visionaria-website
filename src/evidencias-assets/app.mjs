@@ -1,4 +1,4 @@
-import {ACTIVITIES,PROTOCOL,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
+import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -58,8 +58,9 @@ function requestFix(){
     error=>{if(error.code===1&&!gpsDeniedWarned){gpsDeniedWarned=true;toast('Ubicación desactivada: las fotos se guardarán marcadas "Sin GPS".');}resolve(null);},
     {enableHighAccuracy:true,timeout:15000,maximumAge:30000}));
 }
-let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',slugs:{}};
-try{config={...config,slugs:(JSON.parse(localStorage.getItem(KEY)||'{}').slugs)||{}}}catch{}
+let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',parteQueue:null};
+// Only the last "Ejecutó" choice is remembered on the device; name suffixes are fixed by the planilla.
+let lastExecutor='';try{lastExecutor=JSON.parse(localStorage.getItem(KEY)||'{}').executor||''}catch{}
 let points=[],photos=[],draft=[],filter='all',busy=false,toastTimer,previewURLs=[],recordURLs=[],largeURL,storageReady=false;
 let mode='activity',protoDraft={},protoSlot=null,protoURLs=[];
 const slotTitle=s=>s.group===s.label?s.label:`${s.group} · ${s.label}`;
@@ -71,6 +72,10 @@ function validateProtocol(m){
   if(/por definir/i.test(point.situation))throw new Error('Este punto requiere confirmación de la Dirección antes de registrar el protocolo.');
   if(!/^\d{4}-\d{2}-\d{2}$/.test(m.date)||Number.isNaN(Date.parse(m.date))||new Date(m.date+'T12:00:00Z').toISOString().slice(0,10)!==m.date||m.date>chileDate())throw new Error('La fecha del hecho debe ser válida y no futura.');
   if(!m.author)throw new Error('No se pudo identificar al técnico. Vuelve a iniciar sesión en la Intranet.');
+  const act=ACTIVITIES.find(a=>a.label===m.activity);
+  if(act?.type!=='Etapa')throw new Error('Selecciona la etapa a la que corresponde el protocolo.');
+  if(!EXECUTORS.includes(m.executor))throw new Error('Indica quién ejecutó la etapa.');
+  return act;
 }
 function renderProtocol(){
   protoURLs.forEach(URL.revokeObjectURL);protoURLs=[];
@@ -82,7 +87,7 @@ function renderProtocol(){
 function setMode(next){
   mode=next;
   document.querySelectorAll('.mode-switch label').forEach(l=>l.classList.toggle('active',l.querySelector('input').value===mode));
-  $('activity-field').hidden=mode==='protocol';$('antenna-field').hidden=mode!=='protocol';
+  $('antenna-field').hidden=mode!=='protocol';
   $('photos-card').hidden=mode==='protocol';$('protocol-card').hidden=mode!=='protocol';
   formError('');renderContext();renderProtocol();
 }
@@ -94,24 +99,25 @@ async function finalizePhoto(file,m,activityLabel){
   return {...file,blob,extension};
 }
 async function saveProtocol(){
-  const m=meta();validateProtocol(m);
+  const m=meta(),act=validateProtocol(m);
   const slots=protoSlots().filter(s=>protoDraft[s.code]?.length);
   if(!slots.length)throw new Error('Toma al menos una fotografía del protocolo.');
+  // The parte diario row expects a photo named after the stage; a quality-named shot alone does not count.
+  if(slots.every(s=>s.quality))throw new Error('Agrega al menos una toma además del gabinete: esa es la foto de la etapa en el parte diario.');
   const batch=randomId(),folder=currentFolder();
   busy=true;lockComposer(true);renderDraft();
   const prepared=[];for(const slot of slots)for(const file of protoDraft[slot.code])prepared.push({slot,file:await finalizePhoto(file,m,`${slot.code} ${slotTitle(slot)}`)});
-  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const {slot,file} of prepared){const base=baseName(m.point,m.date,slot.slug),index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,activity:`Protocolo ${slot.code} ${slotTitle(slot)}`,type:'Protocolo',slot:slot.code,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
+  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const {slot,file} of prepared){const base=baseName(m.point,m.date,slot.quality??`${act.slug}_${slot.slug}`),index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,activity:`Protocolo ${slot.code} ${slotTitle(slot)}`,type:'Protocolo',slot:slot.code,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
   protoDraft={};renderProtocol();await refresh();toast('Protocolo guardado en este dispositivo. Enviando a Dropbox…');showView('records');
   busy=false;lockComposer(false);renderDraft();renderRecords();
   if(navigator.onLine)await syncPhotos(rows.map(r=>r.id));
 }
 const locks=(key,fn)=>navigator.locks?navigator.locks.request(key,fn):fn();
-const slugFor=activity=>config.slugs[activity.label]||activity.slug;
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,6500);}
 function formError(message){$('form-error').textContent=message;$('form-error').hidden=!message;}
-function meta(){return{commune:$('commune').value,point:$('point').value,date:$('date').value,activity:$('activity').value,author:$('author').value.trim(),note:$('note').value.trim()};}
+function meta(){return{commune:$('commune').value,point:$('point').value,date:$('date').value,activity:$('activity').value,author:$('author').value.trim(),executor:$('executor').value,note:$('note').value.trim()};}
 function currentFolder(){return folderFor(config.root,$('commune').value)+(config.pilot?'/_PILOTO_CAPTURA':'');}
-function currentBase(){const m=meta(),a=ACTIVITIES.find(a=>a.label===m.activity);return m.point&&a?baseName(m.point,m.date,slugFor(a)):null;}
+function currentBase(){const m=meta(),a=ACTIVITIES.find(a=>a.label===m.activity);return m.point&&a?baseName(m.point,m.date,a.slug):null;}
 function loadPoints(){
   const previous=$('point').value,query=$('point-search').value.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,''),commune=$('commune').value;
   const matches=points.filter(p=>p.commune===commune&&(!query||(p.code+' '+p.address).toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(query)));
@@ -127,7 +133,7 @@ function renderContext(){
   $('destination-description').textContent=config.pilot?'Prueba protegida: se usará Fotos/_PILOTO_CAPTURA.':'La comuna determina dónde se guardan tus fotografías.';
   document.querySelector('.path-root').textContent=config.root.replace(/^\//,'');
   let base;try{base=currentBase()}catch{}
-  $('name-example').textContent=mode==='protocol'?`${m.point&&m.point!=='GENERAL'?m.point+'_'+m.date:'PUNTO_fecha'}_31_camara_panoramica.jpg`:base?base+'.jpg':'PUNTO_fecha_actividad.jpg';
+  $('name-example').textContent=mode==='protocol'?`${m.point&&m.point!=='GENERAL'?m.point+'_'+m.date:'PUNTO_fecha'}_${act?.type==='Etapa'?act.slug:'etapa'}_31_camara_panoramica.jpg`:base?base+'.jpg':'PUNTO_fecha_actividad.jpg';
   $('note-optional').textContent=mode==='protocol'?'opcional':act?.type==='Novedad'?'obligatoria para novedades':'opcional para etapas';
   $('note').required=mode!=='protocol'&&act?.type==='Novedad';
   renderDraft();
@@ -154,14 +160,14 @@ async function collectFiles(list,source){formError('');
   return accepted;}
 async function addFiles(list,source){const accepted=await collectFiles(list,source);
   if(draft.length+accepted.length>20){formError('Puedes guardar hasta 20 fotografías por registro. Guarda este grupo antes de continuar.');return;}draft.push(...accepted);renderDraft();}
-function lockComposer(locked){for(const id of ['commune','date','point-search','point','activity','note','take-photo','add-files','discard','proto-antenna'])$(id).disabled=locked;document.querySelectorAll('input[name="mode"],#proto-slots button').forEach(el=>el.disabled=locked);}
+function lockComposer(locked){for(const id of ['commune','date','point-search','point','activity','executor','note','take-photo','add-files','discard','proto-antenna'])$(id).disabled=locked;document.querySelectorAll('input[name="mode"],#proto-slots button').forEach(el=>el.disabled=locked);}
 async function saveCapture(event){event.preventDefault();if(busy)return;formError('');
   if(mode==='protocol'){try{await saveProtocol();}catch(error){formError('No se completó el guardado: '+error.message);busy=false;lockComposer(false);renderDraft();}return;}
   try{
-  const m=meta(),act=validateCapture(m,points);if(!draft.length)throw new Error('Toma o selecciona al menos una fotografía.');const batch=randomId(),folder=currentFolder(),base=baseName(m.point,m.date,slugFor(act));
+  const m=meta(),act=validateCapture(m,points);if(!draft.length)throw new Error('Toma o selecciona al menos una fotografía.');const batch=randomId(),folder=currentFolder(),base=baseName(m.point,m.date,act.slug);
   busy=true;lockComposer(true);renderDraft();
   const prepared=[];for(const file of draft)prepared.push(await finalizePhoto(file,m,m.activity));
-  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const file of prepared){const index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,type:act.type,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
+  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const file of prepared){const index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,type:act.type,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
   draft=[];await refresh();toast('Guardado en este dispositivo. Enviando a Dropbox…');showView('records');
   busy=false;lockComposer(false);renderDraft();renderRecords();
   if(navigator.onLine)await syncPhotos(rows.map(r=>r.id));
@@ -171,8 +177,32 @@ function renderRecords(){
   $('stat-total').textContent=photos.length;$('stat-sent').textContent=photos.filter(p=>p.status==='sent').length;$('stat-pending').textContent=photos.filter(p=>p.status!=='sent').length;
   const groups=new Map();for(const p of [...photos].sort((a,b)=>b.savedAt.localeCompare(a.savedAt))){if(!groups.has(p.batch))groups.set(p.batch,[]);groups.get(p.batch).push(p);}
   let entries=[...groups.values()];if(filter==='sent')entries=entries.filter(g=>g.every(p=>p.status==='sent'));if(filter==='pending')entries=entries.filter(g=>g.some(p=>p.status!=='sent'));
-  $('records-list').innerHTML=entries.length?entries.map(group=>{const p=group[0],sent=group.filter(p=>p.status==='sent').length,errors=group.filter(p=>p.error),complete=sent===group.length;return `<article class="record"><div class="record-top"><div><h3>${esc(p.point)} <span style="font-weight:400;color:#a4ae98">/</span> ${esc(p.type==='Protocolo'?`Protocolo fotográfico · ${new Set(group.map(x=>x.slot)).size} toma(s)`:p.activity)}</h3><div class="record-meta">${esc(p.commune)} · ${esc(p.date.split('-').reverse().join('-'))} · ${esc(p.author)}${p.pilot?' · Prueba':''} · ${p.gps?'GPS ±'+esc(p.gps.accuracy)+' m':'Sin GPS'}</div></div><span class="status ${complete?'sent':errors.length?'error':''}">${complete?'Recibido en Dropbox':sent?`${sent}/${group.length} enviadas`:'Pendiente de envío'}</span></div>${p.note?`<p class="record-note">${esc(p.note)}</p>`:''}<div class="record-photos">${group.map(photo=>{const url=URL.createObjectURL(photo.blob);recordURLs.push(url);return `<button type="button" class="record-photo" data-preview="${photo.id}" aria-label="Ver ${esc(photo.name)}"><img src="${url}" alt="Evidencia ${esc(photo.point)}"><span>${photo.slot?esc(photo.slot)+' · ':''}${photo.status==='sent'?'✓ Dropbox':'○ En dispositivo'}</span></button>`}).join('')}</div><div class="record-path">${esc(p.folder)}/<br>${esc(group.map(p=>p.name).join(' · '))}</div>${errors.length?`<div class="record-error">${esc(errors[0].error)} Tus fotos siguen guardadas en este dispositivo.</div>`:''}<div class="record-actions">${!complete?`<button type="button" class="text-button" data-send="${p.batch}">Enviar a Dropbox</button>`:''}<button type="button" class="text-button" data-download="${p.batch}">Descargar fotos y ficha</button><button type="button" class="text-button" data-delete="${p.batch}">Eliminar copia local</button></div></article>`}).join(''):'<div class="empty-records"><svg><use href="#i-grid"/></svg><h3>Aquí comienza tu registro.</h3><p>Las fotografías que guardes aparecerán aquí.</p></div>';
-  $('sync-all').disabled=busy||!photos.some(p=>p.status!=='sent');$('export-all').disabled=busy||!photos.length;
+  $('records-list').innerHTML=entries.length?entries.map(group=>{const p=group[0],sent=group.filter(p=>p.status==='sent').length,errors=group.filter(p=>p.error),complete=sent===group.length;return `<article class="record"><div class="record-top"><div><h3>${esc(p.point)} <span style="font-weight:400;color:#a4ae98">/</span> ${esc(p.type==='Protocolo'?`Protocolo fotográfico · ${new Set(group.map(x=>x.slot)).size} toma(s)`:p.activity)}</h3><div class="record-meta">${esc(p.commune)} · ${esc(p.date.split('-').reverse().join('-'))} · ${esc(p.author)}${p.pilot?' · Prueba':''} · ${p.gps?'GPS ±'+esc(p.gps.accuracy)+' m':'Sin GPS'}${p.parte?' · '+(p.parte==='queued'?'Parte diario: en cola':'Parte diario: pendiente'):''}</div></div><span class="status ${complete?'sent':errors.length?'error':''}">${complete?'Recibido en Dropbox':sent?`${sent}/${group.length} enviadas`:'Pendiente de envío'}</span></div>${p.note?`<p class="record-note">${esc(p.note)}</p>`:''}<div class="record-photos">${group.map(photo=>{const url=URL.createObjectURL(photo.blob);recordURLs.push(url);return `<button type="button" class="record-photo" data-preview="${photo.id}" aria-label="Ver ${esc(photo.name)}"><img src="${url}" alt="Evidencia ${esc(photo.point)}"><span>${photo.slot?esc(photo.slot)+' · ':''}${photo.status==='sent'?'✓ Dropbox':'○ En dispositivo'}</span></button>`}).join('')}</div><div class="record-path">${esc(p.folder)}/<br>${esc(group.map(p=>p.name).join(' · '))}</div>${errors.length?`<div class="record-error">${esc(errors[0].error)} Tus fotos siguen guardadas en este dispositivo.</div>`:''}${complete&&p.parteError?`<div class="record-error">No se pudo dejar en cola para el parte diario: ${esc(p.parteError)}</div>`:''}<div class="record-actions">${!complete||(p.parte==='pending'&&config.parteQueue)?`<button type="button" class="text-button" data-send="${p.batch}">Enviar a Dropbox</button>`:''}<button type="button" class="text-button" data-download="${p.batch}">Descargar fotos y ficha</button><button type="button" class="text-button" data-delete="${p.batch}">Eliminar copia local</button></div></article>`}).join(''):'<div class="empty-records"><svg><use href="#i-grid"/></svg><h3>Aquí comienza tu registro.</h3><p>Las fotografías que guardes aparecerán aquí.</p></div>';
+  $('sync-all').disabled=busy||!photos.some(p=>p.status!=='sent'||(p.parte==='pending'&&config.parteQueue));$('export-all').disabled=busy||!photos.length;
+}
+// One JSON per saved record, dropped in the Dropbox queue once every photo of it is confirmed there.
+// The office PC (tools/parte-diario/escribir_parte.py) turns each one into a «Parte diario» row.
+function parteRecord(group){
+  const p=group[0],fixes=group.filter(x=>x.gps).sort((a,b)=>a.gps.accuracy-b.gps.accuracy),best=fixes.find(x=>x.gpsSource!=='gallery')??fixes[0];
+  return {version:1,id:p.batch,comuna:p.commune,punto:p.point,fecha:p.date,hecho:p.hecho,tipo:ACTIVITIES.find(a=>a.label===p.hecho)?.type??'',ejecuto:p.executor||'',observacion:p.note||'',registro:p.author,
+    gps:best?{lat:best.gps.lat,lon:best.gps.lon,accuracy:best.gps.accuracy}:null,gpsOrigen:best?.gpsSource??'',
+    fotos:group.map(x=>({nombre:x.name,ruta:x.dropboxPath??x.folder+'/'+x.name,toma:x.slot??null})),piloto:!!p.pilot,guardado:p.savedAt,app:'evidencias'};
+}
+async function queueParte(){
+  if(!config.parteQueue)return 0;
+  const all=await getAll(),batches=new Set(all.filter(p=>p.parte==='pending').map(p=>p.batch));let queued=0;
+  for(const batch of batches){
+    const group=all.filter(p=>p.batch===batch);if(group.some(p=>p.status!=='sent'))continue;
+    const p=group[0],path=`${config.parteQueue}/${p.pilot?'_PILOTO/':''}${p.commune}/${p.point}_${p.date}_${batch}.json`;
+    try{
+      // A conflict means an earlier attempt already left this exact file in the queue.
+      try{await dropbox.api('files/upload',null,{binary:new Blob([JSON.stringify(parteRecord(group),null,1)],{type:'application/json'}),args:{path,mode:'add',autorename:false,strict_conflict:true}});}
+      catch(error){if(!(error instanceof dropbox.DropboxError&&error.status===409&&String(error.message).includes('conflict')))throw error;}
+      for(const x of group){x.parte='queued';x.parteError='';x.partePath=path;x.parteAt=new Date().toISOString();}queued++;
+    }catch(error){for(const x of group)x.parteError=error.message;}
+    await putMany(group);
+  }
+  return queued;
 }
 async function syncPhotos(ids=null){
   if(busy){toast('Ya hay una operación en curso.');return;}if(!navigator.onLine){toast('Sin conexión. Las fotos siguen guardadas; vuelve a intentar con señal.');return;}
@@ -192,13 +222,14 @@ async function syncPhotos(ids=null){
       }catch(error){p.status='error';p.error=error.name==='TimeoutError'?'La respuesta tardó demasiado. Reintenta para comprobar la recepción sin duplicar.':error.message;failed++;}
         await putMany([p]);await refresh();
       }
-      toast(failed?`${sent} foto(s) recibidas en Dropbox. Hay ${failed} pendiente(s) con error.`:sent?`${sent} foto(s) recibidas y confirmadas en Dropbox.`:'No hay fotografías pendientes para enviar.');
+      const queued=await queueParte();
+      toast(failed?`${sent} foto(s) recibidas en Dropbox. Hay ${failed} pendiente(s) con error.`:sent?`${sent} foto(s) recibidas y confirmadas en Dropbox.${queued?' Registro en cola para el parte diario.':''}`:queued?'Registro en cola para el parte diario.':'No hay fotografías pendientes para enviar.');
     }finally{busy=false;await refresh();renderConnection();}
   });
 }
 function download(blob,name){const a=$('download-link');if(a.href.startsWith('blob:'))URL.revokeObjectURL(a.href);a.href=URL.createObjectURL(blob);a.download=name;$('export-dialog').showModal();}
-async function exportPhotos(batch=null){if(busy)return;const selected=photos.filter(p=>!batch||p.batch===batch);if(!selected.length)return;try{busy=true;renderRecords();toast('Preparando respaldo con nombres automáticos…');const rows=[['ID evidencia','ID captura','Comuna','Punto','Fecha del hecho','Actividad','Tipo','Autor declarado','Detalle','Nombre de foto','Ruta prevista','Estado Dropbox','Ruta confirmada','Fecha de registro en app','Recibido en Dropbox','Piloto','Latitud','Longitud','Precisión GPS (m)','Origen ubicación'],...selected.map(p=>[p.id,p.batch,p.commune,p.point,p.date,p.activity,p.type,p.author,p.note,p.name,p.folder+'/'+p.name,p.status,p.dropboxPath??'',p.registeredAt,p.sentAt??'',p.pilot?'Sí':'No',p.gps?.lat??'',p.gps?.lon??'',p.gps?.accuracy??'',p.gps?(p.gpsSource==='gallery'?'Galería (ubicación al registrar)':'Cámara (al capturar)'):'Sin GPS'])];const files=selected.map(p=>({name:p.folder.replace(/^\//,'')+'/'+p.name,blob:p.blob}));files.push({name:'registro_evidencias.csv',blob:new Blob([csv(rows)],{type:'text/csv;charset=utf-8'})});const blob=await makeZip(files);download(blob,`Visionaria_Evidencias_${chileDate()}${batch?'_'+selected[0].point:''}.zip`);toast('Respaldo preparado. Presiona Descargar archivo ZIP.');}catch(error){toast('No se pudo preparar el respaldo: '+error.message)}finally{busy=false;renderRecords();renderDraft();}}
-function openSettings(){if(busy){toast('Espera a que termine la operación.');return;}$('setting-root').value=config.root;$('setting-pilot').checked=config.pilot;$('settings-result').textContent='';$('slug-settings').innerHTML=ACTIVITIES.map((a,i)=>`<label>${esc(a.label)}<input data-slug-index="${i}" value="${esc(slugFor(a))}" pattern="[a-z0-9_]+" required></label>`).join('');$('settings-dialog').showModal();}
+async function exportPhotos(batch=null){if(busy)return;const selected=photos.filter(p=>!batch||p.batch===batch);if(!selected.length)return;try{busy=true;renderRecords();toast('Preparando respaldo con nombres automáticos…');const rows=[['ID evidencia','ID captura','Comuna','Punto','Fecha del hecho','Actividad','Tipo','Autor declarado','Detalle','Nombre de foto','Ruta prevista','Estado Dropbox','Ruta confirmada','Fecha de registro en app','Recibido en Dropbox','Piloto','Latitud','Longitud','Precisión GPS (m)','Origen ubicación','Ejecutó','Parte diario'],...selected.map(p=>[p.id,p.batch,p.commune,p.point,p.date,p.activity,p.type,p.author,p.note,p.name,p.folder+'/'+p.name,p.status,p.dropboxPath??'',p.registeredAt,p.sentAt??'',p.pilot?'Sí':'No',p.gps?.lat??'',p.gps?.lon??'',p.gps?.accuracy??'',p.gps?(p.gpsSource==='gallery'?'Galería (ubicación al registrar)':'Cámara (al capturar)'):'Sin GPS',p.executor??'',p.parte==='queued'?'En cola':p.parte==='pending'?'Pendiente':''])];const files=selected.map(p=>({name:p.folder.replace(/^\//,'')+'/'+p.name,blob:p.blob}));files.push({name:'registro_evidencias.csv',blob:new Blob([csv(rows)],{type:'text/csv;charset=utf-8'})});const blob=await makeZip(files);download(blob,`Visionaria_Evidencias_${chileDate()}${batch?'_'+selected[0].point:''}.zip`);toast('Respaldo preparado. Presiona Descargar archivo ZIP.');}catch(error){toast('No se pudo preparar el respaldo: '+error.message)}finally{busy=false;renderRecords();renderDraft();}}
+function openSettings(){if(busy){toast('Espera a que termine la operación.');return;}$('setting-root').value=config.root;$('setting-pilot').checked=config.pilot;$('settings-result').textContent='';$('slug-settings').innerHTML=ACTIVITIES.map(a=>`<label>${esc(a.label)}<input value="${esc(a.slug)}" disabled></label>`).join('');$('settings-dialog').showModal();}
 function openPhoto(blob,caption){if(largeURL)URL.revokeObjectURL(largeURL);largeURL=URL.createObjectURL(blob);$('large-photo').src=largeURL;$('large-caption').textContent=caption;$('photo-dialog').showModal();}
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.querySelectorAll('[data-settings]').forEach(b=>b.addEventListener('click',openSettings));
@@ -215,7 +246,8 @@ $('capture-form').addEventListener('submit',saveCapture);
 $('records-list').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.preview){const p=photos.find(p=>p.id===b.dataset.preview);openPhoto(p.blob,p.name);}if(b.dataset.send)await syncPhotos(photos.filter(p=>p.batch===b.dataset.send).map(p=>p.id));if(b.dataset.download)await exportPhotos(b.dataset.download);if(b.dataset.delete){if(busy){toast('Espera a que termine el envío.');return;}const selected=photos.filter(p=>p.batch===b.dataset.delete),unsent=selected.some(p=>p.status!=='sent');if(confirm(unsent?'Estas fotos aún no tienen recepción confirmada en Dropbox. ¿Eliminar definitivamente la copia de este dispositivo? Descarga un respaldo primero.':'¿Eliminar las copias locales de este registro? Los archivos de Dropbox se conservan.')){await removeMany(selected.map(p=>p.id));await refresh();toast('Copia local eliminada.');}}});
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));renderRecords();}));
 $('sync-all').addEventListener('click',()=>syncPhotos());$('export-all').addEventListener('click',()=>exportPhotos());
-$('settings-form').addEventListener('submit',e=>{e.preventDefault();try{const slugs={};document.querySelectorAll('[data-slug-index]').forEach(input=>{if(!/^[a-z0-9_]+$/.test(input.value))throw new Error('Los sufijos admiten letras minúsculas, números y guiones bajos.');slugs[ACTIVITIES[Number(input.dataset.slugIndex)].label]=input.value;});config={...config,slugs};localStorage.setItem(KEY,JSON.stringify({slugs}));renderContext();$('settings-dialog').close();toast('Configuración guardada. Los registros anteriores conservan su destino.');}catch(error){$('settings-result').textContent=error.message;}});
+$('settings-form').addEventListener('submit',e=>e.preventDefault());
+$('executor').addEventListener('change',()=>{try{localStorage.setItem(KEY,JSON.stringify({executor:$('executor').value}))}catch{}});
 $('verify-folder').addEventListener('click',async()=>{try{$('settings-result').textContent='Verificando…';const folder=currentFolder();await dropbox.verifyFolder(folder);$('settings-result').textContent='Carpeta encontrada: '+folder+'. Los permisos de escritura se comprobarán al enviar.';}catch(error){$('settings-result').textContent='No se pudo verificar: '+error.message;}});
 $('connection').addEventListener('click',openSettings);
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener('change',()=>setMode(r.value)));
@@ -237,9 +269,10 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){re
 async function init(){
   $('date').value=chileDate();$('date').max=chileDate();
   $('today-label').textContent=new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'numeric',month:'long',year:'numeric'}).format(new Date());
+  $('executor').innerHTML='<option value="">Selecciona quién ejecutó</option>'+EXECUTORS.map(x=>`<option>${esc(x)}</option>`).join('');if(EXECUTORS.includes(lastExecutor))$('executor').value=lastExecutor;
   $('activity').innerHTML='<option value="">Selecciona una actividad</option>'+['Etapa','Novedad'].map(type=>`<optgroup label="${type==='Etapa'?'Etapas de obra':'Novedades'}">${ACTIVITIES.filter(a=>a.type===type).map(a=>`<option>${esc(a.label)}</option>`).join('')}</optgroup>`).join('');
   network();
-  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email};$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
+  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
   if('serviceWorker'in navigator)navigator.serviceWorker.register('/api/evidencias/assets/sw.js').catch(()=>{});

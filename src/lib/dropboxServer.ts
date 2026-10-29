@@ -18,6 +18,15 @@ export function evidenciasPilotMode(): boolean {
   return v === undefined ? true : v === '1' || v.toLowerCase() === 'true';
 }
 
+/**
+ * Dropbox folder where each saved record is queued for the parte diario writer (tools/parte-diario),
+ * which runs on the office PC. Unset means the app does not queue anything.
+ */
+export function evidenciasParteQueue(): string | null {
+  const v = process.env.EVIDENCIAS_PARTE_COLA?.trim().replace(/\/+$/, '');
+  return v && v.startsWith('/') && !v.includes('..') ? v : null;
+}
+
 let cachedToken: { token: string; expiresAt: number } | null = null;
 let cachedPathRoot: string | null = null;
 
