@@ -40,7 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# parte diario writer: local config (secrets) and work files
-/tools/parte-diario/config.json
+# parte diario service: local secrets, site config and work files
+/tools/parte-diario/.env
+/tools/parte-diario/comunas.json
 /tools/parte-diario/trabajo/
 __pycache__/

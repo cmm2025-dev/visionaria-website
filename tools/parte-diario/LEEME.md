@@ -1,65 +1,86 @@
-# Parte diario desde la app Evidencias
+# Parte diario en línea
 
-La app Evidencias de terreno deja un registro (JSON) en una carpeta de cola de Dropbox por cada
-evidencia recibida. `escribir_parte.py` corre en el PC de la oficina y convierte cada registro en una
-fila del «Parte diario» de la planilla de terreno de su comuna.
+La base de datos es la fuente y la planilla de terreno (DPR-04-PL-00n) se regenera desde ella. Desde la fecha
+de corte, **nadie escribe a mano en la hoja «Parte diario»**: lo que hay que anotar entra por la app
+Evidencias, y lo que hay que anular, por el comando `anular`. Las demás hojas de la planilla no se tocan.
 
-## Qué escribe
+```
+Teléfono (app Evidencias) ─ fotos ──────────► Dropbox/<Comuna>/Fotos
+                          └ registro JSON ───► Dropbox/Común/Cola parte diario/<Comuna>
+                                                      │
+Servidor (Docker, solo conexiones salientes)          ▼
+   ingesta: cola → PostgreSQL (una fila fija por registro)
+   generación: PostgreSQL → «Parte diario» (LibreOffice) → Dropbox, con revisión condicionada
+```
 
-Solo las columnas de ingreso (blancas), en la primera fila libre:
+## Qué escribe en la planilla
+
+Solo las columnas de ingreso B..H de cada fila; A (ID), I (Nombre de la foto), J (Control) y K (Tipo) las
+calcula la planilla y quedan guardadas en el archivo.
 
 | Columna | Valor |
 |---|---|
-| B Fecha | Fecha del hecho (fecha real, no texto) |
-| C Punto | Código del punto, o GENERAL |
-| D Hecho | Texto exacto de la lista de la planilla |
-| E Ejecutó | Lo que eligió el técnico (obligatorio en etapas) |
-| F Detalle | Observación · GPS lat, lon ±m · a N m del punto KMZ · registró usuario · ref xxxxxxxx |
-| G Foto | Sí |
+| B Fecha | fecha del hecho |
+| C Punto | código del punto, o GENERAL |
+| D Hecho | texto exacto de la lista de la planilla |
+| E Ejecutó | lo que eligió el técnico (obligatorio en etapas) |
+| F Detalle | observación · GPS lat, lon ±m · a N m del punto KMZ · registró usuario |
+| G Foto | Sí / No |
+| H Anular | «Anulada» si el registro está anulado |
 
-A (ID), I (Nombre de la foto), J (Control) y K (Tipo) las calcula la planilla. La foto ya está en
-`<Comuna>/Fotos` con el nombre que muestra la columna I.
+Cada registro recibe su fila al entrar a la base y no cambia nunca, así que el ID (`TOC-P0012`) es estable.
 
-## Cuándo no escribe
+## Qué pasa si alguien edita la planilla a mano
 
-- **La planilla cambió hace menos de `minutos_de_reposo`, o está abierta** (archivo `~$…` o `.~lock…`):
-  espera a la próxima pasada y deja la cola intacta.
-- **La planilla cambió en Dropbox durante la pasada:** la subida va condicionada a la revisión
-  descargada, así que no se sube nada y se reintenta luego. Nunca se crea una copia en conflicto.
-- **Lo que la validación de la planilla no dejaría escribir a una persona** (punto, hecho o «Ejecutó»
-  fuera de lista, fecha anterior al inicio de obras o futura, registro de otra comuna): el registro va
-  a `rechazados/`, con su motivo.
-- **Etapa ya registrada en otra fila:** no la duplica. Va a `procesados/` con la fila existente.
-- **Registro ya escrito** (su `ref` ya está en Detalle): no lo repite.
+El servicio compara lo que hay con lo que él mismo escribió la última vez:
 
-Cada registro pasa a `procesados/` o `rechazados/`, con un `.resultado.json` al lado que indica la
-fila, el ID y lo que dice «Control». Nada se borra. Las versiones anteriores de la planilla quedan en
-el historial de Dropbox, y además se guardan copias locales en `carpeta_trabajo`.
+- **«Anulada» escrita en H**: se absorbe como anulación (es lo que pide la instrucción 7 de la planilla).
+- **Filas nuevas escritas a mano**: avisa y no regenera. Se importan con `parte importar --comuna X`; si una ocupa
+  la fila ya asignada a un registro de la app que aún no estaba en la planilla, ese registro se corre al final.
+- **Filas cambiadas o vaciadas**: avisa y no regenera. Se decide con `parte resolver --comuna X --prevalece bd`
+  (la base manda; lo descartado queda en eventos) o `--prevalece planilla` (lo escrito a mano pasa a la base).
 
-## Instalación en el PC
+Los avisos quedan en `Cola parte diario/<Comuna>/AVISOS/` y en la tabla `eventos`. También espera si la planilla
+cambió hace menos de `PARTE_REPOSO_MIN` minutos o tiene un archivo de bloqueo de Excel al lado, y nunca pisa una
+versión que no haya leído (si la planilla cambió durante la generación, reintenta en el ciclo siguiente).
 
-1. Instalar LibreOffice. El script se ejecuta con el Python que trae LibreOffice, que ya incluye `uno`.
-2. Copiar `config.ejemplo.json` como `config.json` **fuera de este repositorio** y completarlo:
-   - `dropbox`: las mismas credenciales de la app de Dropbox de la empresa. También se pueden dar por
-     las variables de entorno `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET` y `DROPBOX_REFRESH_TOKEN`.
-   - `comunas`: para cada comuna, la carpeta de cola y la ruta de la planilla en Dropbox.
-     **Durante las pruebas, la planilla debe ser una copia** (por ejemplo, en `_Ejemplo (ficticio)`).
-3. Probar a mano:
-   ```
-   "C:\Program Files\LibreOffice\program\python.exe" escribir_parte.py --config C:\ParteDiario\config.json
-   ```
-4. Programarlo en el Programador de tareas de Windows con ese mismo comando. El log queda en
-   `carpeta_trabajo\registro.log`.
+## Instalación en el servidor (Ubuntu con Docker)
 
-## Prueba local, sin Dropbox
-
-```
-python escribir_parte.py --planilla copia.xlsx --cola carpeta_con_json --salida copia_escrita.xlsx
+```bash
+git clone -b <rama> https://github.com/cmm2025-dev/visionaria-website.git /opt/visionaria-website
+cd /opt/visionaria-website/tools/parte-diario
+./instalar.sh            # crea .env y comunas.json la primera vez; completarlos y volver a ejecutar
 ```
 
-## En la app (Vercel)
+- `.env`: credenciales de Dropbox (las mismas de la app en Vercel) y contraseña de la base local. No se sube al repositorio.
+- `comunas.json`: por comuna, el prefijo, la ruta de la planilla y las carpetas de cola. **Durante las pruebas la
+  planilla debe ser una copia** (por ejemplo, en `_Ejemplo (ficticio)`), y la cola la de `_PILOTO/<Comuna>`.
+- PostgreSQL vive en un volumen de Docker y no expone puertos. Respaldo diario a Dropbox si se define
+  `PARTE_RESPALDO_DROPBOX`.
 
-La variable `EVIDENCIAS_PARTE_COLA` es la carpeta raíz de la cola en Dropbox, por ejemplo
-`/Proyectos/2026-DPR-ANF_OPERACIONES/Común/Cola parte diario`. La app agrega
-`/<Comuna>`, o `/_PILOTO/<Comuna>` mientras está en modo piloto. Si la variable no está, la app no deja
-nada en cola.
+Actualizar: `git pull && docker compose up -d --build`. Registro: `docker compose logs -f parte`.
+
+## Comandos
+
+```bash
+./parte.sh estado --comuna Tocopilla                 # filas, ID y lo que dice Control
+./parte.sh anular TOC-P0012 --por correo --motivo "…"  # la planilla se actualiza en el próximo ciclo
+./parte.sh importar --comuna Tocopilla               # filas escritas a mano → base de datos
+./parte.sh resolver --comuna Tocopilla --prevalece bd|planilla
+./parte.sh generar                                   # forzar una regeneración
+./parte.sh respaldar                                 # pg_dump a Dropbox ahora
+```
+
+## La app (Vercel)
+
+`EVIDENCIAS_PARTE_COLA` es la carpeta raíz de la cola en Dropbox, por ejemplo
+`/Proyectos/2026-DPR-ANF_OPERACIONES/Común/Cola parte diario`. La app agrega `/<Comuna>`, o `/_PILOTO/<Comuna>`
+mientras está en modo piloto. Cuando la variable está definida, las novedades pueden guardarse sin foto.
+
+Lo que el servicio deja en la cola para la app: `<cola>/procesados/<registro>.resultado.json` (fila e ID
+asignados) y `<cola>/estado/<Comuna>.json` (todas las filas con su Control, tras cada generación).
+
+## Prueba sin Dropbox ni servidor
+
+Con PostgreSQL y LibreOffice locales, `PARTE_DB` apuntando a una base de prueba y un Dropbox simulado se puede
+recorrer todo el flujo; así se probó esta versión sobre una copia de la planilla de Tocopilla.
