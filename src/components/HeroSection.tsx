@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { ArrowRight, Play, X, ChevronDown } from 'lucide-react';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import HeroCinematic from './HeroCinematic';
@@ -10,7 +11,6 @@ interface HeroSectionProps {
   title: string;
   subtitle: string;
   cta: string;
-  cta2: string;
   locale: string;
   contact: string;
 }
@@ -18,7 +18,8 @@ interface HeroSectionProps {
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const DUR = '1.4s';
 
-export default function HeroSection({ title, subtitle, cta, cta2, locale }: HeroSectionProps) {
+export default function HeroSection({ title, subtitle, cta, locale }: HeroSectionProps) {
+  const t = useTranslations('home');
   const [modalOpen, setModalOpen] = useState(false);
   const [settled, setSettled] = useState(false);
   const isDesktop = useIsDesktop();
@@ -70,7 +71,7 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
           style={{ width: '1.5rem', height: '1.5rem', background: 'rgba(240,148,34,0.20)', border: '1px solid rgba(240,148,34,0.40)' }}>
           <Play size={10} style={{ color: 'var(--accent)' }} fill="currentColor" />
         </span>
-        Ver video
+        {t('watch_video')}
       </button>
 
       {/* Contenedor que define la altura de la sección */}
@@ -145,18 +146,6 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
               >
                 {cta} <ArrowRight size={settled ? 11 : 15} />
               </Link>
-              <Link
-                href={`/${locale}/productos`}
-                className="inline-flex items-center gap-2 font-semibold rounded-full text-white border hover:bg-white/5"
-                style={{
-                  borderColor: 'var(--border)',
-                  padding: settled ? '0.3rem 0.85rem' : '0.72rem 1.4rem',
-                  fontSize: settled ? '0.72rem' : '0.92rem',
-                  transition: `padding ${DUR} ${EASE}, font-size ${DUR} ${EASE}`,
-                }}
-              >
-                {cta2}
-              </Link>
             </div>
           </div>
         </div>
@@ -171,11 +160,11 @@ export default function HeroSection({ title, subtitle, cta, cta2, locale }: Hero
             background: 'none', border: 'none', cursor: 'pointer',
             transition: `opacity 0.8s ${EASE}`,
           }}
-          aria-label="Explorar contenido"
+          aria-label={t('explore_aria')}
         >
           <span className="text-xs font-bold tracking-[0.25em] uppercase"
             style={{ color: 'var(--accent)', textShadow: '0 0 12px rgba(240,148,34,0.6)' }}>
-            Explorar
+            {t('explore')}
           </span>
           <span
             className="flex items-center justify-center rounded-full border-2 transition-transform group-hover:scale-110"

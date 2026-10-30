@@ -5,14 +5,16 @@
     "cases": "Projects",
     "innovation": "Technology",
     "news": "News",
+    "clients": "Clients",
     "support": "Support",
-    "contact": "Contact"
+    "contact": "Contact",
+    "intranet": "Intranet",
+    "continuity": "Operational Continuity"
   },
   "home": {
     "hero_title": "We integrate technology to protect people",
     "hero_subtitle": "Unified systems for video surveillance, drones, facial recognition and smart dispatch — because citizen security demands efficiency, not just equipment.",
     "hero_cta": "Explore our solutions",
-    "hero_cta2": "Our solutions",
     "stats_clients": "Municipalities with presence",
     "stats_projects": "Cameras installed",
     "stats_countries": "Years in the market",
@@ -23,7 +25,10 @@
     "featured_support": "Support 7×24×365",
     "featured_support_desc": "Operations center available 24 hours a day, 365 days a year, with long-term maintenance contracts.",
     "featured_results": "Public Safety Leader",
-    "featured_results_desc": "Over 60% market share in public video surveillance in Chile, with nationwide presence across all regions."
+    "featured_results_desc": "Over 60% market share in public video surveillance in Chile, with nationwide presence across all regions.",
+    "watch_video": "Watch video",
+    "explore": "Explore",
+    "explore_aria": "Explore content"
   },
   "products": {
     "title": "Our Solutions",
@@ -42,7 +47,107 @@
     "title": "Featured Projects",
     "subtitle": "Implementations transforming security across Chile",
     "result": "Key result",
-    "read_more": "View details"
+    "read_more": "View details",
+    "gallery_view": "View photos",
+    "stats": [
+      { "value": "80+", "label": "Municipalities with presence", "sub": "direct or affiliated" },
+      { "value": "10/16", "label": "Regions covered", "sub": "from Arica to Punta Arenas" },
+      { "value": "320+", "label": "Projects completed", "sub": "since 2002" },
+      { "value": "84%", "label": "Video surveillance", "sub": "portfolio specialization" }
+    ],
+    "featured": [
+      {
+        "company": "Metropolitan Regional Government",
+        "industry": "Smart City",
+        "region": "Santiago Metropolitan Region",
+        "result": "303 cameras · 23 municipalities · Largest project in Chile",
+        "detail": "Metropolitan video-surveillance network integrated with Carabineros and UOCT, covering all 23 municipalities of Greater Santiago on a unified platform.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipality of Las Condes",
+        "industry": "Video surveillance",
+        "region": "Santiago Metropolitan Region",
+        "result": "23 completed projects · Highest recurrence in the portfolio",
+        "detail": "A long-term strategic relationship with the municipality with the highest recurrence in Visionaria's portfolio, spanning HD video surveillance, LPR and facial recognition.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Municipality of La Reina",
+        "industry": "Video surveillance",
+        "region": "Santiago Metropolitan Region",
+        "result": "91 HD cameras + LPR gantries + PDI facial recognition",
+        "detail": "A next-generation integrated system with 4K cameras, license-plate reading gantries and a facial-recognition module connected to the PDI database.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipality of Puente Alto",
+        "industry": "Public safety",
+        "region": "Santiago Metropolitan Region",
+        "result": "11 completed projects · Full communal coverage",
+        "detail": "One of the country's most densely populated municipalities, with a video-surveillance network rolled out across multiple expansion phases.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Ñuble Regional Government",
+        "industry": "Regional Smart City",
+        "region": "Ñuble Region",
+        "result": "21 beneficiary municipalities · 100% regional coverage",
+        "detail": "A regional project of unique scale: a single contract creates operational presence across all 21 municipalities in the region, with centralized after-sales support.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Ruta de La Araucanía Highway",
+        "industry": "Road safety",
+        "region": "La Araucanía Region",
+        "result": "71 military-grade thermal cameras + anti-terrorism analytics",
+        "detail": "A highly complex solution with military-grade thermal cameras and video analytics for threat detection on critical routes in southern Chile.",
+        "accent": "#C4A882"
+      },
+      {
+        "company": "Municipality of Santiago",
+        "industry": "Smart City",
+        "region": "Santiago Metropolitan Region",
+        "result": "15 completed projects · Multi-system integration",
+        "detail": "The country's historic and administrative center, with integrated video surveillance, access control and a dispatch platform coordinated with Carabineros.",
+        "accent": "#F09422"
+      },
+      {
+        "company": "Municipality of Arica",
+        "industry": "Public safety",
+        "region": "Arica y Parinacota Region",
+        "result": "14 projects · Sustained presence on the northern border",
+        "detail": "A long-standing presence in the country's far north, with video-surveillance projects in an operationally complex border zone.",
+        "accent": "#3D8A82"
+      },
+      {
+        "company": "Codelco Salvador",
+        "industry": "Mining",
+        "region": "Atacama Region",
+        "result": "Unified video-intrusion-access platform · 80 km radio links",
+        "detail": "An industrial solution for mining operations in remote areas: video, intrusion control and access integrated with radio links of up to 80 kilometers.",
+        "accent": "#C4A882"
+      }
+    ],
+    "presence_eyebrow": "Geographic footprint",
+    "presence_title": "Presence across 10 regions of Chile",
+    "presence_desc": "From Arica to the far south, with active projects across the country's main regions and full coverage in Ñuble.",
+    "presence_projects_label": "projects",
+    "presence_entities_label": "entities",
+    "presence_footnote": "Data from Visionaria's historical portfolio · As of July 2026",
+    "presencia": [
+      { "region": "Metropolitan", "proyectos": 193, "entidades": 39 },
+      { "region": "Valparaíso", "proyectos": 28, "entidades": 10 },
+      { "region": "Arica y Parinacota", "proyectos": 14, "entidades": 1 },
+      { "region": "Tarapacá", "proyectos": 4, "entidades": 3 },
+      { "region": "Coquimbo", "proyectos": 5, "entidades": 2 },
+      { "region": "Maule", "proyectos": 6, "entidades": 1 },
+      { "region": "Ñuble", "proyectos": 1, "entidades": 21 },
+      { "region": "Antofagasta", "proyectos": 1, "entidades": 1 }
+    ],
+    "cta_title": "Doesn't your municipality or institution appear here?",
+    "cta_desc": "Let's talk — 265 municipalities still don't have integrated video-surveillance coverage.",
+    "cta_button": "Contact Visionaria"
   },
   "innovation": {
     "title": "Technology & Innovation",
@@ -52,24 +157,121 @@
     "ai_title": "Smart Cities",
     "ai_desc": "Smart city platforms integrating surveillance, traffic management, access control and police dispatch in a unified ecosystem.",
     "cloud_title": "Advanced Communications",
-    "cloud_desc": "Fiber optic networks, long-range P2P and P2MP wireless links (up to 80 km), MPLS and redundancy for uninterrupted critical operations."
+    "cloud_desc": "Fiber optic networks, long-range P2P and P2MP wireless links (up to 80 km), MPLS and redundancy for uninterrupted critical operations.",
+    "learn_more": "Learn more →"
   },
   "news": {
     "title": "News",
     "subtitle": "Updates from Visionaria and the security technology world",
-    "read_more": "Read more"
+    "read_more": "Read more",
+    "tags": {
+      "smart_city": "Smart City",
+      "tecnologia": "Technology",
+      "proyecto": "Project",
+      "industria": "Industry",
+      "innovacion": "Innovation",
+      "empresa": "Company"
+    },
+    "items": [
+      { "date": "2025-05-20", "tag": "smart_city", "title": "Visionaria expands Greater Santiago video-surveillance network to 26 municipalities", "excerpt": "A new contract with the Metropolitan Regional Government expands coverage with 120 new HD cameras and behavior analytics." },
+      { "date": "2025-04-15", "tag": "tecnologia", "title": "Real-time facial recognition deployed with PDI integration", "excerpt": "A biometric system installed in 8 municipalities identifies people with active alerts in under 2 seconds." },
+      { "date": "2025-03-10", "tag": "proyecto", "title": "License-plate reading gantries at Autopista Central access points", "excerpt": "A new LPR network reads and cross-checks data with the Civil Registry and Carabineros for automatic detection of vehicles with arrest warrants." },
+      { "date": "2025-02-28", "tag": "industria", "title": "Unified dispatch platform will cut mining response times", "excerpt": "An integrated video-intrusion-access system at a northern mining operation connects 3 control centers in real time." },
+      { "date": "2025-01-18", "tag": "innovacion", "title": "Visionaria integrates DJI drones into a municipal dispatch platform", "excerpt": "Autonomous aircraft activate automatically on alerts from the video-surveillance system, cutting response times to under 4 minutes." },
+      { "date": "2024-12-05", "tag": "empresa", "title": "Visionaria marks 22 years leading security technology in Chile", "excerpt": "With over 3,700 cameras installed and a presence across the country, we celebrate two decades protecting cities and organizations." }
+    ]
   },
   "support": {
     "title": "Technical Support",
     "subtitle": "Operations center available 7×24×365 for all our systems",
     "docs": "Technical Documentation",
-    "docs_desc": "Manuals, schematics and configuration guides for all Visionaria systems.",
+    "docs_desc": "Sign in with your authorized account to access manuals and guides for the systems installed at your institution.",
     "ticket": "Open Ticket",
     "ticket_desc": "Report a fault or request technical intervention. Response time guaranteed by contract.",
     "community": "Help Desk",
-    "community_desc": "Direct assistance from our engineers specialized in electronic security and systems integration.",
+    "community_desc": "Chat with our team on WhatsApp for quick guidance and assistance. If your request needs follow-up, we'll log it as a ticket.",
     "status": "System Status",
     "status_desc": "Real-time monitoring of the operational status of all your installed systems."
+  },
+  "supportDocs": {
+    "eyebrow": "Client portal",
+    "title": "Technical Documentation",
+    "subtitle": "Manuals and configuration guides specific to the systems installed at your institution.",
+    "login_cta": "Send access link",
+    "login_desc": "Enter your municipality or institution's authorized contact email and we'll send you an access link.",
+    "login_placeholder": "you@institution.com",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email is authorized, we've sent you an access link to the Visionaria Help Center (expires in 15 minutes). If you don't receive it in a few minutes, message us on WhatsApp at +56 2 2925 4140.",
+    "logout": "Sign out",
+    "loading": "Loading documentation…",
+    "error_generic": "We couldn't load your documentation. Please try again in a few minutes.",
+    "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
+    "no_documents": "No documents have been published for your institution yet."
+  },
+  "supportWhatsapp": {
+    "eyebrow": "Client portal",
+    "title": "Help Desk",
+    "subtitle": "Chat with our team on WhatsApp for guidance and quick assistance.",
+    "login_cta": "Send access link",
+    "login_desc": "Enter your municipality or institution's authorized contact email and we'll send you an access link.",
+    "login_placeholder": "you@institution.com",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email is authorized, we've sent you an access link to the Visionaria Help Center (expires in 15 minutes). If you don't receive it in a few minutes, message us on WhatsApp at +56 2 2925 4140.",
+    "logout": "Sign out",
+    "loading": "Verifying access…",
+    "ready_title": "Access confirmed",
+    "ready_desc": "You can now open WhatsApp to chat with our support team. If your request needs follow-up, we'll register it as a ticket.",
+    "open_whatsapp": "Open WhatsApp"
+  },
+  "supportStatus": {
+    "eyebrow": "Client portal",
+    "title": "System Status",
+    "subtitle": "Check the operational status of your services, active requests, priorities and SLA compliance.",
+    "login_cta": "Send access link",
+    "login_desc": "Enter your municipality or institution's authorized contact email and we'll send you an access link.",
+    "login_placeholder": "you@institution.com",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email is authorized, we've sent you an access link to the Visionaria Help Center (expires in 15 minutes). If you don't receive it in a few minutes, message us on WhatsApp at +56 2 2925 4140.",
+    "logout": "Sign out",
+    "loading": "Loading operational status…",
+    "error_generic": "We couldn't load your operational status. Please try again in a few minutes.",
+    "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
+    "section_title": "Attention status",
+    "active": "Active requests",
+    "high_priority": "High priority",
+    "near_sla": "SLA about to expire",
+    "overdue": "Overdue",
+    "updated_at": "Last updated",
+    "breakdown_title": "Breakdown by client",
+    "breakdown_hint": "Click a client to see their request details.",
+    "assets_title": "Installed Assets",
+    "assets_hint": "Number of registered devices in your inventory, by type.",
+    "monitoring_title": "Real-Time Monitoring",
+    "monitoring_hint": "Operational status from the monitoring system, updated live.",
+    "monitoring_estado_general": "General Status",
+    "monitoring_operativo": "Operational",
+    "monitoring_incidencias": "With Incidents",
+    "monitoring_camaras": "Cameras Online",
+    "monitoring_sitios": "Sites Online",
+    "monitoring_servidores": "Servers",
+    "monitoring_incidentes": "Active Incidents",
+    "monitoring_disponibilidad": "Availability",
+    "events_title": "Recent Events",
+    "no_events": "No events recorded yet.",
+    "tickets_title": "Active requests",
+    "no_tickets": "You have no active requests right now.",
+    "sla_remaining": "SLA remaining",
+    "sla_overdue": "SLA overdue",
+    "status_green": "All clear",
+    "status_yellow": "Attention needed",
+    "status_red": "Urgent attention",
+    "priority_low": "Low",
+    "priority_medium": "Medium",
+    "priority_high": "High",
+    "priority_urgent": "Urgent"
   },
   "contact": {
     "title": "Contact Us",
@@ -87,10 +289,975 @@
     "success": "Message sent. We will get back to you soon.",
     "error_sending": "There was an error sending. Please try again.",
     "address_commercial": "Commercial Address",
-    "address_admin": "Administration & Management"
+    "address_admin": "Administration & Management",
+    "sending": "Sending…"
   },
   "footer": {
     "tagline": "Security and Technology Systems SpA — 100% Chilean company, founded in 2002.",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "links_title": "Links",
+    "resources_title": "Resources"
+  },
+  "common": {
+    "scroll_cue": "Keep exploring",
+    "talk_to_specialist": "Talk to a specialist",
+    "request_demo": "Request a demo"
+  },
+  "manifesto": {
+    "eyebrow": "Our purpose",
+    "title_1": "Integrated technology in the service of",
+    "title_accent": "people's safety",
+    "desc_pre": "Visionaria actively promotes the integration of technology systems for a single purpose:",
+    "desc_strong": "safeguarding citizen security",
+    "desc_post": ", giving public institutions tools that pursue operational efficiency and the optimization of State resources.",
+    "pillars": [
+      { "icon": "Shield", "title": "Citizen Security", "desc": "Our core purpose is protecting people. Every camera, every sensor, every algorithm exists so citizens can live, move around and thrive in safe environments.", "accent": "#F09422", "bg": "rgba(240,148,34,0.08)" },
+      { "icon": "Cpu", "title": "Systems Integration", "desc": "We don't sell isolated technology. We connect video surveillance, facial recognition, license plate readers, drones and dispatch platforms into a unified ecosystem that operates as a single intelligent system.", "accent": "#3D8A82", "bg": "rgba(61,138,130,0.08)" },
+      { "icon": "BarChart3", "title": "Public Resource Efficiency", "desc": "We design solutions that maximize the impact of every peso invested by municipalities, governorships and public agencies: more coverage, shorter response times, better decision-making.", "accent": "#34d399", "bg": "rgba(52,211,153,0.08)" }
+    ],
+    "quote_pre": "A safer city doesn't need more resources —",
+    "quote_accent": "it needs systems that work together intelligently.",
+    "quote_footer": "Visionaria · Since 2002",
+    "stats": [
+      { "value": "+3,700", "label": "Cameras in operation", "sub": "in real time" },
+      { "value": "80+", "label": "Municipalities", "sub": "from Arica to Punta Arenas" },
+      { "value": "10/16", "label": "Regions covered", "sub": "direct presence" },
+      { "value": "320+", "label": "Projects completed", "sub": "since 2002" }
+    ],
+    "scroll_cue": "See more"
+  },
+  "dafrVideoPanel": {
+    "iframe_title": "DAFR — Drone as First Response Force",
+    "loop_alt": "Drone Tactical Command Center — Visionaria",
+    "play_aria": "Play video",
+    "play_caption": "Watch the demo — Visionaria Integrated System",
+    "live_badge": "DEMO"
+  },
+  "caseVideoCard": {
+    "play_aria_prefix": "Play —"
+  },
+  "lprVisual": {
+    "live": "LIVE",
+    "plate_captured": "PLATE CAPTURED",
+    "plate_format": "CHL · MERCOSUR",
+    "query_databases": "DATABASE QUERY",
+    "recent_captures": "RECENT CAPTURES",
+    "status_clean": "CLEAR",
+    "status_wanted": "WANTED",
+    "alert_label": "⚠ ALERT",
+    "ok_label": "✓ OK",
+    "result_wanted": "⚠ WANTED",
+    "result_clean": "✓ CLEAR",
+    "vehicle_types": { "liviano": "CAR", "suv": "SUV", "furgon": "VAN" }
+  },
+  "videoDemo": {
+    "eyebrow": "Live demo",
+    "title_1": "See how it works",
+    "title_accent": "in real time",
+    "desc1": "From automatic incident detection to drone deployment and identity confirmation — all in under two minutes.",
+    "desc2": "Genetec Security Center platform integrated with DJI Dock drones, facial recognition and LPR readers in a single response ecosystem.",
+    "stats": [
+      { "value": "< 2 min", "label": "Response time" },
+      { "value": "+3,700", "label": "Active cameras" },
+      { "value": "80+", "label": "Municipalities" }
+    ],
+    "cta": "Request an in-person demo",
+    "youtube_title": "Visionaria demo",
+    "play_aria": "Play video",
+    "play_caption": "Watch the demo — Visionaria Integrated System",
+    "live_badge": "DEMO"
+  },
+  "surveillanceDeck": {
+    "eyebrow": "Operations Center",
+    "title_1": "Integrated surveillance,",
+    "title_accent": "in real time",
+    "status_texts": [
+      "SYSTEM ACTIVE · VISIONARIA OPS CENTER",
+      "24/7 MONITORING · 40+ MUNICIPALITIES",
+      "+3,700 CAMERAS ONLINE",
+      "FACIAL RECOGNITION ACTIVE · PDI DATABASE",
+      "DJI DOCK DRONES ON STANDBY · T=0 READY"
+    ],
+    "feed_cam01": "SITIA INTEGRATED PLATFORM",
+    "feed_uav01": "DJI DRONE — LIVE FEED",
+    "feed_rad01": "PERIMETER RADAR · PTZ",
+    "feed_lpr03": "LICENSE PLATE READING",
+    "feed_sys": "SYSTEM STATUS",
+    "feed_log": "REAL-TIME EVENTS",
+    "feed_mls01": "MILESIGHT LPR",
+    "feed_svt01": "GENETEC STREAMVAULT",
+    "sys_stats": [
+      { "label": "Cameras online", "val": 97, "color": "#34d399" },
+      { "label": "Network latency", "val": 82, "color": "#3D8A82" },
+      { "label": "Genetec CPU", "val": 61, "color": "#F09422" },
+      { "label": "Storage", "val": 44, "color": "#F09422" }
+    ],
+    "lpr_scanning": "READING...",
+    "lpr_registered": "✓ LOGGED",
+    "events": [
+      { "time": "20:17:33", "msg": "Watchlist match — vehicle under active search", "color": "#ef4444" },
+      { "time": "20:17:28", "msg": "Drone UAV-01 en route — Maipú sector", "color": "#F09422" },
+      { "time": "20:17:21", "msg": "Face ID confirmed — PDI database 94.7%", "color": "#34d399" }
+    ],
+    "bottom_bar_status": "VISIONARIA OPS · SANTIAGO · CL"
+  },
+  "clients": {
+    "eyebrow": "Institutional trust",
+    "title": "Main clients",
+    "subtitle": "Public and private institutions that trust Visionaria to protect their communities.",
+    "case_study_eyebrow": "Success story",
+    "case_study_title": "Chillán Viejo launches televigilance system with 26 cameras",
+    "case_study_desc": "A Ñuble Regional Government project worth CLP $3.656 million for 209 high-end cameras across the region, with a municipal monitoring room, mirror rooms at Carabineros and the PDI, and AI-driven analysis through the SITIA agreement with the Undersecretariat for Crime Prevention.",
+    "case_study_source": "Source: La Discusión, March 18, 2026",
+    "more_institutions_eyebrow": "More institutions",
+    "more_institutions_title": "Trust Visionaria",
+    "institutions": [
+      { "name": "Municipality of Las Condes", "logo": "/clientes/las-condes.png" },
+      { "name": "Ñuble Regional Government", "logo": "/clientes/nuble.png" },
+      { "name": "Municipality of Santiago", "logo": "/clientes/santiago.png" },
+      { "name": "Undersecretariat for Crime Prevention", "logo": "/clientes/spd.png" },
+      { "name": "Ruta de la Araucanía Highway", "logo": "/clientes/ruta-araucania.png" },
+      { "name": "Ruta de Los Ríos Highway", "logo": "/clientes/ruta-los-rios.png" },
+      { "name": "Municipality of Puente Alto", "logo": "/clientes/puente-alto.png" },
+      { "name": "Municipality of Algarrobo", "logo": "/clientes/algarrobo.png" }
+    ],
+    "testimonials": [
+      {
+        "quote": "This is a landmark initiative by the Regional Government that seeks to strengthen security across our entire region through cutting-edge technology, including artificial intelligence, to prevent crime and gather evidence in the event of incidents.",
+        "name": "Óscar Crisóstomo",
+        "role": "Regional Governor of Ñuble"
+      },
+      {
+        "quote": "I deeply value the alignment we have with the Regional Government on security matters, because this partnership lets us strengthen surveillance and the pursuit of crime with a clear preventive focus. Today we are inaugurating 26 cameras and four Wi-Fi points, an investment I'm grateful for, and one we also plan to complement with gantries to detect vehicles reported stolen, because our goal is to guarantee peace of mind both in the commune and across the whole region.",
+        "name": "Jorge Del Pozo",
+        "role": "Mayor of Chillán Viejo"
+      },
+      {
+        "quote": "A fantastic, effective tool for fighting crime.",
+        "name": "Enrique Zamora",
+        "role": "Inspector Prefect, PDI"
+      },
+      {
+        "quote": "Strengthening our service, and analyzing and focusing police work efficiently.",
+        "name": "Sandra Vargas",
+        "role": "Colonel, Head of the Ñuble Police Operations Department, Carabineros"
+      },
+      {
+        "quote": "They have worked wonderfully, which keeps us safe and gives us peace of mind as neighbors.",
+        "name": "Cecilia Tauda",
+        "role": "President, Hacienda Naranjo del Futuro Neighborhood Council"
+      }
+    ]
+  },
+  "cati": {
+    "badge": "Public policy · Traffic enforcement",
+    "hero_title": "CATI Law",
+    "hero_subtitle": "Road Safety and Traffic Accidents — Technology solution for its implementation",
+    "hero_desc": "The CATI Law requires electronic enforcement of traffic violations with certified photographic evidence. Visionaria delivers the complete platform — hardware, software and operation — on new infrastructure or on assets already under our maintenance.",
+    "cta_primary": "Request technical proposal",
+    "cta_secondary": "View LPR platform",
+    "context_eyebrow": "Regulatory framework",
+    "context_title": "What does the CATI Law require?",
+    "context_desc": "Law 21.495 on Road Safety and Traffic Accidents sets a new standard for traffic enforcement in Chile, making technology the core of violation detection and recording. Its phased rollout opens a critical window for municipalities, traffic agencies and highway concessionaires.",
+    "points": [
+      "Mandatory electronic traffic enforcement on concessioned highways and high-congestion urban roads",
+      "Automated violation recording with photographic evidence valid before the Local Police Court",
+      "Interoperability with the National Violations Registry of the Ministry of Transport (SEMTT)",
+      "Phased rollout: communes prioritized by CONASET's road-accident rate index"
+    ],
+    "stats": [
+      { "value": "2,000+", "label": "annual deaths in road accidents", "sub": "Chile — CONASET 2023" },
+      { "value": "60%", "label": "of violations involve speeding", "sub": "or running a red light" },
+      { "value": "346", "label": "communes with pending enforcement", "sub": "under the CATI Law" },
+      { "value": "∞", "label": "photographic evidence available on the JPL portal", "sub": "with certified imagery" }
+    ],
+    "detection_eyebrow": "Detection capabilities",
+    "detection_title": "Violations the system records automatically",
+    "detection_desc": "Every event generates a record with image, plate, speed or violation type, timestamp and coordinates — evidence valid for notification and proceedings before the Local Police Court.",
+    "violations": [
+      { "icon": "Zap", "title": "Speeding", "desc": "Integrated 60 GHz radar measures instantaneous speed with ±2 km/h accuracy. Photo capture of the vehicle, plate and speed in a single violation record.", "accent": "#F09422" },
+      { "icon": "AlertTriangle", "title": "Red light violation", "desc": "Linked to the traffic signal controller via RS485/dry contact. The system records the crossing while the signal is red, with vehicle image and synchronized timestamp.", "accent": "#ef4444" },
+      { "icon": "Car", "title": "Misuse of exclusive lanes", "desc": "Detects vehicles in bus/metro lanes, emergency lanes or segregated corridors via Specific Lane Management, scheduled or permanent.", "accent": "#3D8A82" },
+      { "icon": "Eye", "title": "Wrong-way driving", "desc": "Automatic Reverse Driving Detection for travel against the permitted direction. Generates an immediate alert and record with image and plate.", "accent": "#C4A882" },
+      { "icon": "Camera", "title": "Vehicle without a visible plate", "desc": "Identifies vehicles circulating without a plate or with a tampered plate (No-plate Vehicle Capture). High-resolution image recorded as evidence.", "accent": "#F09422" },
+      { "icon": "BarChart2", "title": "Flow statistics and classification", "desc": "Counts by vehicle type (car, motorcycle, truck, bus), average speed and hourly distribution. Data for road planning and compliance assessment.", "accent": "#3D8A82" }
+    ],
+    "hardware_eyebrow": "Certified hardware",
+    "hardware_title": "Two options for every scenario",
+    "hardware_desc": "Same software architecture, same management platform. The unit is chosen based on road type, number of lanes and operating speed.",
+    "tiers": [
+      {
+        "badge": "Urban roads · Communes",
+        "title": "Compact Radar + LPR",
+        "subtitle": "4 MP · 60 GHz radar · 2 lanes · up to 160 km/h",
+        "desc": "All-in-one solution for intersections, 2-lane avenues and communal access roads. Integrated radar module, no additional civil works, PoE powered. Ideal for municipalities looking to start enforcement with a limited investment.",
+        "specs": [
+          { "label": "Resolution", "value": "4 MP (2688×1520)" },
+          { "label": "Lanes covered", "value": "2 (≥95% each)" },
+          { "label": "Max speed", "value": "160 km/h" },
+          { "label": "Radar accuracy", "value": "±2 km/h" },
+          { "label": "ANPR range", "value": "Up to 40 m" },
+          { "label": "Blacklist records", "value": "20,000 on-camera" },
+          { "label": "Power", "value": "PoE 802.3at / 12V DC" },
+          { "label": "Protection", "value": "IP67 · –40°C to +60°C" }
+        ],
+        "accent": "#F09422",
+        "border": "rgba(240,148,34,0.25)"
+      },
+      {
+        "badge": "Expressways · High traffic",
+        "title": "Premium 4K Radar + LPR",
+        "subtitle": "4K · 60 GHz radar · 3 lanes · up to 120 km/h",
+        "desc": "For urban highways, ring roads and high-speed arterials with 3 lanes. 4K resolution (3840×2160) and longer read range for sharp capture at higher speeds. Built for metropolitan or interurban enforcement systems.",
+        "specs": [
+          { "label": "Resolution", "value": "4K (3840×2160)" },
+          { "label": "Lanes covered", "value": "3 (≥95% each)" },
+          { "label": "Max speed", "value": "120 km/h" },
+          { "label": "Radar accuracy", "value": "±2 km/h" },
+          { "label": "ANPR range", "value": "Up to 50 m" },
+          { "label": "Blacklist records", "value": "20,000 on-camera" },
+          { "label": "Power", "value": "PoE 802.3at / 12V DC" },
+          { "label": "Protection", "value": "IP67 · –40°C to +60°C" }
+        ],
+        "accent": "#3D8A82",
+        "border": "rgba(61,138,130,0.25)"
+      }
+    ],
+    "hardware_footnote": "Both models: ONVIF Profile G/M/S/T · REST API · MQTT · RS485 · I/O alarm · PoE 802.3at · IP67 · 3/5-year warranty",
+    "specs_label": "Key specifications",
+    "service_eyebrow": "Implementation model",
+    "service_title": "Enforcement as a service",
+    "service_desc": "Visionaria operates over 300 LPR points in the Santiago Metropolitan Region. That installed infrastructure is the foundation for rolling out CATI enforcement without starting from scratch.",
+    "service_modes": [
+      { "icon": "Layers", "title": "Upgrade on existing infrastructure", "desc": "If you already operate LPR cameras under a maintenance contract with Visionaria, we add enforcement capabilities on top of the installed network: firmware updates, integration with traffic signal controllers and activation of violation-detection modules.", "tag": "No hardware replacement", "accent": "#F09422" },
+      { "icon": "Building2", "title": "New sites · Concession model", "desc": "Visionaria finances, installs and operates the equipment. The municipality or public agency receives a fully working system and violation reports with no upfront cost. The recovery model is structured on the processed violation records.", "tag": "Deferred investment", "accent": "#3D8A82" },
+      { "icon": "Radio", "title": "Enforcement platform as a service", "desc": "Violation records generated by the system feed directly into the municipality's or SEMTT's violation-management platform. Reports, photographic evidence and flow data available via API and web portal.", "tag": "EnforcementaaS", "accent": "#C4A882" }
+    ],
+    "integration_eyebrow": "Native integration",
+    "integration_title": "Builds on what's already there",
+    "integration_desc": "The CATI module integrates on top of Visionaria's LPR/ANPR platform. Violation records share the same database as SEBV alerts and SITIA events — the operator manages everything from a single console.",
+    "integration_list": [
+      "Violation image + plate + speed in a single ticket",
+      "Automatic export in the format required by SEMTT",
+      "Checkpoint monitoring dashboard with real-time compliance rate",
+      "Automatic reports by segment, time window and violation type",
+      "Photographic evidence stored with a cryptographic hash for legal validity"
+    ],
+    "flow_label": "Flow of a violation event",
+    "flow_steps": [
+      { "step": "01", "title": "Capture", "desc": "Radar detects speed · camera records a high-resolution image with the plate" },
+      { "step": "02", "title": "Recognition", "desc": "OCR engine identifies the plate in <500 ms · associated vehicle attributes" },
+      { "step": "03", "title": "Validation", "desc": "System checks against configured thresholds (speed, lane, signal)" },
+      { "step": "04", "title": "Recording", "desc": "Ticket generated with evidence, hash and metadata · stored locally and on the central platform" },
+      { "step": "05", "title": "Notification", "desc": "Alert to the operator · export to the municipal or SEMTT violation-management system" }
+    ],
+    "cta_title": "Does your municipality or agency need to comply with the CATI Law?",
+    "cta_desc": "We assess your current infrastructure, define the most suitable implementation model, and present a technical and financial proposal at no cost.",
+    "cta_primary2": "Request a free assessment",
+    "cta_secondary2": "Full LPR platform"
+  },
+  "smartCities": {
+    "eyebrow": "Innovation · Smart Cities",
+    "hero_title_line1": "The",
+    "hero_title_accent": "Smart City",
+    "hero_title_line3": "solution for Chile",
+    "hero_desc": "Visionaria integrates surveillance, traffic management, access control and response drones into a unified ecosystem designed for Chilean cities. Real-time data, centralized coordination and faster response to every incident.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "View success stories",
+    "hero_image_alt": "Santiago, Chile — smart city",
+    "hero_image_caption": "SANTIAGO, CHILE · SMART CITY PLATFORM",
+    "challenges_title": "What are the challenges of building a smart city?",
+    "challenges_desc": "A smart city is an environment where digital solutions optimize the use of infrastructure and services, improving residents' quality of life. However, the road to that goal comes with concrete challenges:",
+    "challenges_list": [
+      "Isolated legacy systems that don't talk to each other",
+      "Insufficient network infrastructure for real-time data",
+      "Scaling existing solutions is costly and inefficient",
+      "Lack of unified visibility for decision-making",
+      "Fragmented coordination between security agencies"
+    ],
+    "response_eyebrow": "Visionaria's answer",
+    "response_title": "An integrated ecosystem connecting cameras, sensors, drones, access control and communications in a single management platform.",
+    "response_desc": "We work with the world's best brands — Genetec, DJI, Axis, Hikvision — and integrate every component so operators see everything on one screen and respond in seconds, not minutes.",
+    "response_stats": [
+      { "val": "< 90s", "label": "DFR response time" },
+      { "val": "24/7", "label": "Continuous monitoring" },
+      { "val": "80 km", "label": "Network range" }
+    ],
+    "modules_eyebrow": "Capabilities",
+    "modules_title": "Smart Cities ecosystem modules",
+    "modules_desc": "Each module operates standalone or fully integrated with the rest",
+    "modules": [
+      {
+        "id": "security",
+        "icon": "Shield",
+        "color": "#F09422",
+        "bg": "rgba(240,148,34,0.10)",
+        "title": "Public Safety",
+        "desc": "IoT sensors integrated with our platform enable real-time monitoring, data collection and automated emergency responses. We significantly improve urban resilience, with an emphasis on incident prevention and police coordination.",
+        "bullets": [
+          "Automatic detection of incidents and anomalous behavior",
+          "Integration with Carabineros and police dispatch systems",
+          "Real-time alerts to unified command centers",
+          "24/7 coverage with power backup and network redundancy"
+        ]
+      },
+      {
+        "id": "surveillance",
+        "icon": "Camera",
+        "color": "#3D8A82",
+        "bg": "rgba(61,138,130,0.10)",
+        "title": "Smart Surveillance",
+        "desc": "High-resolution IP camera network with AI-based video analytics. Detects events in real time without constant human intervention, optimizing each municipality's operational resources.",
+        "bullets": [
+          "Long-range PTZ cameras with 40x optical zoom",
+          "Analytics: people counting, loitering detection, abandoned objects",
+          "License plate recognition (LPR) at gantries and entry points",
+          "Centralized management from a Genetec control room"
+        ]
+      },
+      {
+        "id": "traffic",
+        "icon": "Car",
+        "color": "#34d399",
+        "bg": "rgba(52,211,153,0.10)",
+        "title": "Traffic Management",
+        "desc": "Integrated solutions for real-time monitoring and management of vehicle flow. We reduce congestion, improve emergency response times and deliver valuable data for urban planning.",
+        "bullets": [
+          "Vehicle counting and average-speed analysis",
+          "Violation detection: red light, wrong-way driving, speeding",
+          "Integration with smart traffic lights and variable message signs",
+          "Real-time traffic dashboard for authorities"
+        ]
+      },
+      {
+        "id": "access",
+        "icon": "KeyRound",
+        "color": "#a78bfa",
+        "bg": "rgba(167,139,250,0.10)",
+        "title": "Access Control",
+        "desc": "Vehicle and pedestrian access control platforms for critical areas, municipal buildings and sensitive perimeters. Fully integrated with the video surveillance ecosystem for complete perimeter security.",
+        "bullets": [
+          "Vehicle barriers with automatic plate recognition",
+          "Biometric control (facial, fingerprint) at critical facilities",
+          "Whitelists and blacklists synced in real time",
+          "Complete audit trail with associated video evidence"
+        ]
+      },
+      {
+        "id": "environment",
+        "icon": "Leaf",
+        "color": "#34d399",
+        "bg": "rgba(52,211,153,0.10)",
+        "title": "Environmental Monitoring",
+        "desc": "Environmental monitoring is essential for urban management, improving public health, safety and sustainability. IoT sensors distributed across the city collect and analyze environmental data in real time, enabling informed decisions by municipal authorities.",
+        "bullets": [
+          "Distance sensors in containers: fill-level monitoring and waste-collection route optimization",
+          "Solenoid valve controllers: automated irrigation based on time, flow and soil moisture",
+          "Detection cameras: monitoring of green spaces, pest infestations and signs of vandalism",
+          "Soil moisture sensors: real-time data on soil humidity, temperature and electrical conductivity",
+          "Weather stations: temperature, humidity, wind speed/direction, barometric pressure and rainfall"
+        ]
+      },
+      {
+        "id": "dfr",
+        "icon": "Plane",
+        "color": "#F09422",
+        "bg": "rgba(240,148,34,0.10)",
+        "title": "Drone as First Responder (DFR)",
+        "desc": "Autonomous drone system deployed from fixed stations that responds to alarms in under 90 seconds. The Drone Tactical Command Center coordinates automatic dispatch and streams live video to the command center.",
+        "bullets": [
+          "Arrival time at the alarm location: under 90 seconds",
+          "Full HD live video streamed to the control room",
+          "Integration with PTZ cameras for coordinated tracking",
+          "24/7 operation with automatic recharging at the DJI Dock station"
+        ]
+      }
+    ],
+    "traffic_image_alt": "Traffic management, Santiago",
+    "benefits_eyebrow": "Results",
+    "benefits_title": "What benefits will you get?",
+    "benefits": [
+      {
+        "title": "Data-driven decision making",
+        "desc": "IoT sensors analyze large data flows and quickly identify patterns. This leads to actionable insights for urban planning, resource allocation and overall city management.",
+        "color": "#F09422",
+        "icon": "📊"
+      },
+      {
+        "title": "Efficient public services and infrastructure",
+        "desc": "Real-time data integration optimizes the operation of critical services: smart lighting, waste management, traffic and emergencies — reducing costs and improving service quality.",
+        "color": "#3D8A82",
+        "icon": "🏙️"
+      },
+      {
+        "title": "Greater civic engagement and experience",
+        "desc": "A safer, cleaner and more efficient city directly improves residents' quality of life and builds trust in public institutions through measurable, transparent results.",
+        "color": "#34d399",
+        "icon": "👥"
+      }
+    ],
+    "cta_title": "Is your municipality ready for the next level?",
+    "cta_desc": "Let's talk about your city's specific needs. Our team designs a tailored solution.",
+    "cta_primary": "Contact a specialist",
+    "cta_secondary": "View completed projects"
+  },
+  "cadPsim": {
+    "hero_eyebrow": "Solutions portfolio · Citizen protection",
+    "hero_title": "CAD/PSIM Platform",
+    "hero_subtitle": "Integrated citizen protection, at regional scale",
+    "hero_desc": "We unify an entire territory's security resources — video surveillance, alarms, access control, emergency telephony and more — into a single platform that coordinates operations and shortens response times.",
+    "cta_contact": "Let's talk about your territory",
+    "cta_capabilities": "View capabilities",
+    "manifesto_eyebrow": "Our view",
+    "manifesto_quote": "Seeing is not the same as responding.",
+    "manifesto_desc": "A wall of monitors observes, records and deters, but it doesn't decide who acts, how, or leave a trace of what happened. A video surveillance system is not, on its own, a dispatch platform (CAD); and a CAD platform doesn't replace cameras either. They are distinct, complementary pieces.",
+    "compare_see_label": "See",
+    "compare_see_title": "A video surveillance room",
+    "compare_see_desc": "Observes, records and deters; provides evidence. But it doesn't coordinate the response or manage the case.",
+    "compare_act_label": "Act",
+    "compare_act_title": "A CAD/PSIM platform",
+    "compare_act_desc": "Integrates information, decides and dispatches resources, and leaves a complete trace of every incident.",
+    "manifesto_footer": "They aren't the same thing — they reinforce each other.",
+    "order_eyebrow": "The right order",
+    "order_title": "Operations first; technology serves it.",
+    "order_desc": "That's why we start with operations and case management. Technology comes after — to strengthen it, not replace it.",
+    "order_steps": [
+      { "n": "1", "title": "Know how to act", "desc": "Clear protocols for every type of situation." },
+      { "n": "2", "title": "Coordinate and interact", "desc": "Agencies operating together, not in silos." },
+      { "n": "3", "title": "Manage every case", "desc": "Logging, tracking and closing every incident." },
+      { "n": "4", "title": "Add technology", "desc": "Cameras, sensors and analytics in service of that operation." }
+    ],
+    "solution_eyebrow": "The solution",
+    "solution_title": "A single platform for the entire region",
+    "solution_desc1": "The platform combines two complementary layers. An <strong>integration layer (PSIM)</strong> brings distributed security systems — cameras, analytics, alarms, access control and sensors — into a single view, correlates events and delivers situational awareness. An <strong>assisted-dispatch layer (CAD)</strong> manages the full incident lifecycle: intake, classification, geolocation, resource dispatch and traceability.",
+    "solution_desc2": "Everything is deployed on a <strong>hub-and-spoke</strong> architecture: a central, regional-scale node concentrates information and coordination, while each municipality operates its own independent local access node. The result is a uniform protection standard across the whole territory, without duplicating investments.",
+    "solution_highlights": [
+      { "b": "Multi-municipality coverage", "s": "One standard across the whole territory" },
+      { "b": "Coordinated operations", "s": "Regional center, 24/7" },
+      { "b": "Interoperable platform", "s": "Integrates your existing technology" }
+    ],
+    "arch_label": "Architecture · Hub-and-Spoke",
+    "arch_control_room": "Regional control room · Operators",
+    "arch_cad_title": "CAD layer — Assisted dispatch",
+    "arch_cad_desc": "Intake · Classification · Geolocation · Dispatch · Traceability",
+    "arch_psim_title": "PSIM layer — Integration",
+    "arch_psim_desc": "Unified situational awareness · event correlation",
+    "arch_sources_title": "Sources and devices",
+    "arch_sources_desc": "Cameras · Analytics · Alarms · GPS · Access control · App · Telephony",
+    "arch_footer": "Each municipality has its own <strong>independent municipal access point</strong> with operational autonomy within the regional network.",
+    "capabilities_eyebrow": "Capabilities",
+    "capabilities_title": "What the platform does",
+    "capabilities_desc": "Core capabilities that operate in a coordinated way within a single console.",
+    "capabilities": [
+      { "icon": "MonitorCheck", "title": "Assisted dispatch (CAD)", "desc": "Intake, classification, geolocation, resource dispatch and complete traceability of every incident, in a single operational console." },
+      { "icon": "Layers", "title": "PSIM integration", "desc": "A single view of cameras, alarms, access control and sensors, with event correlation and real-time situational awareness." },
+      { "icon": "Camera", "title": "Video surveillance and analytics", "desc": "Live monitoring with video analytics that detects and prioritizes relevant events for the operator." },
+      { "icon": "Car", "title": "License plate recognition (LPR)", "desc": "Automatic plate reading (ALPR/LPR) for vehicle control, alerts and investigative support." },
+      { "icon": "Smartphone", "title": "Citizen app", "desc": "Panic button and reporting for the community, available on mobile app stores and connected to the control center." },
+      { "icon": "Bell", "title": "Community alarm network", "desc": "Neighborhood alarms integrated with the center, with activation and coordinated response by the operator." },
+      { "icon": "Phone", "title": "Emergency telephony", "desc": "Unified management of emergency calls within the same incident workflow." },
+      { "icon": "Wind", "title": "Drone as first responder", "desc": "Agile aerial dispatch to an event, for reconnaissance and situational awareness before ground resources arrive." },
+      { "icon": "MapPin", "title": "GPS and tracking", "desc": "Real-time position of resources and units on the regional map for optimal assignment." },
+      { "icon": "BarChart2", "title": "Municipal access points", "desc": "Each municipality operates its own node with autonomy, within a collaborative, interoperable regional network." }
+    ],
+    "integration_eyebrow": "Integration",
+    "integration_title": "Technologies that integrate",
+    "integration_desc": "The platform incorporates and correlates a broad ecosystem of security and smart-city technologies.",
+    "tech_chips": ["CCTV", "Drones / DFR", "LPR / ALPR", "Facial recognition", "Microwave communications", "IoT", "LoRaWAN", "5G", "Bodycams", "Multi-sensor demos", "Video AI", "Video analytics"],
+    "traceability_eyebrow": "Traceability and accountability",
+    "traceability_title": "Management you can measure and audit",
+    "traceability_desc": "In public administration, what can't be measured can't be improved — or accounted for. Every incident is logged from start to finish.",
+    "traceability": [
+      { "icon": "TrendingUp", "title": "Response times", "desc": "Detection, dispatch and resolution measured for every incident, to identify bottlenecks and improve." },
+      { "icon": "FileText", "title": "Case traceability", "desc": "A complete, auditable timeline for every event: who received it, how it was classified and what resources were dispatched." },
+      { "icon": "BarChart2", "title": "Operational performance", "desc": "Volume and type of incidents by municipality, zone, shift and operator, with trends over time." },
+      { "icon": "ClipboardCheck", "title": "Protocol compliance", "desc": "Verification that every situation was handled according to the defined protocol, with alerts on deviations." },
+      { "icon": "Table2", "title": "Reports and dashboards", "desc": "Live dashboards and periodic reports for the authority and the municipality, ready for accountability." },
+      { "icon": "Lock", "title": "Evidence and audit", "desc": "Complete records and associated evidence, available for audits, investigations and decision-making." }
+    ],
+    "benefits_eyebrow": "Impact",
+    "benefits_title": "What the territory gains",
+    "benefits": [
+      { "title": "A uniform regional standard", "desc": "All municipalities operate on the same platform and the same protocols, with an equivalent security experience across the whole territory." },
+      { "title": "Faster response", "desc": "Event correlation and assisted dispatch shorten detection and reaction times for every incident." },
+      { "title": "Optimized public resources", "desc": "Shared infrastructure avoids duplicating municipal investments and captures economies of scale." },
+      { "title": "Scalable and future-proof", "desc": "The architecture grows in modules and adds new technologies — video AI, drones, IoT — as the territory needs them." }
+    ],
+    "audience_eyebrow": "Who it's for",
+    "audience_title": "Built for the public sector",
+    "audience": [
+      { "title": "Regional governments", "desc": "A uniform citizen-protection standard for every municipality in the region." },
+      { "title": "Municipalities", "desc": "Your own node with operational autonomy, integrated into the regional network." },
+      { "title": "Public safety agencies", "desc": "Coordination between agencies and complete incident traceability." }
+    ],
+    "financing_eyebrow": "Financing",
+    "financing_title": "From idea to budget",
+    "financing_desc": "Many security initiatives stall for one reason: it's unclear which funding line covers them. We help you identify the right budget line and formulate the project so it qualifies.",
+    "financing": [
+      { "title": "FNDR", "desc": "National Regional Development Fund: the main investment vehicle for Regional Governments, well suited to region-wide projects." },
+      { "title": "Public safety", "desc": "Resources aimed at crime prevention and citizen security, such as the National Public Safety Fund and regional security grants." },
+      { "title": "FRIL / PMU", "desc": "For smaller-scale or improvement components: the Regional Local Initiative Fund and the Urban Improvement Program." },
+      { "title": "Agreements and sector funding", "desc": "Programming agreements between the Regional Government and sector agencies, plus complementary municipal contributions." }
+    ],
+    "financing_steps": [
+      { "n": "1 · Formulation", "s": "We structure the project with its technical and economic justification." },
+      { "n": "2 · Evaluation · SNI / RS", "s": "We prepare the submission to the National Investment System to obtain a Satisfactory Recommendation." },
+      { "n": "3 · Processing with DIPRES / GORE", "s": "We support the request and the budget allocation." }
+    ],
+    "financing_footnote": "The applicable instrument depends on the nature, scale and ownership of each initiative, and must be validated with the Regional Government and DIPRES. Visionaria assists with identification and formulation; it does not replace the authority's evaluation.",
+    "cta2_eyebrow": "Let's talk",
+    "cta2_title": "Bring this platform to your region",
+    "cta2_desc": "We design the scope to fit your territory, on the infrastructure you already have.",
+    "cta2_company": "Visionaria",
+    "cta2_tagline": "Technology integrators for public safety",
+    "cta2_button": "Request a presentation"
+  },
+  "lpr": {
+    "hero_eyebrow": "Solutions portfolio · Vehicle control",
+    "hero_title": "LPR / ANPR Platform",
+    "hero_subtitle": "Automatic license plate reading with institutional integration",
+    "hero_desc": "Real-time vehicle recognition, connected to the Carabineros vehicle-search database (SEBV) and the Ministry of the Interior's investigation platform (SITIA) — in under half a second per read.",
+    "hero_stats": [
+      { "value": "303", "label": "active cameras in the RM" },
+      { "value": "23", "label": "integrated municipalities" },
+      { "value": "<500ms", "label": "matching vs. SEBV/SITIA" }
+    ],
+    "cta_primary": "Request an assessment",
+    "cta_secondary": "View completed projects",
+    "cati_badge": "New · CATI Law",
+    "cati_title": "Electronic traffic enforcement",
+    "cati_subtitle": "Speeding · Red light · Exclusive lanes · Wrong-way driving",
+    "cati_desc": "The CATI Law requires automated enforcement with certified photographic evidence. We activate these capabilities on existing LPR infrastructure or with new sites — without municipalities and agencies having to start from scratch.",
+    "cati_tags": ["Speeding", "Red light", "Exclusive lane", "Wrong-way driving", "No plate"],
+    "cati_box_value": "2 models",
+    "cati_box_desc": "Urban roads (2 lanes, 160 km/h) or expressways (3 lanes, 4K)",
+    "cati_cta": "View full CATI solution",
+    "case_badge": "Flagship project",
+    "case_title": "Metropolitan LPR Network",
+    "case_title_accent": "Undersecretariat for Crime Prevention",
+    "case_desc1": "The largest license-plate reading project in Chile: 303 LPR cameras deployed at strategic points across the 23 municipalities of Greater Santiago, operated from the Metropolitan Dispatch Center with direct integration to the Carabineros SEBV and Undersecretariat for Crime Prevention SITIA platforms.",
+    "case_desc2": "Every read is checked against both databases in under 500 ms. A match triggers an immediate alert to the operator, opens an incident in the CAD, and notifies the nearest police station with the vehicle's image and travel route.",
+    "case_tags": ["SEBV — Carabineros", "SITIA — SPD", "Regional CAD", "Integrated VMS", "23 municipalities", "24/7 operation"],
+    "case_stats": [
+      { "value": "303", "label": "active LPR cameras", "sub": "in the metropolitan area" },
+      { "value": "23", "label": "municipalities covered", "sub": "Greater Santiago" },
+      { "value": "24/7", "label": "continuous operation", "sub": "no manual intervention" },
+      { "value": "<500ms", "label": "matching time", "sub": "vs. SEBV/SITIA databases" }
+    ],
+    "integrations_eyebrow": "Institutional ecosystem",
+    "integrations_title": "Integrated with the State's platforms",
+    "integrations_desc": "Visionaria's LPR platform operates within Chile's public safety ecosystem, not as an isolated silo.",
+    "integrations": [
+      {
+        "name": "SEBV — Carabineros de Chile",
+        "full": "Vehicle Search Statistics System",
+        "desc": "Real-time integration with Carabineros' national registry of stolen vehicles. Every read is automatically checked: if the vehicle is under active search, the system generates an immediate alert and opens an incident in the CAD.",
+        "badge": "Active search",
+        "color": "#F09422"
+      },
+      {
+        "name": "SITIA — Undersecretariat for Crime Prevention",
+        "full": "Information and Technology System for Investigation and Action",
+        "desc": "The LPR system feeds and queries the Ministry of the Interior's SITIA platform, contributing pass records as evidence for criminal investigations and regional crime-pattern analysis.",
+        "badge": "Digital evidence",
+        "color": "#3D8A82"
+      },
+      {
+        "name": "Regional CAD / PSIM",
+        "full": "Dispatch and incident-management center",
+        "desc": "Every blacklist match automatically opens an incident in the CAD platform. The operator receives the vehicle's image, owner data (if available) and a suggested response protocol.",
+        "badge": "Automatic dispatch",
+        "color": "#C4A882"
+      }
+    ],
+    "arch_eyebrow": "Architecture",
+    "arch_title": "Processing flow",
+    "arch_flow": [
+      { "label": "LPR camera", "sub": "IR · high-speed" },
+      { "label": "OCR engine", "sub": "local recognition" },
+      { "label": "Matching engine", "sub": "vs. active lists" },
+      { "label": "SEBV / SITIA", "sub": "institutional databases" },
+      { "label": "CAD / PSIM", "sub": "automatic dispatch" }
+    ],
+    "arch_footer": "The entire flow happens in under 500 ms. The alert reaches the operator before the vehicle leaves the camera's frame.",
+    "capabilities_eyebrow": "Platform",
+    "capabilities_title": "Core capabilities",
+    "capabilities": [
+      { "icon": "Car", "title": "Real-time recognition", "desc": "Automatic plate reading for moving or stationary vehicles, at speeds up to 150 km/h, in day and night conditions, rain and backlight.", "accent": "#F09422" },
+      { "icon": "Database", "title": "List and alert management", "desc": "Blacklists (stolen, suspended, actively-searched vehicles) and whitelists (authorized access). Instant alert to the operator on any match.", "accent": "#3D8A82" },
+      { "icon": "Network", "title": "Integration with external databases", "desc": "Direct connection to institutional databases — including Carabineros records and Ministry of the Interior platforms — via secure protocols and formal agreements.", "accent": "#F09422" },
+      { "icon": "Search", "title": "Vehicle lookup and history", "desc": "Search by full or partial plate, date range and checkpoint. Pass history with front-facing image, direction of travel and estimated speed.", "accent": "#3D8A82" },
+      { "icon": "BarChart2", "title": "Vehicle flow analytics", "desc": "Traffic-flow statistics by checkpoint, time window and road type. Actionable data for traffic management and patrol planning.", "accent": "#C4A882" },
+      { "icon": "Lock", "title": "Vehicle access control", "desc": "Automatic barrier or gate opening for an authorized plate. Entry and exit logging for parking lots, industrial sites and municipal access points.", "accent": "#C4A882" }
+    ],
+    "specs_eyebrow": "Specifications",
+    "specs_title": "Reference technical parameters",
+    "specs_desc": "The values shown correspond to standard installation conditions. Every project includes an on-site technical survey to determine the optimal configuration based on traffic volume, lighting and road type.",
+    "specs": [
+      { "param": "Capture speed", "value": "Up to 150 km/h" },
+      { "param": "Processing time", "value": "< 500 ms per vehicle" },
+      { "param": "Recognition accuracy", "value": "> 95% under standard conditions" },
+      { "param": "Supported formats", "value": "Chilean, MERCOSUR and international plates" },
+      { "param": "Operation", "value": "Day/night — rain — backlight" },
+      { "param": "Cameras per lane", "value": "1–4 depending on road layout" },
+      { "param": "Image retention", "value": "Configurable per applicable regulation" },
+      { "param": "IP protection", "value": "IP67 or higher in harsh environments" }
+    ],
+    "legal_eyebrow": "Legal framework",
+    "legal_title": "Regulatory compliance",
+    "regulatory": [
+      { "icon": "Shield", "title": "Law 21.719 — Personal data", "desc": "A plate links to its owner. The system operates under lawful data processing, with a declared purpose, query logging and access restricted to authorized personnel." },
+      { "icon": "FileText", "title": "Inter-institutional agreements", "desc": "Integration with Carabineros and SPD databases requires a prior formal agreement. Visionaria supports the documentary and technical management of the agreement as part of the project." },
+      { "icon": "Clock", "title": "Defined retention period", "desc": "LPR image storage is sized and capped at the maximum period allowed by regulation, with an automatic deletion policy once the period expires." }
+    ],
+    "usecases_eyebrow": "Applications",
+    "usecases_title": "Use cases",
+    "usecases_desc": "One platform, multiple deployment contexts.",
+    "use_cases": [
+      { "icon": "Building2", "title": "Municipal surveillance", "desc": "Gantries at communal access points with automatic alerts to Carabineros for wanted vehicles." },
+      { "icon": "Search", "title": "Criminal investigation", "desc": "Reconstructing a vehicle of interest's routes from its pass history across multiple checkpoints." },
+      { "icon": "Lock", "title": "Industrial access control", "desc": "Automatic entry for authorized vehicles at plants, ports and high-security facilities." },
+      { "icon": "BarChart2", "title": "Road safety and statistics", "desc": "Counting, classification and speed of vehicle flow for traffic authorities." },
+      { "icon": "AlertCircle", "title": "High-criticality zones", "desc": "Surveillance with thermal cameras and recognition on critical routes, border zones and strategic infrastructure." },
+      { "icon": "Car", "title": "Parking lots and access points", "desc": "Access-list management for residential complexes, hospitals, universities and corporate buildings." }
+    ],
+    "implementation_eyebrow": "To consider in every project",
+    "implementation_title": "What makes the difference on the ground",
+    "implementation_notes": [
+      { "title": "Mandatory site survey", "desc": "Camera positioning and angle are critical to the recognition rate. We always carry out an on-site survey before sizing the project." },
+      { "title": "Institutional integration managed from day one", "desc": "Connecting to SEBV and SITIA requires a formal agreement. We support inter-institutional coordination as part of the process, not as a later stage." },
+      { "title": "Network infrastructure assessed in detail", "desc": "Every checkpoint requires connectivity, latency and redundancy analysis to guarantee the committed response time." },
+      { "title": "Storage sizing", "desc": "LPR images grow fast. We calculate the real volume before defining the storage infrastructure, taking applicable retention regulations into account." }
+    ],
+    "final_cta_title": "Does your municipality or institution need vehicle control?",
+    "final_cta_desc": "We advise you on system design, institutional agreements and technical sizing — at no cost."
+  },
+  "dafr": {
+    "hero_eyebrow": "Solutions · DAFR",
+    "hero_title_1": "Drone as",
+    "hero_title_2": "First Response",
+    "hero_title_3": "Force",
+    "hero_desc": "The DAFR (Drone as First Responder) concept redefines urban security. Before any patrol reaches the scene of an incident, an autonomous drone is already streaming live video from the exact location of the alarm.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "View success stories",
+    "video_eyebrow": "In action",
+    "video_title": "See how the DAFR system works",
+    "video_desc": "From the alarm to live video in under 90 seconds",
+    "protocol_eyebrow": "Protocol",
+    "protocol_title": "DAFR operational flow",
+    "steps": [
+      { "label": "ALARM", "time": "T = 0s", "color": "#F09422", "desc": "A sensor, camera or panic button triggers the alert in the system." },
+      { "label": "DISPATCH", "time": "T = 5s", "color": "#3D8A82", "desc": "The Drone Tactical Command Center receives the alarm and orders the automatic takeoff of the nearest drone." },
+      { "label": "TAKEOFF", "time": "T = 30s", "color": "#3D8A82", "desc": "The drone leaves the DJI Dock station and navigates autonomously to the event location." },
+      { "label": "LIVE VIDEO", "time": "T = 90s", "color": "#F09422", "desc": "The drone arrives and streams Full HD live video to the command center." },
+      { "label": "DECISION", "time": "< 2 min", "color": "#34d399", "desc": "The operator assesses the situation and dispatches the ground response with real information." }
+    ],
+    "tech_eyebrow": "Technology",
+    "tech_title": "System capabilities",
+    "features": [
+      { "icon": "Clock", "color": "#F09422", "title": "Response in under 90 seconds", "desc": "From the alarm trigger to the drone being over the incident location, response time is under 90 seconds — outpacing any ground patrol." },
+      { "icon": "Video", "color": "#3D8A82", "title": "Live video to the command center", "desc": "Real-time Full HD streaming to the operator. The response team sees the incident before arriving, improving decision-making and personnel safety." },
+      { "icon": "Radio", "color": "#C4A882", "title": "Integrated automatic dispatch", "desc": "The Drone Tactical Command Center (CTD) receives the alarm and dispatches the drone automatically, with no human intervention. Compatible with Genetec, Milestone and police dispatch systems." },
+      { "icon": "Zap", "color": "#34d399", "title": "Autonomous 24/7 operation", "desc": "DJI Dock station with automatic recharging. The drone returns, recharges and is ready for the next event with no on-site operator required." }
+    ],
+    "why_eyebrow": "Why DAFR",
+    "why_title": "Faster than any ground patrol",
+    "why_bullets": [
+      "Reaches the incident location in under 90 seconds",
+      "The operator assesses the situation before sending ground resources",
+      "Reduces false alarms — personnel are only dispatched once the drone confirms the incident",
+      "24/7 aerial coverage with no risk to security personnel",
+      "Native integration with Genetec Security Center and dispatch platforms",
+      "Compatible with Carabineros and municipal communication systems"
+    ],
+    "why_stats": [
+      { "val": "< 90s", "label": "Response time", "color": "#F09422" },
+      { "val": "24/7", "label": "Continuous operation", "color": "#3D8A82" },
+      { "val": "Full HD", "label": "Live video", "color": "#C4A882" },
+      { "val": "0", "label": "On-site operators required", "color": "#34d399" }
+    ],
+    "dji_eyebrow": "DJI Ecosystem",
+    "dji_title": "Accessories compatible with DJI Dock 3",
+    "dji_desc": "Expand operational capabilities to fit the needs of each deployment",
+    "accessories": [
+      { "color": "#C4A882", "title": "D-RTK 3 Fixed Relay Version", "desc": "Improves the range and quality of RTK signal transmission in complex urban environments." },
+      { "color": "#3D8A82", "title": "AS1 Real-Time Speaker", "desc": "Broadcast range of up to 300 meters. Enables direct communication from the drone to the incident area." },
+      { "color": "#F09422", "title": "AL1 Spotlight with Stabilized Tracking", "desc": "Powerful illumination at 100 meters with automatic target tracking." },
+      { "color": "#34d399", "title": "RC Plus 2 Enterprise", "desc": "Professional remote control for manual flight of the M4D/M4TD with a high-visibility integrated screen." },
+      { "color": "#f87171", "title": "Obstacle Detection Module", "desc": "Ensures operational safety in environments with obstacles, avoiding collisions during autonomous flight." },
+      { "color": "#C4A882", "title": "Vehicle Mounting Kit", "desc": "Ready for mobile deployment. Anti-vibration design and automatic RTK calibration while in motion." }
+    ],
+    "hardware_eyebrow": "Hardware",
+    "hardware_title": "DJI Dock 3 — Ready for any challenge",
+    "hardware_desc": "Autonomous deployment station with built-in FlightHub2 intelligence, EU C6 certification and operation in extreme conditions.",
+    "hardware_groups": [
+      { "color": "#C4A882", "title": "High Regulatory Compliance", "items": ["EU Class C6 marking", "Dock 3 documentation templates", "BVLOS-ready features"] },
+      { "color": "#F09422", "title": "Superior Performance", "items": ["Max flight time of 54 min", "Laser rangefinder for precise localization", "10s to take off", "Real-time terrain following"] },
+      { "color": "#3D8A82", "title": "Enhanced Data Security", "items": ["ISO27001 + ISO27701", "Local FlightHub 2 version", "Data security report"] },
+      { "color": "#34d399", "title": "Robustness and Reliability", "items": ["12 m/s wind resistance on takeoff", "Operating temperature -30°C to 50°C", "IP56+IP55 rating"] },
+      { "color": "#C4A882", "title": "Multiple Accessories", "items": ["Vehicle mounting kit", "D-RTK3 fixed relay deployment version", "Obstacle detection module"] },
+      { "color": "#F09422", "title": "FlightHub2 Intelligence", "items": ["Real-time AI detection", "Smart tracking", "Change detection", "Automated routes"] }
+    ],
+    "deploy_eyebrow": "Deployment",
+    "deploy_title": "Implementation anywhere",
+    "deployments": [
+      { "color": "#F09422", "title": "Ready for vehicle deployment", "desc": "Anti-vibration design ensures the Dock's reliability. Cloud-based RTK calibration and tilt-angle detection optimize mobile operation and safety." },
+      { "color": "#3D8A82", "title": "Simple RTK setup with D-RTK3", "desc": "Pairing with D-RTK 3 improves RTK signal acquisition, overcoming deployment limitations in urban environments (placing the Dock 3 near buildings and D-RTK 3 on rooftops)." },
+      { "color": "#34d399", "title": "Improved RTK signal performance", "desc": "External RTK module with 2 dB increased signal reception capability, enabling faster and more reliable RTK convergence." },
+      { "color": "#C4A882", "title": "Precise landing techniques", "desc": "A combination of SLAM (simultaneous localization and mapping) and marker recognition ensures precise landing even in challenging deployment environments." }
+    ],
+    "flighthub_eyebrow": "FlightHub2",
+    "flighthub_title": "Built-in Intelligence",
+    "flighthub_desc": "The DJI Dock 3 with FlightHub2 is smarter than ever. It detects, tracks and acts autonomously in real time.",
+    "flighthub_features": [
+      { "color": "#3D8A82", "title": "Real-time AI detection", "desc": "Recognition of people, vehicles and vessels with configurable alert thresholds." },
+      { "color": "#C4A882", "title": "Smart tracking", "desc": "The drone automatically follows moving targets with no operator intervention." },
+      { "color": "#34d399", "title": "Change detection", "desc": "Compares images from recurring routes and identifies anomalies or changes in the environment." },
+      { "color": "#F09422", "title": "Automated routes with recognition", "desc": "Smart recognition at waypoints: detects, alerts and captures data upon finding a target. Actions: photo, video and hover." }
+    ],
+    "flighthub_labels": ["REAL-TIME AI DETECTION", "CHANGE DETECTION", "SMART TRACKING", "AUTOMATED ROUTES"],
+    "privacy_eyebrow": "Privacy",
+    "privacy_title": "How does the system protect your data?",
+    "privacy_regions": [
+      { "flag": "🇺🇸", "title": "AWS server based in the US", "desc": "DJI uses Amazon AWS as its cloud services provider, recognized for its security qualifications and high reliability. AWS holds ISO 27001/27017/27018 certifications.", "color": "#3D8A82" },
+      { "flag": "🇪🇺", "title": "AWS server based in the EU", "desc": "DJI is deploying FlightHub 2 on Amazon AWS Frankfurt, Germany. All EU user data stays within European territory, in compliance with GDPR.", "color": "#C4A882" }
+    ],
+    "final_cta_title": "Is your municipality ready for DAFR?",
+    "final_cta_desc": "Our team designs a tailored solution, from station placement to integration with your existing command center.",
+    "final_cta_secondary": "View all solutions",
+    "case_eyebrow": "Want to see a real case?",
+    "case_title": "Asheville, USA — Post-storm response"
+  },
+  "ipVideo": {
+    "hero_eyebrow": "Solutions · IP Video Surveillance",
+    "hero_title_1": "Video with",
+    "hero_title_2": "real intelligence",
+    "hero_title_3": "not just recording",
+    "hero_desc": "Cameras stopped being just a visual record. Today they're smart sensors that detect behavior, recognize patterns and anticipate incidents before they escalate — integrated with world-class VMS platforms and your operation's full IoT ecosystem.",
+    "cta_demo": "Request a demo",
+    "cta_cases": "See success stories",
+    "analytics_eyebrow": "Analytics & Artificial Intelligence",
+    "analytics_title": "Beyond recording: understanding what's happening",
+    "analytics_desc": "AI engines embedded on-camera (edge) or on-server process every scene in real time, generating actionable alerts instead of hours of unreviewed footage.",
+    "analytics_features": [
+      { "icon": "Brain", "color": "#F09422", "title": "Behavior detection", "desc": "Identifies loitering, sudden crowding, falls, fights or abandoned objects, triggering automatic alerts to the monitoring center." },
+      { "icon": "Route", "color": "#3D8A82", "title": "Pattern recognition", "desc": "Learns the normal flow of people and vehicles in a space to detect deviations and anomalies from typical behavior." },
+      { "icon": "ScanFace", "color": "#C4A882", "title": "Object classification", "desc": "Distinguishes people, vehicles, animals and objects with precision, drastically cutting false alarms from leaves, shadows or insects." },
+      { "icon": "Users", "color": "#34d399", "title": "Counting & occupancy", "desc": "Measures foot and vehicle traffic in real time for occupancy management, traffic analysis and data-driven urban planning." },
+      { "icon": "AlertTriangle", "color": "#ef4444", "title": "Perimeter intrusion", "desc": "Virtual lines and zones that trigger immediate alerts on unauthorized crossings, even in low-light conditions." },
+      { "icon": "Eye", "color": "#F09422", "title": "AI forensic search", "desc": "Finds a specific event in minutes among thousands of hours of footage, filtering by attributes like clothing color or vehicle type." }
+    ],
+    "specs_eyebrow": "VMS platform",
+    "specs_title": "Professional-grade infrastructure",
+    "specs": [
+      { "label": "Video compression", "value": "H.264 / H.265 / H.265+" },
+      { "label": "Supported resolution", "value": "Up to 4K / 8MP per camera" },
+      { "label": "Live viewing latency", "value": "< 500 ms" },
+      { "label": "Recording retention", "value": "Configurable — minimum 30 days under Chile's public CCTV regulations" },
+      { "label": "Camera protocols", "value": "ONVIF, RTSP and proprietary protocols" },
+      { "label": "System availability", "value": "99.9%" }
+    ],
+    "agnostic_eyebrow": "Vendor-agnostic by design",
+    "agnostic_title": "The solution first, the brand second",
+    "agnostic_desc": "We're not tied to a single manufacturer. We integrate and are certified partners of the world's leading video surveillance and VMS vendors — choosing on every project the equipment that best solves the client's specific problem, not the one that's most convenient for us to sell.",
+    "agnostic_brands": ["Genetec", "Milestone", "Dahua", "Hikvision", "Milesight"],
+    "agnostic_note": "This independence lets us compare objectively, avoid vendor lock-in, and protect our clients' long-term investment.",
+    "iot_eyebrow": "IoT + VMS",
+    "iot_title": "One panel for all your sensors",
+    "iot_desc": "The modern VMS no longer just manages cameras: it becomes the central console for your entire security IoT ecosystem — environmental sensors, access control, gunshot detection, panic buttons, license plate reading and video analytics, all correlated on a single timeline and displayed on the control center's VideoWall.",
+    "iot_features": [
+      { "color": "#F09422", "title": "Event correlation", "desc": "A door-open sensor plus a camera detecting motion at the same instant generates one prioritized alert, not two isolated events." },
+      { "color": "#3D8A82", "title": "Sensors for every environment", "desc": "WiFi/Zigbee indoors, 4G LTE/NB-IoT in urban outdoor settings, and LoRaWAN or satellite in remote areas — each sensor using the protocol that fits its location." },
+      { "color": "#C4A882", "title": "Open interoperability", "desc": "Standard protocols (ONVIF, MQTT, CoAP, REST APIs) let you add new devices without replacing existing infrastructure." },
+      { "color": "#34d399", "title": "Unified VideoWall visualization", "desc": "Cameras, CAD/PSIM maps and IoT dashboards share the same control center video wall, with one-click layout changes per operational scenario." }
+    ],
+    "why_eyebrow": "Why Visionaria",
+    "why_title": "Video surveillance that adapts to your operation",
+    "why_bullets": [
+      "Custom-tailored architecture: the right camera for every point, not a generic catalog.",
+      "AI analytics calibrated to the site's real context, reducing false alarms.",
+      "Native integration with CAD/PSIM, LPR and DAFR within the same Visionaria ecosystem.",
+      "Multi-brand technical support — a single provider for your entire video infrastructure."
+    ],
+    "why_stats": [
+      { "val": "5", "label": "Leading brands integrated", "color": "#F09422" },
+      { "val": "24/7", "label": "Monitoring and support", "color": "#3D8A82" },
+      { "val": "Edge + Server", "label": "Dual AI analytics", "color": "#C4A882" },
+      { "val": "ONVIF", "label": "Open interoperability", "color": "#34d399" }
+    ],
+    "final_cta_title": "Let's talk about your video surveillance project",
+    "final_cta_desc": "We analyze your operation and propose the camera architecture, analytics and IoT integration that best fits — with no ties to a single brand.",
+    "final_cta_secondary": "View all solutions"
+  },
+  "newTicket": {
+    "eyebrow": "Client portal",
+    "title": "Open Ticket",
+    "subtitle": "Report a fault or request technical intervention. Complete the pre-check to speed up service.",
+    "loading": "Loading…",
+    "login_cta": "Send access link",
+    "login_desc": "Enter your municipality or institution's authorized contact email and we'll send you an access link.",
+    "login_placeholder": "you@institution.com",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email is authorized, we've sent you an access link to the Visionaria Help Center (expires in 15 minutes). If you don't receive it in a few minutes, message us on WhatsApp at +56 2 2925 4140.",
+    "logout": "Sign out",
+    "checklist_title": "Before continuing, verify the following",
+    "check_energia": "Site power supply is normal",
+    "check_siniestro": "You checked there's no obvious incident (fire, collision, flooding, etc.)",
+    "check_anomalia": "The issue has persisted for more than 1 hour",
+    "check_reinicio": "You already tried restarting the equipment/server",
+    "check_internet": "There's internet access on site",
+    "checklist_hint": "Check every item to continue.",
+    "field_tipo_falla": "Fault type",
+    "field_tipo_falla_placeholder": "Select an option",
+    "field_camaras_afectadas": "Number of cameras affected",
+    "field_falla_global": "This is a global system failure (affects everything, not just one point)",
+    "field_ubicacion": "Location or specific camera (optional)",
+    "field_subject": "Subject",
+    "field_description": "Description",
+    "submit": "Submit ticket",
+    "submitting": "Submitting…",
+    "success_title": "Ticket created",
+    "success_desc": "Your request #{ticketNumber} was registered successfully. We'll be in touch shortly.",
+    "view_status": "View my requests status",
+    "summary_priority": "Assigned priority",
+    "summary_status": "Status",
+    "summary_status_open": "Open",
+    "priority_low": "Low",
+    "priority_medium": "Medium",
+    "priority_high": "High",
+    "error_generic": "We couldn't submit your ticket. Please try again in a few minutes.",
+    "error_no_account": "Your account isn't linked to a registered client. Please contact support.",
+    "error_not_authorized": "Your account isn't authorized to create tickets. If you need to report an issue, contact your institution's authorized operator."
+  },
+  "intranet": {
+    "eyebrow": "Internal access",
+    "title": "Visionaria Intranet",
+    "subtitle": "Internal documents, links and resources for company staff.",
+    "loading": "Loading…",
+    "login_desc": "Enter your @visionaria.cl email to receive a sign-in link.",
+    "login_placeholder": "your.name@visionaria.cl",
+    "login_cta": "Send sign-in link",
+    "login_submitting": "Sending…",
+    "login_sent_title": "Check your email",
+    "login_sent_desc": "If your email belongs to the company domain, we sent you a sign-in link valid for 15 minutes.",
+    "error_generic": "Something went wrong loading the Intranet. Please try again.",
+    "logout": "Sign out",
+    "welcome": "Hi, {email}",
+    "no_links": "No content published yet.",
+    "evidencias_title": "Field evidence capture",
+    "evidencias_desc": "Capture and submit field photos · DPR Antofagasta",
+    "edit_content": "Edit content",
+    "back_to_intranet": "Back to the Intranet",
+    "admin_eyebrow": "Editing panel",
+    "admin_title": "Edit Intranet content",
+    "admin_subtitle": "Add, edit or remove the links and documents staff see. Changes publish instantly, with no code or Vercel/GitHub access needed.",
+    "admin_forbidden": "Your account doesn't have permission to edit Intranet content.",
+    "admin_label_placeholder": "Link name (e.g. Installation manual)",
+    "admin_url_placeholder": "https://...",
+    "admin_remove": "Remove",
+    "admin_add": "Add link",
+    "admin_save": "Save changes",
+    "admin_saving": "Saving…",
+    "admin_saved": "Changes published",
+    "admin_save_error": "Couldn't save. Please try again."
+  },
+  "continuity": {
+    "eyebrow": "Notice to institutional clients",
+    "title": "A new standard for support and operational continuity of your systems",
+    "subtitle": "We are formalizing our single support channel, reinforcing traceability, and proposing preventive management of the continuity of critical security platforms.",
+    "meta_ref_label": "Reference",
+    "meta_ref_value": "Notice No. CM2909011",
+    "meta_date_label": "Place and date",
+    "meta_date_value": "Santiago, Sep 1, 2026",
+    "meta_effective_label": "Effective date",
+    "meta_effective_value": "Oct 1, 2026",
+    "meta_portal_label": "Support portal",
+    "intro_p1": "When a security platform is in operation, its continuity doesn't depend on a single piece of equipment — it depends on the state of cameras, servers, storage, communications networks, power, UPS units, batteries, software, licenses, configurations, and the ability to detect and address degradation in time.",
+    "intro_p2": "That's why we're taking an important step: organizing how we receive, log, and manage technical requests, while helping each institution clearly distinguish what falls under warranty, what falls under support, and what requires a formal maintenance and operational-continuity service.",
+    "s1_eyebrow": "1 · Attention and traceability",
+    "s1_title": "The Support Portal becomes our single official channel",
+    "s1_b1": "Starting October 1, 2026, any request requiring diagnosis, technical intervention, follow-up, or a committed timeline must be logged through the Visionaria Support Portal.",
+    "s1_b2": "The Portal lets you create and follow tickets, check their status, keep an auditable history, and associate every intervention with an authorized institutional user.",
+    "s1_b3": "Email, phone, and WhatsApp will continue to serve only as orientation and contingency channels. When a situation requires technical follow-up, it will only be formalized as a ticket.",
+    "s1_b4": "Credentials are individual. Access must not be shared between operators, since identifying who requests or authorizes an intervention is part of the service's traceability. Committed response times (SLA) will be counted from formally logged requests, within the scope of the applicable contract, purchase order, or in-force instrument.",
+    "s2_eyebrow": "2 · A more demanding regulatory context",
+    "s2_title": "Why we are strengthening this model now",
+    "s2_intro": "Video surveillance and public-security systems manage critical infrastructure for municipal operations and may also involve personal data processing. Chile's regulatory framework is raising the expected standard for security, traceability, and availability.",
+    "s2_b1": "Law No. 21.802, in force since August 12, 2026, strengthens municipal institutions in public security and regulates the use of surveillance technologies within a framework that safeguards personal data protection and privacy.",
+    "s2_b2": "Law No. 21.719, which takes effect on December 1, 2026, introduces security duties covering confidentiality, integrity, availability, and resilience of processing systems, as well as the ability to quickly restore availability after physical or technical incidents.",
+    "s2_b3": "The technical guidelines from the Undersecretariat for Crime Prevention (Subsecretaría de Prevención del Delito) for teleprotection systems consider preventive and corrective maintenance and service-level agreements as relevant elements for correct operation and continuity. These guidelines are a technical reference and should be applied according to the specific project and instrument. These rules and guidelines do not mean the law requires hiring Visionaria; they do reinforce the need for institutions to demonstrate how they manage the availability, maintenance, security, and recovery of the systems they use.",
+    "s3_eyebrow": "3 · Scope of service",
+    "s3_title": "Warranty, support, maintenance, and continuity are distinct concepts",
+    "scope_warranty_title": "Warranty",
+    "scope_warranty_body": "Covers defects and conditions defined in the contract, bidding documents, proposal, project acceptance, or manufacturer warranty. It does not, by itself, amount to an obligation to keep the system operational.",
+    "scope_support_title": "Technical support",
+    "scope_support_body": "Channels inquiries and incidents, logs the case, and enables follow-up. Committed timelines apply according to the current contract and the formally logged ticket.",
+    "scope_maintenance_title": "Maintenance",
+    "scope_maintenance_body": "Covers preventive and/or corrective tasks when expressly contracted: inspection, cleaning, adjustments, replacements, diagnosis, and recovery, according to scope.",
+    "scope_continuity_title": "Operational continuity",
+    "scope_continuity_body": "Integrates functional monitoring, prevention, maintenance, asset health management, response under agreed SLAs, traceability, and reporting to reduce downtime and operational risk.",
+    "s4_eyebrow": "4 · Risks and exclusions",
+    "s4_title": "Factors that require specific management",
+    "s4_intro": "As a general rule, and unless a contract, bidding documents, accepted proposal, warranty, purchase order, or in-force SLA expressly states otherwise, the following factors should not be confused with a warranty-covered defect or an automatically included maintenance obligation:",
+    "exclusion_lifecycle_title": "Lifecycle",
+    "exclusion_lifecycle_body": "Technological obsolescence, wear, UPS and battery degradation, end of manufacturer support, spare parts, or licenses. These are conditions to be managed through planned replacement and renewal.",
+    "exclusion_infra_title": "External infrastructure",
+    "exclusion_infra_body": "Interruptions or variations in power, telecommunications links, construction works, ducts, poles, fiber, or other third-party services, unless the contract specifically covers them.",
+    "exclusion_third_party_title": "Third-party intervention",
+    "exclusion_third_party_body": "Vandalism, theft, sabotage, acts of nature, unauthorized tampering, modifications of any kind, work by other contractors, or damage caused by third parties, plus environmental pollution, contamination, and dirt on physical devices — cleaning is only covered under strictly preventive and corrective maintenance services, not as part of the technical warranty.",
+    "exclusion_events_title": "Extraordinary events",
+    "exclusion_events_body": "Natural phenomena, accidents, or other external events. Their possible classification as force majeure must be assessed case by case under Article 45 of the Civil Code; it is never presumed automatically.",
+    "s5_eyebrow": "5 · Visionaria Operational Continuity Service",
+    "s5_title": "Operational continuity is managed before the failure happens",
+    "s5_intro": "A system can be out of warranty and still be critical to public safety. It can also be working while showing signs of degradation that need to be detected before they turn into prolonged downtime. For institutions that need permanent coverage, Visionaria has structured its Systems Operational Continuity Service, whose scope is defined contractually based on each client's criticality, infrastructure, location, and needs.",
+    "s5_plan_note": "Depending on the contracted plan, the service can include health and availability monitoring, preventive maintenance, corrective service, backup management (UPS and batteries), obsolescence tracking, escalation, SLA, incident history, reports, and technology-renewal recommendations.",
+    "pillar_monitor_title": "Monitor",
+    "pillar_monitor_body": "Health and availability.",
+    "pillar_prevent_title": "Prevent",
+    "pillar_prevent_body": "Maintenance and degradation.",
+    "pillar_detect_title": "Detect",
+    "pillar_detect_body": "Traceable alerts.",
+    "pillar_respond_title": "Respond",
+    "pillar_respond_body": "SLA-based response.",
+    "pillar_recover_title": "Recover",
+    "pillar_recover_body": "Restoration and verification.",
+    "pillar_document_title": "Document",
+    "pillar_document_body": "History and reports.",
+    "s5_cta_title": "Let's talk about your platform's continuity",
+    "s5_cta_body": "If your institution doesn't currently have an active maintenance or operational-continuity contract, we recommend requesting a formal review of your current situation. Our team can identify gaps, review critical assets, and propose a service that reduces downtime and provides a documented response to incidents.",
+    "s5_cta_contact": "Email: info@visionaria.cl · Phone: +56 22 9254140",
+    "s5_cta_button": "Request a coverage review",
+    "annex_eyebrow": "Annex",
+    "annex_title": "Support request mechanism",
+    "annex_intro": "This annex describes, operationally, how an authorized institutional operator creates a support request in the Portal, and how that request is processed until it becomes a ticket with its associated priority and response time.",
+    "annex_steps_title": "Step by step: how to create a request",
+    "step1_title": "Access the Portal.",
+    "step1_body": "The operator goes to www.visionaria.cl/es/soporte from any browser, with no need to install additional apps.",
+    "step2_title": "Sign in with a magic link.",
+    "step2_body": "They enter their authorized institutional email and receive a one-time access link valid for 15 minutes. There are no passwords to create, remember, or share.",
+    "step3_title": "Preliminary screening checklist.",
+    "step3_body": "Before enabling ticket creation, the system asks the operator to confirm basic conditions (normal power, no incident on site, anomaly lasting over an hour, equipment restarted, and verified internet access), to filter out trivial causes before escalating a formal request.",
+    "step4_title": "Report details.",
+    "step4_body": "Once past the checklist, the operator fills in the fault type, the specific location, whether it's a global failure, and, when applicable, the number of cameras or other affected assets.",
+    "step5_title": "Automatic priority calculation.",
+    "step5_body": "The Portal determines the ticket's priority using objective rules. The operator never assigns priority manually.",
+    "step6_title": "Ticket creation and traceability.",
+    "step6_body": "The request is logged as a formal ticket with an active SLA, immediately visible in the Portal's \"System Status\" section, and associated with the institutional user who created it.",
+    "annex_followup_title": "Follow-up, permissions, and other channels",
+    "follow_status_title": "Online follow-up",
+    "follow_status_body": "From \"System Status\" the operator can check active and overdue tickets and their history at any time, along with the reported availability of their systems.",
+    "follow_permissions_title": "Two access levels",
+    "follow_permissions_body": "Each institution defines which contacts hold operator permissions (can create tickets) and which only have view-only access, without the ability to create requests.",
+    "follow_whatsapp_title": "WhatsApp for orientation, not for logging",
+    "follow_whatsapp_body": "Remains available for quick questions only. Any request requiring diagnosis or formal follow-up is channeled through the Portal.",
+    "follow_operators_title": "Enabling operators",
+    "follow_operators_body": "Adding, removing, or modifying authorized operators is managed through the institution's Visionaria account executive.",
+    "s6_eyebrow": "6 · Transparency",
+    "s6_title": "Contractual scope of this notice",
+    "s6_body": "This notice formalizes Visionaria's service model and explains its approach to operational continuity. It does not unilaterally modify contracts, bidding documents, purchase orders, warranties, accepted proposals, or in-force SLAs; in case of discrepancy, the applicable contractual instrument prevails. Each client's actual coverage — including hours, response times, maintenance, spare parts, monitoring, and exclusions — will be as defined in their current or future instruments.",
+    "signature_body": "We want our clients to clearly know how to ask for help, what to expect from each service, and how we safeguard the continuity of a platform that matters to people's safety.",
+    "signature_role": "Sistemas de Seguridad y Tecnología SpA.",
+    "reference_framework": "REFERENCE FRAMEWORK · Ley 21.802 · Ley 21.719 · Chilean Civil Code, Art. 45 · SPD · OOTT Teleprotection Systems"
   }
 }

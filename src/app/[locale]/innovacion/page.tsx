@@ -5,6 +5,7 @@ import Link from 'next/link';
 export default async function InnovacionPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'innovation' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
   const pillars = [
     { icon: FlaskConical, title: t('rd_title'), desc: t('rd_desc'), accent: '#F09422', iconBg: 'rgba(240,148,34,0.12)', href: null },
@@ -36,7 +37,7 @@ export default async function InnovacionPage({ params }: { params: Promise<{ loc
                 <p className="text-slate-400 leading-relaxed">{desc}</p>
                 {href && (
                   <p className="text-sm font-semibold mt-auto" style={{ color: accent }}>
-                    Ver más →
+                    {t('learn_more')}
                   </p>
                 )}
               </div>

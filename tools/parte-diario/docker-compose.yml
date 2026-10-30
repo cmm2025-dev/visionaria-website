@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: parte
+      POSTGRES_PASSWORD: ${PARTE_DB_PASSWORD:?Define PARTE_DB_PASSWORD en .env}
+      POSTGRES_DB: parte
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parte -d parte"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Sin "ports": la base de datos solo se ve desde el contenedor del servicio.
+
+  parte:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      PARTE_DB: postgresql://parte:${PARTE_DB_PASSWORD}@db:5432/parte
+      PARTE_COMUNAS: /etc/parte-diario/comunas.json
+      PARTE_TRABAJO: /var/lib/parte-diario
+    volumes:
+      - ./comunas.json:/etc/parte-diario/comunas.json:ro
+      - trabajo:/var/lib/parte-diario
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
+
+volumes:
+  pgdata:
+  trabajo:

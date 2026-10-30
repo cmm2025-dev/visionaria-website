@@ -33,7 +33,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           title={t('hero_title')}
           subtitle={t('hero_subtitle')}
           cta={t('hero_cta')}
-          cta2={t('hero_cta2')}
           locale={locale}
           contact={n('contact')}
         />
@@ -46,7 +45,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <SurveillanceDeck />
 
       {/* Manifesto */}
-      <Manifesto />
+      <Manifesto locale={locale} />
 
       {/* Stats */}
       <section className="border-b" style={{ background: 'rgba(240,148,34,0.05)', borderColor: 'var(--border)' }}>
@@ -81,7 +80,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Video demo */}
-      <VideoDemo videoSrc="IfCDJXEi-w4" locale={locale} />
+      <VideoDemo videoSrc="IfCDJXEi-w4" poster="/dafr-loop/frame-1.jpg" locale={locale} />
 
 
       {/* CTA band */}

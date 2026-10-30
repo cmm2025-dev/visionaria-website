@@ -157,7 +157,7 @@ export async function POST(req: Request) {
   }
 
   // Corporate address as fallback so a missing env var never silently drops leads.
-  const to = process.env.CONTACT_TO_EMAIL ?? 'info_web@visionaria.cl';
+  const to = process.env.CONTACT_TO_EMAIL ?? 'info@visionaria.cl';
 
   // Constructed per-request: a module-scope `new Resend()` throws at import time when the
   // key is absent, which breaks `next build` during page-data collection.

@@ -16,7 +16,9 @@ const csp = [
   "media-src 'self' blob:",
   "font-src 'self'",
   "frame-src 'self' https://www.youtube-nocookie.com",
-  "connect-src 'self'",
+  // api/content.dropboxapi.com: Evidencias de Terreno uploads go straight from the browser to
+  // Dropbox (never through our own server) so they aren't bound by Vercel's serverless body-size cap.
+  "connect-src 'self' https://api.dropboxapi.com https://content.dropboxapi.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -39,7 +41,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }];
+    return [
+      { source: '/(.*)', headers: securityHeaders },
+      // Evidencias de Terreno stamps each photo with the phone's GPS position; geolocation stays
+      // blocked everywhere else. Later entries override earlier ones for the same header key.
+      {
+        source: '/api/evidencias/:path*',
+        headers: [{ key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' }],
+      },
+    ];
   },
 };
 

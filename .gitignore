@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# parte diario service: local secrets, site config and work files
+/tools/parte-diario/.env
+!/tools/parte-diario/.env.ejemplo
+/tools/parte-diario/comunas.json
+/tools/parte-diario/trabajo/
+__pycache__/

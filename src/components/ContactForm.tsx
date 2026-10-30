@@ -12,6 +12,7 @@ interface ContactFormProps {
     send: string;
     success: string;
     error: string;
+    sending: string;
   };
 }
 
@@ -120,7 +121,7 @@ export default function ContactForm({ labels }: ContactFormProps) {
         style={{ background: 'var(--accent)', color: '#1E1B18' }}
       >
         {status === 'loading'
-          ? <><Loader2 size={16} className="animate-spin" /> Enviando…</>
+          ? <><Loader2 size={16} className="animate-spin" /> {labels.sending}</>
           : <><Send size={16} /> {labels.send}</>
         }
       </button>

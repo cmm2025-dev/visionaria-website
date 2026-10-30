@@ -5,6 +5,7 @@ import ContactForm from '@/components/ContactForm';
 export default async function ContactoPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
+  const c = await getTranslations({ locale, namespace: 'common' });
 
   const info = [
     { icon: Phone, label: t('phone_title'), value: '+56 2 2925 4140' },
@@ -22,6 +23,7 @@ export default async function ContactoPage({ params }: { params: Promise<{ local
     send: t('send'),
     success: t('success'),
     error: t('error_sending'),
+    sending: t('sending'),
   };
 
   return (
