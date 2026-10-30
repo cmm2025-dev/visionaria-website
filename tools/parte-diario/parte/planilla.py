@@ -1,6 +1,8 @@
 """La hoja «Parte diario»: qué se escribe en cada fila y cómo se lee lo que hay."""
 import datetime
 import math
+import re
+import urllib.parse
 
 HOJA = 'Parte diario'
 FILA_INICIO, FILA_FIN = 5, 3004          # filas de datos (1-based), según la planilla
@@ -103,6 +105,32 @@ def escribir_filas(doc, esperado):
         for c, v in enumerate(esperado.get(f, vacio), start=COL_B):
             if v == '':
                 hoja.getCellByPosition(c, f - 1).clearContents(1 | 2 | 4 | 16)  # VALUE|DATETIME|STRING|FORMULA
+
+
+ENLACE = re.compile(r'^=HYPERLINK\("[^"]*";(.*)\)$', re.S)
+
+
+def url_dropbox(ruta):
+    """Enlace web a la foto: abre la vista previa en Dropbox para quien tenga acceso a la carpeta."""
+    carpeta, _, nombre = ruta.rpartition('/')
+    return 'https://www.dropbox.com/home%s?preview=%s' % (urllib.parse.quote(carpeta), urllib.parse.quote(nombre))
+
+
+def enlazar_fotos(doc, enlaces, filas):
+    """Convierte I (Nombre de la foto) en hipervínculo a la foto en Dropbox, conservando la fórmula de la planilla.
+
+    enlaces: {fila: ruta de la foto}. Las demás filas de «filas» vuelven a la fórmula sin enlace."""
+    hoja = doc.Sheets.getByName(HOJA)
+    for f in filas:
+        celda = hoja.getCellByPosition(8, f - 1)
+        formula = celda.getFormula()
+        m = ENLACE.match(formula)
+        original = '=' + m.group(1) if m else formula
+        if not original.startswith('='):
+            continue  # alguien reemplazó la fórmula por un valor: no se toca
+        nueva = '=HYPERLINK("%s";%s)' % (url_dropbox(enlaces[f]), original[1:]) if f in enlaces else original
+        if nueva != formula:
+            celda.setFormula(nueva)
 
 
 def leer_calculados(doc, filas):

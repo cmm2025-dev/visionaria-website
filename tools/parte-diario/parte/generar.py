@@ -120,6 +120,9 @@ def generar_comuna(dbx, office, conn, c, trabajo, reposo_min=10, resolucion=None
         registros = {r['fila']: r for r in db.registros_de(conn, c['comuna'])}
         esperado = {f: planilla.valores(r, coords) for f, r in registros.items()}
         planilla.escribir_filas(doc, esperado)
+        fotos = db.fotos_de(conn, c['comuna'])
+        planilla.enlazar_fotos(doc, {f: fotos[r['id']] for f, r in registros.items()
+                                     if r['id'] in fotos and not r['anulado_en']}, esperado)
         calculados = planilla.leer_calculados(doc, esperado)
         office.guardar_xlsx(doc, salida)
     finally:

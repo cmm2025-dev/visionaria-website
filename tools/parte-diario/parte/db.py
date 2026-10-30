@@ -78,6 +78,15 @@ def registros_de(conn, nombre):
     return conn.execute('SELECT * FROM registros WHERE comuna=%s ORDER BY fila', (nombre,)).fetchall()
 
 
+def fotos_de(conn, nombre):
+    """{registro_id: ruta de su primera foto} de los registros de la comuna que tienen foto en Dropbox."""
+    filas = conn.execute('''SELECT DISTINCT ON (f.registro_id) f.registro_id, f.ruta FROM fotos f
+                            JOIN registros r ON r.id = f.registro_id
+                            WHERE r.comuna=%s AND f.ruta IS NOT NULL AND f.ruta <> '' ORDER BY f.registro_id, f.id''',
+                         (nombre,)).fetchall()
+    return {r['registro_id']: r['ruta'] for r in filas}
+
+
 def buscar(conn, id_planilla):
     return conn.execute('SELECT * FROM registros WHERE id_planilla=%s', (id_planilla,)).fetchone()
 
