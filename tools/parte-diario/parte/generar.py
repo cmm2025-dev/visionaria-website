@@ -73,7 +73,6 @@ def generar_comuna(dbx, office, conn, c, trabajo, reposo_min=10, resolucion=None
 
     doc = office.abrir(entrada)
     try:
-        coords = planilla.coordenadas(doc)
         actual = planilla.leer_filas(doc)
         base = {int(k): v for k, v in (c['filas_generadas'] or {}).items()}
         anuladas, nuevas, cambiadas, borradas = planilla.comparar(actual, base)
@@ -118,8 +117,10 @@ def generar_comuna(dbx, office, conn, c, trabajo, reposo_min=10, resolucion=None
             db.evento(conn, 'importado', c['comuna'], r['id'], detalle='fila %d' % fila)
 
         registros = {r['fila']: r for r in db.registros_de(conn, c['comuna'])}
-        esperado = {f: planilla.valores(r, coords) for f, r in registros.items()}
+        esperado = {f: planilla.valores(r) for f, r in registros.items()}
         planilla.escribir_filas(doc, esperado)
+        planilla.preparar_extra(doc)
+        planilla.escribir_extra(doc, {f: planilla.extra(r) for f, r in registros.items()})
         fotos = db.fotos_de(conn, c['comuna'])
         planilla.enlazar_fotos(doc, {f: fotos[r['id']] for f, r in registros.items()
                                      if r['id'] in fotos and not r['anulado_en']}, esperado)

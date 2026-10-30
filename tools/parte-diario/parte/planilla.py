@@ -1,6 +1,6 @@
 """La hoja «Parte diario»: qué se escribe en cada fila y cómo se lee lo que hay."""
+import contextlib
 import datetime
-import math
 import re
 import urllib.parse
 
@@ -8,6 +8,10 @@ HOJA = 'Parte diario'
 FILA_INICIO, FILA_FIN = 5, 3004          # filas de datos (1-based), según la planilla
 COL_B, COL_H = 1, 7                      # columnas de ingreso B..H (0-based: 1..7)
 FECHA_BASE = datetime.date(1899, 12, 30)  # día 0 de las fechas de Excel y LibreOffice
+# Columnas que agrega el sistema a la derecha de la planilla (L..N). Solo las escribe el servicio: coordenadas sueltas
+# para exportar el recorrido a KML/KMZ, y quién registró.
+COL_EXTRA = 11
+EXTRA = (('Latitud', 12), ('Longitud', 12), ('Registró', 30))
 
 
 def serial(fecha):
@@ -21,49 +25,67 @@ def fecha_de(valor):
     return None
 
 
-def distancia_m(lat1, lon1, lat2, lon2):
-    r = 6371000.0
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dp, dl = p2 - p1, math.radians(lon2 - lon1)
-    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * r * math.asin(math.sqrt(a))
-
-
-def detalle(r, coords_punto):
-    """Observación del técnico, ubicación y quién registró."""
+def detalle(r):
+    """Solo la observación del técnico; la ubicación y quién registró van en sus propias columnas (L..N)."""
     if r['origen'] == 'manual':
         return r.get('detalle_manual') or ''
-    partes = []
-    if (r.get('observacion') or '').strip():
-        partes.append(r['observacion'].strip())
-    if r.get('gps_lat') is not None:
-        etiqueta = 'Ubicación al registrar' if r.get('gps_origen') == 'gallery' else 'GPS'
-        partes.append('%s %.5f, %.5f ±%d m' % (etiqueta, r['gps_lat'], r['gps_lon'], r.get('gps_precision') or 0))
-        if coords_punto:
-            d = distancia_m(r['gps_lat'], r['gps_lon'], *coords_punto)
-            partes.append('a %d m del punto KMZ' % round(d) if d < 1000 else
-                          'a %s km del punto KMZ' % ('%.1f' % (d / 1000)).replace('.', ','))
-    else:
-        partes.append('Sin GPS')
-    usuario = (r.get('registrado_por') or '').split('@')[0]
-    if usuario:
-        partes.append('registró ' + usuario)
-    return ' · '.join(partes)
+    return (r.get('observacion') or '').strip()
 
 
-def valores(r, coords):
+def valores(r):
     """Los siete valores B..H de un registro, con los tipos que escribe y lee UNO (número o texto)."""
-    return [float(serial(r['fecha'])), r['punto'], r['hecho'], r.get('ejecuto') or '', detalle(r, coords.get(r['punto'])),
+    return [float(serial(r['fecha'])), r['punto'], r['hecho'], r.get('ejecuto') or '', detalle(r),
             r.get('foto') or '', 'Anulada' if r.get('anulado_en') else '']
 
 
-def coordenadas(doc):
-    """Latitud y longitud de cada punto, desde la hoja «Puntos»."""
-    coords = {}
-    for f in doc.Sheets.getByName('Puntos').getCellRangeByName('A2:E400').getDataArray():
-        if f[0] and isinstance(f[3], float) and isinstance(f[4], float) and (f[3] or f[4]):
-            coords[f[0]] = (f[3], f[4])
-    return coords
+def extra(r):
+    """Latitud, Longitud y Registró (L..N). Vacías si no hay GPS o el registro se escribió a mano."""
+    sin_gps = r.get('gps_lat') is None or r.get('gps_lon') is None
+    return ['' if sin_gps else float(r['gps_lat']), '' if sin_gps else float(r['gps_lon']), r.get('registrado_por') or '']
+
+
+@contextlib.contextmanager
+def sin_proteccion(hoja):
+    """La hoja viene protegida sin contraseña (se protege para que no se escriba en lo gris). Se desprotege mientras
+    el sistema escribe y se vuelve a proteger; LibreOffice conserva lo que la protección permite (filtrar, anchos)."""
+    protegida = hoja.isProtected()
+    if protegida:
+        hoja.unprotect('')   # con contraseña esto falla, y la generación avisa del error en vez de escribir a medias
+    try:
+        yield
+    finally:
+        if protegida:
+            hoja.protect('')
+
+
+def preparar_extra(doc):
+    """Agrega L..N con el formato de K (encabezado y celdas grises) y extiende el filtro hasta N. Solo la primera vez."""
+    hoja = doc.Sheets.getByName(HOJA)
+    if hoja.getCellByPosition(COL_EXTRA, FILA_INICIO - 2).getString() == EXTRA[0][0]:
+        return
+    fin = COL_EXTRA + len(EXTRA) - 1
+    with sin_proteccion(hoja):
+        modelo = hoja.getCellRangeByPosition(COL_EXTRA - 1, FILA_INICIO - 2, COL_EXTRA - 1, FILA_FIN - 1).RangeAddress
+        for i, (titulo, ancho) in enumerate(EXTRA):
+            col = COL_EXTRA + i
+            destino = hoja.getCellByPosition(col, FILA_INICIO - 2).CellAddress
+            hoja.copyRange(destino, modelo)   # trae formato, bloqueo y fórmula de K; la fórmula se borra abajo
+            hoja.getCellByPosition(col, FILA_INICIO - 2).setString(titulo)
+            hoja.Columns.getByIndex(col).Width = ancho * 250   # 1/100 mm; ~ el ancho en caracteres de Excel
+        datos = hoja.getCellRangeByPosition(COL_EXTRA, FILA_INICIO - 1, fin, FILA_FIN - 1)
+        datos.clearContents(1 | 2 | 4 | 16)
+        coords = hoja.getCellRangeByPosition(COL_EXTRA, FILA_INICIO - 1, COL_EXTRA + 1, FILA_FIN - 1)
+        formatos, local = doc.NumberFormats, doc.CharLocale
+        clave = formatos.queryKey('0.000000', local, False)
+        coords.NumberFormat = clave if clave != -1 else formatos.addNew('0.000000', local)
+        rangos = doc.getPropertyValue('UnnamedDatabaseRanges')
+        if rangos.hasByTable(hoja.RangeAddress.Sheet):
+            rango = rangos.getByTable(hoja.RangeAddress.Sheet)
+            area = rango.DataArea
+            if area.EndColumn < fin:
+                area.EndColumn = fin
+                rango.DataArea = area
+                rango.AutoFilter = True
 
 
 def leer_filas(doc):
@@ -105,6 +127,23 @@ def escribir_filas(doc, esperado):
         for c, v in enumerate(esperado.get(f, vacio), start=COL_B):
             if v == '':
                 hoja.getCellByPosition(c, f - 1).clearContents(1 | 2 | 4 | 16)  # VALUE|DATETIME|STRING|FORMULA
+
+
+def escribir_extra(doc, extras):
+    """Escribe L..N ({fila: [lat, lon, registró]}); a diferencia de B..H, no se comparan: el sistema siempre las repone."""
+    if not extras:
+        return
+    hoja = doc.Sheets.getByName(HOJA)
+    ultima = max(extras)
+    vacio = [''] * len(EXTRA)
+    fin = COL_EXTRA + len(EXTRA) - 1
+    datos = tuple(tuple(extras.get(f, vacio)) for f in range(FILA_INICIO, ultima + 1))
+    with sin_proteccion(hoja):   # son celdas bloqueadas: UNO rechaza setDataArray en ellas con la hoja protegida
+        hoja.getCellRangeByPosition(COL_EXTRA, FILA_INICIO - 1, fin, ultima - 1).setDataArray(datos)
+        for f in range(FILA_INICIO, ultima + 1):
+            for c, v in enumerate(extras.get(f, vacio), start=COL_EXTRA):
+                if v == '':
+                    hoja.getCellByPosition(c, f - 1).clearContents(1 | 2 | 4 | 16)
 
 
 ENLACE = re.compile(r'^=HYPERLINK\("[^"]*";(.*)\)$', re.S)
