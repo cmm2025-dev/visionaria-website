@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeIntranetSession, isIntranetAdmin, isEvidenciasTech, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { decodeIntranetSession, isIntranetAdmin, isEvidenciasTech, isPanelViewer, INTRANET_SESSION_COOKIE } from '@/lib/session';
 
 export const runtime = 'nodejs';
 
@@ -11,5 +11,6 @@ export async function GET(req: NextRequest) {
     email: session.email,
     isAdmin: isIntranetAdmin(session.email),
     isEvidenciasTech: isEvidenciasTech(session.email),
+    isPanelViewer: isPanelViewer(session.email),
   });
 }

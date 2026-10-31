@@ -150,6 +150,12 @@ export function isIntranetAdmin(email: string): boolean {
   return parseEmailAllowlist(process.env.INTRANET_ADMIN_EMAILS ?? '').includes(email.trim().toLowerCase());
 }
 
+/** Who can open the executive panel: its own allowlist (env var), plus every intranet admin. */
+export function isPanelViewer(email: string): boolean {
+  const allowed = parseEmailAllowlist(process.env.INTRANET_PANEL_EMAILS ?? '');
+  return allowed.includes(email.trim().toLowerCase()) || isIntranetAdmin(email);
+}
+
 /** A short, explicit allowlist (env var) of field technicians authorized for Evidencias. */
 export function isEvidenciasTech(email: string): boolean {
   return parseEmailAllowlist(process.env.EVIDENCIAS_TECH_EMAILS ?? '').includes(email.trim().toLowerCase());

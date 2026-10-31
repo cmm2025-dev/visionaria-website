@@ -9,6 +9,7 @@
   parte resolver --comuna X --prevalece bd|planilla   decide sobre filas cambiadas a mano
   parte estado   --comuna X         lista las filas y lo que dice Control
   parte respaldar                   pg_dump a Dropbox
+  parte panel                       envía ahora el resumen al panel ejecutivo de la Intranet
 """
 import argparse
 import datetime
@@ -22,6 +23,7 @@ import time
 from . import db
 from .dropbox import Dropbox, DropboxError
 from .office import Office
+from .panel import Publicador
 
 log = logging.getLogger('parte')
 
@@ -85,6 +87,7 @@ def main(argv=None):
     p.add_argument('--por', required=True, help='correo de quien anula')
     p.add_argument('--motivo', required=True)
     sub.add_parser('respaldar')
+    sub.add_parser('panel')
     args = ap.parse_args(argv)
 
     conn = db.conectar()
@@ -107,6 +110,10 @@ def main(argv=None):
         for r in db.registros_de(conn, args.comuna):
             print('%s  fila %4d  %s  %-9s %-22s %-8s %s' % (r['id_planilla'], r['fila'], r['fecha'], r['punto'], r['hecho'][:22],
                                                            'Anulada' if r['anulado_en'] else '', r['control'] or '(sin generar)'))
+        return
+
+    if args.cmd == 'panel':
+        Publicador().publicar(conn)
         return
 
     dbx = Dropbox()
@@ -132,6 +139,7 @@ def main(argv=None):
     intervalo = int(os.environ.get('PARTE_INTERVALO') or 60)
     hora_respaldo = os.environ.get('PARTE_RESPALDO_HORA') or '03:30'
     ultimo_respaldo = None
+    panel = Publicador()
     log.info('Servicio iniciado: cada %ds. Comunas: %s', intervalo, ', '.join(c['comuna'] for c in db.comunas(conn)))
     while True:
         try:
@@ -141,6 +149,11 @@ def main(argv=None):
                     # Cierra la transacción de lectura que deja la pasada: si queda abierta durante la espera, now() se congela
                     # y recibido_en/actualizado_en del próximo ciclo saldrían con la hora de este.
                     conn.rollback()
+                    try:
+                        panel.publicar(conn)
+                    except Exception:
+                        conn.rollback()
+                        log.exception('El resumen del panel falló.')
                     hoy = datetime.date.today()
                     if ultimo_respaldo != hoy and datetime.datetime.now().strftime('%H:%M') >= hora_respaldo:
                         try:
