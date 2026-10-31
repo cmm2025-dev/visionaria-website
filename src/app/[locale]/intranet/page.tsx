@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil, Camera } from 'lucide-react';
+import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil, Camera, BarChart3, ChevronRight } from 'lucide-react';
 import IntranetLogin from '@/components/IntranetLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 
@@ -19,6 +19,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
   const [email, setEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEvidenciasTech, setIsEvidenciasTech] = useState(false);
+  const [isPanelViewer, setIsPanelViewer] = useState(false);
   const [links, setLinks] = useState<IntranetLink[]>([]);
   const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'error' | 'ready'>('loading');
 
@@ -33,6 +34,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
         setEmail(data.email);
         setIsAdmin(!!data.isAdmin);
         setIsEvidenciasTech(!!data.isEvidenciasTech);
+        setIsPanelViewer(!!data.isPanelViewer);
         const linksRes = await fetch('/api/intranet/content');
         if (cancelled) return;
         if (!linksRes.ok) return setStatus('error');
@@ -119,6 +121,23 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
                 </button>
               </div>
             </div>
+
+            {isPanelViewer && (
+              <Link
+                href={`/${locale}/intranet/panel`}
+                className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
+                style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+              >
+                <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
+                  <BarChart3 size={20} style={{ color: '#F09422' }} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-white font-semibold text-sm">{t('panel_title')}</p>
+                  <p className="text-slate-500 text-xs mt-0.5">{t('panel_desc')}</p>
+                </div>
+                <ChevronRight size={16} className="text-slate-500 shrink-0" />
+              </Link>
+            )}
 
             {isEvidenciasTech && (
               // This is a standalone HTML document served by a route handler, not a Next.js page --
