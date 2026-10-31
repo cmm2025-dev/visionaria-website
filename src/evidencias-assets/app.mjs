@@ -240,18 +240,25 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-settings]').forEach(b=>b.addEventListener('click',openSettings));
 document.querySelectorAll('.close-dialog').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
-// Dictado por voz: el reconocimiento de Chrome (el de Google) escribe en «Observación» lo que se dice. Una frase por toque: en Android el modo
-// continuo devuelve cada frase repetida y acumulada, así que se escucha hasta la pausa y el texto se rearma completo en cada resultado.
-// Cada dictado dura como máximo 30 segundos; el botón muestra los que quedan.
-function setupDictation(){const Rec=window.SpeechRecognition||window.webkitSpeechRecognition,btn=$('dictate'),note=$('note');if(!Rec)return;btn.hidden=false;let rec=null,base='',dicho='',reloj=null,cortado=false;const LIMITE=30;
+// Dictado por voz: el reconocimiento de Chrome (el de Google) escribe en «Observación» lo que se dice. En Android el modo continuo devuelve
+// cada frase repetida y acumulada, así que se escucha frase a frase: cuando Chrome corta (una pausa, o unos 10 s), se vuelve a escuchar solo
+// hasta que el técnico toca el botón o se cumplen 30 s. El texto de cada frase se rearma completo en cada resultado; el botón muestra los segundos.
+function setupDictation(){const Rec=window.SpeechRecognition||window.webkitSpeechRecognition,btn=$('dictate'),note=$('note');if(!Rec)return;btn.hidden=false;
+  const LIMITE=30;let rec=null,activo=false,base='',dicho='',reloj=null,quedan=0,error='';
   const junta=(antes,frase)=>{if(!frase)return antes;frase=antes?frase:frase.charAt(0).toUpperCase()+frase.slice(1);return((antes?antes+' ':'')+frase).slice(0,note.maxLength);};
-  const stop=()=>{clearInterval(reloj);btn.classList.remove('listening');btn.setAttribute('aria-pressed','false');btn.removeAttribute('data-left');rec=null;};
-  btn.addEventListener('click',()=>{if(rec){rec.stop();return;}rec=new Rec();rec.lang='es-CL';rec.interimResults=true;rec.continuous=false;base=note.value.trim();dicho='';
+  const terminar=aviso=>{activo=false;clearInterval(reloj);btn.classList.remove('listening');btn.setAttribute('aria-pressed','false');btn.removeAttribute('data-left');note.dispatchEvent(new Event('input',{bubbles:true}));if(aviso)toast(aviso);};
+  const escuchar=()=>{rec=new Rec();rec.lang='es-CL';rec.interimResults=true;rec.continuous=false;dicho='';
     rec.onresult=e=>{dicho=Array.from(e.results,r=>r[0].transcript.replace(/\s+/g,' ').trim()).reduce((acc,t)=>!acc||t.toLowerCase().startsWith(acc.toLowerCase())?t:acc.toLowerCase().startsWith(t.toLowerCase())?acc:acc+' '+t,'');note.value=junta(base,dicho);};
-    rec.onerror=e=>{toast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Permite el micrófono para dictar.':e.error==='no-speech'?'No se escuchó nada. Vuelve a intentarlo.':e.error==='network'?'El dictado necesita conexión a internet.':'No se pudo dictar: '+e.error);};
-    rec.onend=()=>{note.value=junta(base,dicho);if(cortado)toast('El dictado se detuvo a los '+LIMITE+' segundos. Toca el micrófono para seguir.');note.dispatchEvent(new Event('input',{bubbles:true}));stop();};
-    try{rec.start();btn.classList.add('listening');btn.setAttribute('aria-pressed','true');cortado=false;let quedan=LIMITE;btn.dataset.left=quedan;
-      reloj=setInterval(()=>{quedan--;btn.dataset.left=quedan;if(quedan<=0&&rec){cortado=true;clearInterval(reloj);rec.stop();}},1000);}catch(error){toast('No se pudo iniciar el dictado: '+error.message);stop();}});}
+    rec.onerror=e=>{error=e.error;};
+    rec.onend=()=>{base=junta(base,dicho);note.value=base;rec=null;if(!activo)return;
+      if(error&&error!=='no-speech'&&error!=='aborted')return terminar(error==='not-allowed'||error==='service-not-allowed'?'Permite el micrófono para dictar.':error==='network'?'El dictado necesita conexión a internet.':'No se pudo dictar: '+error);
+      if(quedan<=0)return terminar('El dictado se detuvo a los '+LIMITE+' segundos. Toca el micrófono para seguir.');
+      error='';try{escuchar();}catch(e){terminar('No se pudo seguir dictando: '+e.message);}};
+    rec.start();};
+  btn.addEventListener('click',()=>{if(activo){terminar();if(rec)rec.stop();return;}
+    base=note.value.trim();error='';quedan=LIMITE;activo=true;btn.dataset.left=quedan;btn.classList.add('listening');btn.setAttribute('aria-pressed','true');
+    reloj=setInterval(()=>{quedan--;btn.dataset.left=Math.max(quedan,0);if(quedan<=0){clearInterval(reloj);if(rec)rec.stop();}},1000);
+    try{escuchar();}catch(e){terminar('No se pudo iniciar el dictado: '+e.message);}});}
 setupDictation();
 $('commune').addEventListener('change',()=>{$('point-search').value='';$('point').value='';loadPoints();});$('point-search').addEventListener('input',loadPoints);
 for(const id of ['point','date','activity'])$(id).addEventListener('change',renderContext);
