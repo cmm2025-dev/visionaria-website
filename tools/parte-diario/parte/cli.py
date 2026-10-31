@@ -138,6 +138,9 @@ def main(argv=None):
             with Office() as office:
                 for _ in range(50):
                     pasada(dbx, office, conn)
+                    # Cierra la transacción de lectura que deja la pasada: si queda abierta durante la espera, now() se congela
+                    # y recibido_en/actualizado_en del próximo ciclo saldrían con la hora de este.
+                    conn.rollback()
                     hoy = datetime.date.today()
                     if ultimo_respaldo != hoy and datetime.datetime.now().strftime('%H:%M') >= hora_respaldo:
                         try:
