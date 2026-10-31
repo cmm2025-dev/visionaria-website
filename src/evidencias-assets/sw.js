@@ -1,4 +1,4 @@
-const CACHE='visionaria-evidence-v5';
+const CACHE='visionaria-evidence-v6';
 const FILES=['/api/evidencias/app','/api/evidencias/assets/styles.css','/api/evidencias/assets/app.mjs','/api/evidencias/assets/core.mjs','/api/evidencias/assets/storage.mjs','/api/evidencias/assets/dropbox-client.mjs','/api/evidencias/assets/catalogue.json','/api/evidencias/assets/icon.svg','/api/evidencias/assets/manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
