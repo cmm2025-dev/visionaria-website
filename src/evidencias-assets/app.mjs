@@ -240,6 +240,15 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-settings]').forEach(b=>b.addEventListener('click',openSettings));
 document.querySelectorAll('.close-dialog').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+// Dictado por voz: el reconocimiento de Chrome (el de Google) escribe en «Observación» lo que se dice. Cada frase final se agrega al texto que ya había.
+function setupDictation(){const Rec=window.SpeechRecognition||window.webkitSpeechRecognition,btn=$('dictate'),note=$('note');if(!Rec)return;btn.hidden=false;let rec=null,base='';
+  const stop=()=>{btn.classList.remove('listening');btn.setAttribute('aria-pressed','false');rec=null;};
+  btn.addEventListener('click',()=>{if(rec){rec.stop();return;}rec=new Rec();rec.lang='es-CL';rec.interimResults=true;rec.continuous=true;base=note.value.trim();
+    rec.onresult=e=>{let final='',interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}if(final){base=(base?base+' ':'')+final.trim();base=base.charAt(0).toUpperCase()+base.slice(1);}note.value=((base?base+' ':'')+interim.trim()).slice(0,note.maxLength);};
+    rec.onerror=e=>{toast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Permite el micrófono para dictar.':e.error==='no-speech'?'No se escuchó nada. Vuelve a intentarlo.':e.error==='network'?'El dictado necesita conexión a internet.':'No se pudo dictar: '+e.error);};
+    rec.onend=()=>{note.value=base.slice(0,note.maxLength);note.dispatchEvent(new Event('input',{bubbles:true}));stop();};
+    try{rec.start();btn.classList.add('listening');btn.setAttribute('aria-pressed','true');}catch(error){toast('No se pudo iniciar el dictado: '+error.message);stop();}});}
+setupDictation();
 $('commune').addEventListener('change',()=>{$('point-search').value='';$('point').value='';loadPoints();});$('point-search').addEventListener('input',loadPoints);
 for(const id of ['point','date','activity'])$(id).addEventListener('change',renderContext);
 $('take-photo').addEventListener('click',()=>{try{validateCapture(meta(),points);formError('');pendingFix=requestFix();$('camera-input').click();}catch(e){formError(e.message)}});
