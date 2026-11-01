@@ -2,12 +2,13 @@ import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,f
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix} from './media.mjs';
+import {setupLevantamiento,showLevantamiento} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
 const chileDateTime=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
 let pendingFix=null,gpsDeniedWarned=false;
 const requestFix=()=>sharedRequestFix(()=>{if(!gpsDeniedWarned){gpsDeniedWarned=true;toast('Ubicación desactivada: las fotos se guardarán marcadas "Sin GPS".');}});
-let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',parteQueue:null};
+let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',parteQueue:null,levantamientoQueue:null};
 // Only the last "Ejecutó" choice is remembered on the device; name suffixes are fixed by the planilla.
 let lastExecutor='';try{lastExecutor=JSON.parse(localStorage.getItem(KEY)||'{}').executor||''}catch{}
 let points=[],photos=[],draft=[],filter='all',busy=false,toastTimer,previewURLs=[],recordURLs=[],largeURL,storageReady=false;
@@ -101,7 +102,7 @@ function renderDraft(){
   $('submit-detail').textContent='Primero se guarda aquí; luego se confirma la recepción en Dropbox.';
 }
 function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
-function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
+function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';$('levantamiento-view').hidden=view!=='levantamiento';if(view==='levantamiento')showLevantamiento();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
 async function refresh(){photos=await getAll();$('nav-count').textContent=photos.filter(p=>p.blob).length;renderRecords();renderDraft();}
 async function collectFiles(list,source){formError('');
   const slow=setTimeout(()=>toast('Obteniendo ubicación GPS…'),1500);const fix=await(pendingFix??requestFix());clearTimeout(slow);pendingFix=null;
@@ -246,9 +247,10 @@ async function init(){
   $('executor').innerHTML='<option value="">Selecciona quién ejecutó</option>'+EXECUTORS.map(x=>`<option>${esc(x)}</option>`).join('');if(EXECUTORS.includes(lastExecutor))$('executor').value=lastExecutor;
   $('activity').innerHTML='<option value="">Selecciona una actividad</option>'+['Etapa','Novedad'].map(type=>`<optgroup label="${type==='Etapa'?'Etapas de obra':'Novedades'}">${ACTIVITIES.filter(a=>a.type===type).map(a=>`<option>${esc(a.label)}</option>`).join('')}</optgroup>`).join('');
   network();
-  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
+  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
+  setupLevantamiento({toast,config:()=>config}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));
   if('serviceWorker'in navigator)navigator.serviceWorker.register('/api/evidencias/assets/sw.js').catch(()=>{});
 }
 init();

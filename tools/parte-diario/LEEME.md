@@ -69,6 +69,7 @@ Actualizar: `git pull && docker compose up -d --build`. Registro: `docker compos
 ./parte.sh resolver --comuna Tocopilla --prevalece bd|planilla
 ./parte.sh generar                                   # forzar una regeneración
 ./parte.sh respaldar                                 # pg_dump a Dropbox ahora
+./parte.sh levantamiento [--forzar ANT-006 …]          # una pasada del levantamiento DEC-020 ahora
 ```
 
 ## La app (Vercel)
@@ -79,6 +80,27 @@ mientras está en modo piloto. Cuando la variable está definida, las novedades 
 
 Lo que el servicio deja en la cola para la app: `<cola>/procesados/<registro>.resultado.json` (fila e ID
 asignados) y `<cola>/estado/<Comuna>.json` (todas las filas con su Control, tras cada generación).
+
+## Levantamiento en terreno (formulario DEC-020)
+
+La pantalla «Levantamiento» de la app pide exactamente las columnas amarillas S..BU de la hoja «Levantamiento» del
+formulario: su contrato de datos es `src/evidencias-assets/levantamiento.json` (con una copia en
+`parte/levantamiento_contrato.json`), generado desde el propio formulario. Si el formulario cambia:
+
+```bash
+python3 tools/parte-diario/contrato_levantamiento.py <formulario.xlsx> \
+    src/evidencias-assets/levantamiento.json tools/parte-diario/parte/levantamiento_contrato.json
+```
+
+La app guarda cada ficha en el teléfono a medida que se llena y, con señal, sube las fotos guiadas a
+`<raíz>/<Comuna>/Fotos/Levantamiento/<código>/` y un JSON por envío a `EVIDENCIAS_LEVANTAMIENTO_COLA/<Comuna>/`.
+El servicio guarda todos los envíos, deja vigente el más reciente de cada punto y escribe S..BU en la fila de su
+código; las columnas calculadas (ángulos LPR y «Control») las sigue calculando la planilla, y la columna
+«Fotos (Dropbox)» enlaza la carpeta del punto. Una fila cambiada a mano no se pisa: queda un aviso en
+`<cola>/AVISOS/` hasta decidir con `./parte.sh levantamiento --forzar <código>`.
+
+Se activa con `PARTE_LEVANTAMIENTO_PLANILLA` y `PARTE_LEVANTAMIENTO_COLA` en `.env` (y `EVIDENCIAS_LEVANTAMIENTO_COLA`
+en Vercel, con la misma carpeta de cola).
 
 ## Prueba sin Dropbox ni servidor
 

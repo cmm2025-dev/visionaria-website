@@ -63,3 +63,34 @@ CREATE TABLE IF NOT EXISTS eventos (
   quien       text,
   detalle     jsonb
 );
+
+-- Levantamiento en terreno (formulario DEC-020): un punto, un levantamiento vigente; cada envío queda guardado.
+CREATE TABLE IF NOT EXISTS levantamientos (
+  codigo          text PRIMARY KEY,            -- código del punto (columna A del formulario)
+  comuna          text NOT NULL,
+  valores         jsonb NOT NULL,              -- {columna: valor} de S..BU, ya validados contra el contrato
+  fotos           jsonb NOT NULL DEFAULT '[]', -- [{toma, nombre, ruta}]
+  gps             jsonb,                       -- la coordenada tal como la dio el teléfono, con su precisión
+  registrado_por  text,
+  envio_id        text NOT NULL,               -- el envío que dejó estos valores
+  guardado_en     timestamptz NOT NULL,        -- cuándo lo guardó el técnico; gana el más reciente
+  recibido_en     timestamptz NOT NULL DEFAULT now(),
+  actualizado_en  timestamptz NOT NULL DEFAULT now(),
+  control         text                         -- lo que dijo «Control» en la última generación
+);
+
+CREATE TABLE IF NOT EXISTS levantamiento_envios (
+  id           text PRIMARY KEY,               -- id de envío de la app
+  codigo       text NOT NULL,
+  contenido    jsonb NOT NULL,                 -- el JSON tal como llegó
+  estado       text NOT NULL,                  -- vigente / reemplazado / anterior (llegó después uno más nuevo)
+  recibido_en  timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS planilla_levantamiento (
+  id              integer PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  rev_generada    text,
+  generada_en     timestamptz,
+  filas_generadas jsonb,                       -- {codigo: [S..BU]} tal como quedó escrito; detecta ediciones a mano
+  ultimo_aviso    text
+);

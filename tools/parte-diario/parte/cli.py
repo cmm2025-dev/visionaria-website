@@ -10,6 +10,7 @@
   parte estado   --comuna X         lista las filas y lo que dice Control
   parte respaldar                   pg_dump a Dropbox
   parte panel                       envía ahora el resumen al panel ejecutivo de la Intranet
+  parte levantamiento [--forzar COD ...]  una pasada del levantamiento DEC-020; --forzar reescribe filas cambiadas a mano
 """
 import argparse
 import datetime
@@ -88,6 +89,8 @@ def main(argv=None):
     p.add_argument('--motivo', required=True)
     sub.add_parser('respaldar')
     sub.add_parser('panel')
+    p = sub.add_parser('levantamiento')
+    p.add_argument('--forzar', nargs='*', default=[], metavar='CODIGO')
     args = ap.parse_args(argv)
 
     conn = db.conectar()
@@ -125,6 +128,14 @@ def main(argv=None):
             pasada(dbx, office, conn, args.comuna, generar_siempre=True,
                    resolucion='importar' if args.cmd == 'importar' else args.prevalece)
         return
+    if args.cmd == 'levantamiento':
+        from . import levantamiento
+        if not levantamiento.configurado():
+            sys.exit('Falta PARTE_LEVANTAMIENTO_PLANILLA o PARTE_LEVANTAMIENTO_COLA en .env.')
+        with Office() as office:
+            levantamiento.ingestar(dbx, conn)
+            levantamiento.generar(dbx, office, conn, trabajo(), 0, tuple(args.forzar))
+        return
     if args.cmd in ('ingestar', 'generar'):
         with Office() as office:
             if args.cmd == 'ingestar':
@@ -140,6 +151,10 @@ def main(argv=None):
     hora_respaldo = os.environ.get('PARTE_RESPALDO_HORA') or '03:30'
     ultimo_respaldo = None
     panel = Publicador()
+    from . import levantamiento
+    reposo = int(os.environ.get('PARTE_REPOSO_MIN') or 10)
+    if not levantamiento.configurado():
+        log.info('Sin PARTE_LEVANTAMIENTO_PLANILLA/PARTE_LEVANTAMIENTO_COLA: el levantamiento no se procesa.')
     log.info('Servicio iniciado: cada %ds. Comunas: %s', intervalo, ', '.join(c['comuna'] for c in db.comunas(conn)))
     while True:
         try:
@@ -149,6 +164,11 @@ def main(argv=None):
                     # Cierra la transacción de lectura que deja la pasada: si queda abierta durante la espera, now() se congela
                     # y recibido_en/actualizado_en del próximo ciclo saldrían con la hora de este.
                     conn.rollback()
+                    try:
+                        levantamiento.pasada(dbx, office, conn, trabajo(), reposo)
+                    except Exception:
+                        conn.rollback()
+                        log.exception('La pasada del levantamiento falló; se reintenta en el próximo ciclo.')
                     try:
                         panel.publicar(conn)
                     except Exception:
