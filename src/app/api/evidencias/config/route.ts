@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireEvidenciasTech } from '@/lib/evidenciasAuth';
-import { evidenciasRoot, evidenciasPilotMode, evidenciasParteQueue } from '@/lib/dropboxServer';
+import { evidenciasRoot, evidenciasPilotMode, evidenciasParteQueue, evidenciasLevantamientoQueue } from '@/lib/dropboxServer';
 
 export const runtime = 'nodejs';
 
@@ -12,5 +12,6 @@ export async function GET(req: NextRequest) {
     root: evidenciasRoot(),
     pilot: evidenciasPilotMode(),
     parteQueue: evidenciasParteQueue(),
+    levantamientoQueue: evidenciasLevantamientoQueue(),
   });
 }

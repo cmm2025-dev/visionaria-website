@@ -1,64 +1,14 @@
 import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
+import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix} from './media.mjs';
+import {setupLevantamiento,showLevantamiento} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
-// This is a verification control, not forensic photography -- resolution past this is never needed,
-// and shrinking every photo keeps uploads fast on weak field signal.
-const MAX_DIMENSION=1600,JPEG_QUALITY=0.8;
 const chileDateTime=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
-// Gallery photos get the phone's position when they are added, not where they were shot -- say so.
-function gpsLabel(gps,source){if(!gps)return 'Sin GPS';return `${source==='gallery'?'Ubicación al registrar':'GPS'} ${gps.lat.toFixed(6)}, ${gps.lon.toFixed(6)} ±${gps.accuracy} m`;}
-// Resize, burn in the visible stamp and re-encode in a single pass, so there is only one generation of JPEG loss.
-function processImage(file,lines){
-  return new Promise(resolve=>{
-    const url=URL.createObjectURL(file),img=new Image();
-    img.onload=()=>{
-      try{
-        const scale=Math.min(1,MAX_DIMENSION/Math.max(img.naturalWidth,img.naturalHeight));
-        const w=Math.round(img.naturalWidth*scale),h=Math.round(img.naturalHeight*scale);
-        const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-        const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,w,h);
-        const size=Math.max(12,Math.round(Math.max(w,h)*0.016)),line=Math.round(size*1.35),pad=Math.round(size*0.6),band=lines.length*line+pad*2;
-        ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,h-band,w,band);
-        ctx.fillStyle='#fff';ctx.font=`600 ${size}px sans-serif`;ctx.textBaseline='top';
-        lines.forEach((text,i)=>ctx.fillText(text,pad,h-band+pad+i*line,w-pad*2));
-        canvas.toBlob(blob=>{URL.revokeObjectURL(url);resolve(blob);},'image/jpeg',JPEG_QUALITY);
-      }catch{URL.revokeObjectURL(url);resolve(null);}
-    };
-    img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};
-    img.src=url;
-  });
-}
-// Minimal EXIF APP1 segment with only GPS tags, so Dropbox and photo viewers can place the photo on a map.
-function exifGps(gps){
-  const b=new Uint8Array(170),v=new DataView(b.buffer),t=10;
-  const u16=(o,x)=>v.setUint16(t+o,x),u32=(o,x)=>v.setUint32(t+o,x);
-  v.setUint16(0,0xFFE1);v.setUint16(2,168);b.set([69,120,105,102,0,0],4);
-  b.set([77,77],t);u16(2,42);u32(4,8);
-  u16(8,1);u16(10,0x8825);u16(12,4);u32(14,1);u32(18,26);u32(22,0);
-  const entries=[[0,1,4,0,[2,3,0,0]],[1,2,2,0,[gps.lat<0?83:78,0]],[2,5,3,104],[3,2,2,0,[gps.lon<0?87:69,0]],[4,5,3,128],[31,5,1,152]];
-  u16(26,entries.length);
-  entries.forEach(([tag,type,count,offset,inline],i)=>{const o=28+i*12;u16(o,tag);u16(o+2,type);u32(o+4,count);if(inline)b.set(inline,t+o+8);else u32(o+8,offset);});
-  u32(28+entries.length*12,0);
-  const dms=(o,value)=>{const a=Math.abs(value),d=Math.floor(a),mf=(a-d)*60,mi=Math.floor(mf),s=Math.round((mf-mi)*60000);[[d,1],[mi,1],[s,1000]].forEach(([n,den],i)=>{u32(o+i*8,n);u32(o+i*8+4,den);});};
-  dms(104,gps.lat);dms(128,gps.lon);u32(152,Math.max(1,Math.round(gps.accuracy)));u32(156,1);
-  return b;
-}
-async function withExif(blob,gps){
-  const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==0xFF||bytes[1]!==0xD8)return blob;
-  const at=bytes[2]===0xFF&&bytes[3]===0xE0?4+((bytes[4]<<8)|bytes[5]):2;
-  return new Blob([bytes.slice(0,at),exifGps(gps),bytes.slice(at)],{type:'image/jpeg'});
-}
 let pendingFix=null,gpsDeniedWarned=false;
-function requestFix(){
-  if(!navigator.geolocation)return Promise.resolve(null);
-  return new Promise(resolve=>navigator.geolocation.getCurrentPosition(
-    p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude,accuracy:Math.round(p.coords.accuracy),at:new Date().toISOString()}),
-    error=>{if(error.code===1&&!gpsDeniedWarned){gpsDeniedWarned=true;toast('Ubicación desactivada: las fotos se guardarán marcadas "Sin GPS".');}resolve(null);},
-    {enableHighAccuracy:true,timeout:15000,maximumAge:30000}));
-}
-let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',parteQueue:null};
+const requestFix=()=>sharedRequestFix(()=>{if(!gpsDeniedWarned){gpsDeniedWarned=true;toast('Ubicación desactivada: las fotos se guardarán marcadas "Sin GPS".');}});
+let config={root:'/2026-DPR-ANF_OPERACIONES',pilot:true,email:'',parteQueue:null,levantamientoQueue:null};
 // Only the last "Ejecutó" choice is remembered on the device; name suffixes are fixed by the planilla.
 let lastExecutor='';try{lastExecutor=JSON.parse(localStorage.getItem(KEY)||'{}').executor||''}catch{}
 let points=[],photos=[],draft=[],filter='all',busy=false,toastTimer,previewURLs=[],recordURLs=[],largeURL,storageReady=false;
@@ -152,7 +102,7 @@ function renderDraft(){
   $('submit-detail').textContent='Primero se guarda aquí; luego se confirma la recepción en Dropbox.';
 }
 function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
-function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
+function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';$('levantamiento-view').hidden=view!=='levantamiento';if(view==='levantamiento')showLevantamiento();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
 async function refresh(){photos=await getAll();$('nav-count').textContent=photos.filter(p=>p.blob).length;renderRecords();renderDraft();}
 async function collectFiles(list,source){formError('');
   const slow=setTimeout(()=>toast('Obteniendo ubicación GPS…'),1500);const fix=await(pendingFix??requestFix());clearTimeout(slow);pendingFix=null;
@@ -297,9 +247,10 @@ async function init(){
   $('executor').innerHTML='<option value="">Selecciona quién ejecutó</option>'+EXECUTORS.map(x=>`<option>${esc(x)}</option>`).join('');if(EXECUTORS.includes(lastExecutor))$('executor').value=lastExecutor;
   $('activity').innerHTML='<option value="">Selecciona una actividad</option>'+['Etapa','Novedad'].map(type=>`<optgroup label="${type==='Etapa'?'Etapas de obra':'Novedades'}">${ACTIVITIES.filter(a=>a.type===type).map(a=>`<option>${esc(a.label)}</option>`).join('')}</optgroup>`).join('');
   network();
-  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
+  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
+  setupLevantamiento({toast,config:()=>config}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));
   if('serviceWorker'in navigator)navigator.serviceWorker.register('/api/evidencias/assets/sw.js').catch(()=>{});
 }
 init();

@@ -27,6 +27,15 @@ export function evidenciasParteQueue(): string | null {
   return v && v.startsWith('/') && !v.includes('..') ? v : null;
 }
 
+/**
+ * Dropbox folder where each levantamiento (survey form DEC-020) is queued for the office service, which writes it
+ * into the form's «Levantamiento» sheet. Unset means the app saves surveys on the device but does not send them.
+ */
+export function evidenciasLevantamientoQueue(): string | null {
+  const v = process.env.EVIDENCIAS_LEVANTAMIENTO_COLA?.trim().replace(/\/+$/, '');
+  return v && v.startsWith('/') && !v.includes('..') ? v : null;
+}
+
 let cachedToken: { token: string; expiresAt: number } | null = null;
 let cachedPathRoot: string | null = null;
 
