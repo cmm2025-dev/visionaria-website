@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { encodeIntranetMagicLink, isStaffEmail } from '@/lib/session';
+import { encodeIntranetMagicLink, isStaffEmail, safeIntranetNext } from '@/lib/session';
 
 export const runtime = 'nodejs';
 
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
 
   const email = String(body.email ?? '').trim().toLowerCase();
   const locale = body.locale === 'en' ? 'en' : 'es';
+  const next = safeIntranetNext(body.next, locale);
 
   if (!isValidEmail(email)) {
     return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
 
   if (isStaffEmail(email)) {
     try {
-      const token = encodeIntranetMagicLink({ email, locale });
+      const token = encodeIntranetMagicLink({ email, locale, next });
       const magicUrl = `${req.nextUrl.origin}/api/intranet/auth/verify?token=${encodeURIComponent(token)}`;
 
       const apiKey = process.env.RESEND_API_KEY;

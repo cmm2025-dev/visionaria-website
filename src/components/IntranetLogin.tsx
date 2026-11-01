@@ -5,6 +5,8 @@ import { Mail, CheckCircle2 } from 'lucide-react';
 
 interface IntranetLoginProps {
   locale: string;
+  /** Intranet page to land on after following the emailed link (defaults to the Intranet home). */
+  next?: string;
   labels: {
     description: string;
     placeholder: string;
@@ -16,7 +18,7 @@ interface IntranetLoginProps {
 }
 
 /** Same email-only sign-in pattern as MagicLinkLogin, but against the staff-only intranet endpoint. */
-export default function IntranetLogin({ locale, labels }: IntranetLoginProps) {
+export default function IntranetLogin({ locale, next, labels }: IntranetLoginProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
@@ -28,7 +30,7 @@ export default function IntranetLogin({ locale, labels }: IntranetLoginProps) {
       await fetch('/api/intranet/auth/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), locale }),
+        body: JSON.stringify({ email: email.trim(), locale, next }),
       });
     } finally {
       setStatus('sent');

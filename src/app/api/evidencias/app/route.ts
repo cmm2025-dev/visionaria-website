@@ -14,7 +14,7 @@ const HTML_PATH = path.join(process.cwd(), 'src', 'evidencias-assets', 'index.ht
  */
 export async function GET(req: NextRequest) {
   const email = requireEvidenciasTech(req);
-  if (!email) return NextResponse.redirect(new URL('/es/intranet', req.nextUrl.origin));
+  if (!email) return NextResponse.redirect(new URL('/es/intranet/proyectos/dpr-antofagasta', req.nextUrl.origin));
 
   const html = readFileSync(HTML_PATH, 'utf8');
   return new NextResponse(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-cache' } });
