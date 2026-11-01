@@ -10,6 +10,7 @@ export const runtime = 'nodejs';
 const ASSETS: Record<string, string> = {
   'app.mjs': 'application/javascript; charset=utf-8',
   'core.mjs': 'application/javascript; charset=utf-8',
+  'media.mjs': 'application/javascript; charset=utf-8',
   'storage.mjs': 'application/javascript; charset=utf-8',
   'dropbox-client.mjs': 'application/javascript; charset=utf-8',
   'catalogue.json': 'application/json; charset=utf-8',
