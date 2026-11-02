@@ -3,9 +3,10 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil, Camera, BarChart3, ChevronRight } from 'lucide-react';
+import { FileText, LogOut, ExternalLink, LayoutGrid, Pencil, FolderKanban, ChevronRight } from 'lucide-react';
 import IntranetLogin from '@/components/IntranetLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
+import type { ProjectView } from '@/lib/projects';
 
 interface IntranetLink {
   id: string;
@@ -18,14 +19,13 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
   const t = useTranslations('intranet');
   const [email, setEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isEvidenciasTech, setIsEvidenciasTech] = useState(false);
-  const [isPanelViewer, setIsPanelViewer] = useState(false);
+  const [projects, setProjects] = useState<ProjectView[]>([]);
   const [links, setLinks] = useState<IntranetLink[]>([]);
   const [status, setStatus] = useState<'loading' | 'unauthenticated' | 'error' | 'ready'>('loading');
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/intranet/status')
+    fetch(`/api/intranet/status?locale=${locale}`)
       .then(async res => {
         if (cancelled) return;
         if (res.status === 401) return setStatus('unauthenticated');
@@ -33,8 +33,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
         const data = await res.json();
         setEmail(data.email);
         setIsAdmin(!!data.isAdmin);
-        setIsEvidenciasTech(!!data.isEvidenciasTech);
-        setIsPanelViewer(!!data.isPanelViewer);
+        setProjects(data.projects ?? []);
         const linksRes = await fetch('/api/intranet/content');
         if (cancelled) return;
         if (!linksRes.ok) return setStatus('error');
@@ -44,7 +43,7 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
       })
       .catch(() => !cancelled && setStatus('error'));
     return () => { cancelled = true; };
-  }, []);
+  }, [locale]);
 
   const handleLogout = async () => {
     await fetch('/api/intranet/auth/logout', { method: 'POST' });
@@ -98,8 +97,8 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
 
         {status === 'ready' && (
           <div className="flex flex-col gap-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2 min-w-0 break-all">
                 <LayoutGrid size={22} style={{ color: '#F09422' }} />
                 {t('welcome', { email: email ?? '' })}
               </h2>
@@ -122,42 +121,37 @@ export default function IntranetPage({ params }: { params: Promise<{ locale: str
               </div>
             </div>
 
-            {isPanelViewer && (
-              <Link
-                href={`/${locale}/intranet/panel`}
-                className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
-                style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
-              >
-                <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
-                  <BarChart3 size={20} style={{ color: '#F09422' }} />
+            {projects.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <h3 className="text-lg font-bold text-white">{t('projects_title')}</h3>
+                  <p className="text-slate-500 text-sm mt-0.5">{t('projects_desc')}</p>
                 </div>
-                <div className="flex-1">
-                  <p className="text-white font-semibold text-sm">{t('panel_title')}</p>
-                  <p className="text-slate-500 text-xs mt-0.5">{t('panel_desc')}</p>
-                </div>
-                <ChevronRight size={16} className="text-slate-500 shrink-0" />
-              </Link>
+                {projects.map(project => (
+                  <Link
+                    key={project.slug}
+                    href={`/${locale}/intranet/proyectos/${project.slug}`}
+                    className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
+                    style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
+                  >
+                    <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
+                      <FolderKanban size={20} style={{ color: '#F09422' }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-semibold">{project.name}</p>
+                      <p className="text-slate-500 text-xs mt-0.5">{project.summary} · {project.status}</p>
+                      <p className="text-slate-400 text-xs mt-2">
+                        {t('project_access')}: {project.roles.map(r => r.label).join(' · ')}
+                        {' — '}{t('project_modules_count', { count: project.modules.length })}
+                      </p>
+                    </div>
+                    <ChevronRight size={16} className="text-slate-500 shrink-0" />
+                  </Link>
+                ))}
+              </div>
             )}
 
-            {isEvidenciasTech && (
-              // This is a standalone HTML document served by a route handler, not a Next.js page --
-              // a <Link> would try to client-route it into the React tree instead of navigating for real.
-              // eslint-disable-next-line @next/next/no-html-link-for-pages
-              <a
-                href="/api/evidencias/app"
-                className="rounded-xl p-5 border flex items-center gap-4 transition-all hover:glow-cyan-sm"
-                style={{ background: 'var(--card-bg)', borderColor: 'var(--border)' }}
-              >
-                <div className="shrink-0 p-3 rounded-xl" style={{ background: 'rgba(240,148,34,0.12)' }}>
-                  <Camera size={20} style={{ color: '#F09422' }} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-white font-semibold text-sm">{t('evidencias_title')}</p>
-                  <p className="text-slate-500 text-xs mt-0.5">{t('evidencias_desc')}</p>
-                </div>
-                <ExternalLink size={16} className="text-slate-500 shrink-0" />
-              </a>
-            )}
+            {projects.length > 0 && <h3 className="text-lg font-bold text-white -mb-4">{t('general_title')}</h3>}
 
             {links.length === 0 ? (
               <p className="text-slate-500 text-sm">{t('no_links')}</p>

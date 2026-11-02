@@ -94,3 +94,32 @@ CREATE TABLE IF NOT EXISTS planilla_levantamiento (
   filas_generadas jsonb,                       -- {codigo: [S..BU]} tal como quedó escrito; detecta ediciones a mano
   ultimo_aviso    text
 );
+
+-- Levantamiento v2 (DEC-020 y vía rápida): de qué formulario es cada punto, la coordenada del poste CGE y el trámite.
+-- Las claves de «valores» pasan a ser los encabezados del formulario (parte migrar convierte lo de la v1).
+ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS formulario text;
+ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS gps_poste jsonb;
+ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS tramite text;
+CREATE TABLE IF NOT EXISTS planillas_levantamiento (
+  formulario      text PRIMARY KEY,            -- DEC-020, VR-Antofagasta, …
+  rev_generada    text,
+  generada_en     timestamptz,
+  filas_generadas jsonb,                       -- {codigo: [campos]} tal como quedó escrito; detecta ediciones a mano
+  ultimo_aviso    text
+);
+
+-- Correos del contrato (DIR-P07): cada envío o intento, con su asunto final. Nada se borra.
+CREATE TABLE IF NOT EXISTS correos (
+  id            bigserial PRIMARY KEY,
+  en            timestamptz NOT NULL DEFAULT now(),
+  en_chile      text NOT NULL,                 -- fecha y hora en America/Santiago, tal como se informa
+  evento        text NOT NULL,                 -- clave del hecho; los avisos del mismo hecho van en el mismo hilo
+  tipo          text NOT NULL,                 -- INT / CL / EXT
+  tema          text NOT NULL,
+  asunto        text NOT NULL,                 -- el asunto final, con el prefijo
+  para          text[] NOT NULL,
+  estado        text NOT NULL,                 -- enviado / rechazado / sin_configurar / error
+  detalle       text,
+  proveedor_id  text                           -- id que devolvió Resend
+);
+CREATE INDEX IF NOT EXISTS correos_evento ON correos (evento);

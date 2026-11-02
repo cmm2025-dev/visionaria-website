@@ -10,7 +10,7 @@
   parte estado   --comuna X         lista las filas y lo que dice Control
   parte respaldar                   pg_dump a Dropbox
   parte panel                       envía ahora el resumen al panel ejecutivo de la Intranet
-  parte levantamiento [--forzar COD ...]  una pasada del levantamiento DEC-020; --forzar reescribe filas cambiadas a mano
+  parte levantamiento [--forzar COD ...]  una pasada del levantamiento (DEC-020 y vía rápida); --forzar reescribe filas cambiadas a mano
 """
 import argparse
 import datetime
@@ -96,6 +96,8 @@ def main(argv=None):
     conn = db.conectar()
     if args.cmd == 'migrar':
         db.migrar(conn)
+        from . import levantamiento
+        levantamiento.migrar(conn)
         db.sembrar_comunas(conn, config_comunas())
         print('Esquema al día. Comunas:', ', '.join(c['comuna'] for c in db.comunas(conn)))
         return
@@ -131,10 +133,12 @@ def main(argv=None):
     if args.cmd == 'levantamiento':
         from . import levantamiento
         if not levantamiento.configurado():
-            sys.exit('Falta PARTE_LEVANTAMIENTO_PLANILLA o PARTE_LEVANTAMIENTO_COLA en .env.')
+            sys.exit('Falta la cola del levantamiento (proyecto.json o PARTE_LEVANTAMIENTO_COLA en .env).')
         with Office() as office:
             levantamiento.ingestar(dbx, conn)
-            levantamiento.generar(dbx, office, conn, trabajo(), 0, tuple(args.forzar))
+            for formulario in levantamiento.FORMULARIOS:
+                if formulario in levantamiento.config()['planillas']:
+                    levantamiento.generar(dbx, office, conn, formulario, trabajo(), 0, tuple(args.forzar))
         return
     if args.cmd in ('ingestar', 'generar'):
         with Office() as office:
@@ -154,7 +158,7 @@ def main(argv=None):
     from . import levantamiento
     reposo = int(os.environ.get('PARTE_REPOSO_MIN') or 10)
     if not levantamiento.configurado():
-        log.info('Sin PARTE_LEVANTAMIENTO_PLANILLA/PARTE_LEVANTAMIENTO_COLA: el levantamiento no se procesa.')
+        log.info('Sin cola de levantamiento configurada: el levantamiento no se procesa.')
     log.info('Servicio iniciado: cada %ds. Comunas: %s', intervalo, ', '.join(c['comuna'] for c in db.comunas(conn)))
     while True:
         try:

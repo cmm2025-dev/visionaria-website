@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeIntranetSession, isPanelViewer, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { decodeIntranetSession, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { hasProjectRole } from '@/lib/projects';
 import { getPanelSnapshot } from '@/lib/panelStore';
 import catalogue from '@/evidencias-assets/catalogue.json';
 
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
   const cookie = req.cookies.get(INTRANET_SESSION_COOKIE)?.value;
   const session = cookie ? decodeIntranetSession(cookie) : null;
   if (!session) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
-  if (!isPanelViewer(session.email)) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  if (!hasProjectRole(session.email, 'dpr-antofagasta', 'gestion')) return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   try {
     const snapshot = await getPanelSnapshot();
     return NextResponse.json({ snapshot, puntos: PUNTOS }, { headers: { 'Cache-Control': 'no-store' } });

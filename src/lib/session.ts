@@ -98,7 +98,15 @@ const INTRANET_MAGIC_SALT = 'visionaria-intranet-magic-link-v1';
 export interface IntranetMagicLinkPayload {
   email: string;
   locale: string;
+  /** Intranet page to land on after verifying; checked with safeIntranetNext on both ends. */
+  next?: string;
   issuedAt: number;
+}
+
+/** Only same-site Intranet paths are accepted as a post-login destination, so the link can't redirect elsewhere. */
+export function safeIntranetNext(next: unknown, locale: string): string | undefined {
+  if (typeof next !== 'string' || next.length > 200) return undefined;
+  return new RegExp(`^/${locale}/intranet(/[a-z0-9-]+)*$`).test(next) ? next : undefined;
 }
 
 export function encodeIntranetMagicLink(payload: Omit<IntranetMagicLinkPayload, 'issuedAt'>): string {
@@ -150,13 +158,8 @@ export function isIntranetAdmin(email: string): boolean {
   return parseEmailAllowlist(process.env.INTRANET_ADMIN_EMAILS ?? '').includes(email.trim().toLowerCase());
 }
 
-/** Who can open the executive panel: its own allowlist (env var), plus every intranet admin. */
-export function isPanelViewer(email: string): boolean {
-  const allowed = parseEmailAllowlist(process.env.INTRANET_PANEL_EMAILS ?? '');
-  return allowed.includes(email.trim().toLowerCase()) || isIntranetAdmin(email);
-}
-
-/** A short, explicit allowlist (env var) of field technicians authorized for Evidencias. */
-export function isEvidenciasTech(email: string): boolean {
-  return parseEmailAllowlist(process.env.EVIDENCIAS_TECH_EMAILS ?? '').includes(email.trim().toLowerCase());
+/** True when the email is in any of the named env-var allowlists. Project roles (src/lib/projects.ts) use this. */
+export function emailInAllowlists(email: string, envVars: string[]): boolean {
+  const target = email.trim().toLowerCase();
+  return envVars.some(name => parseEmailAllowlist(process.env[name] ?? '').includes(target));
 }

@@ -1,0 +1,16 @@
+{
+  "licitacion": "1604-4-LR25",
+  "nombre": "DPR Antofagasta",
+  "asunto_max": 120,
+  "dominios_internos": ["visionaria.cl"],
+  "correo": { "remitente": "reportes@visionaria.cl" },
+  "destinatarios": {
+    "fallas": []
+  },
+  "levantamiento": {
+    "cola": "/Proyectos/2026-DPR-ANF_OPERACIONES/Común/Cola levantamiento",
+    "planillas": {
+      "DEC-020": "/Proyectos/2026-DPR-ANF_OPERACIONES/Común/…/2026-10-31_DEC-020_formulario_levantamiento_terreno.xlsx"
+    }
+  }
+}

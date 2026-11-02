@@ -22,9 +22,17 @@ services:
     environment:
       PARTE_DB: postgresql://parte:${PARTE_DB_PASSWORD}@db:5432/parte
       PARTE_COMUNAS: /etc/parte-diario/comunas.json
+      PARTE_PROYECTO: /etc/parte-diario/proyecto.json
       PARTE_TRABAJO: /var/lib/parte-diario
     volumes:
       - ./comunas.json:/etc/parte-diario/comunas.json:ro
+      # Si falta proyecto.json, Docker no debe crear una carpeta en su lugar: que falle y lo diga (instalar.sh lo crea).
+      - type: bind
+        source: ./proyecto.json
+        target: /etc/parte-diario/proyecto.json
+        read_only: true
+        bind:
+          create_host_path: false
       - trabajo:/var/lib/parte-diario
     depends_on:
       db:

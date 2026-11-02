@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeIntranetMagicLink, encodeIntranetSession, isStaffEmail, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { decodeIntranetMagicLink, encodeIntranetSession, isStaffEmail, safeIntranetNext, INTRANET_SESSION_COOKIE } from '@/lib/session';
 
 export const runtime = 'nodejs';
 
@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
   }
 
   const cookieValue = encodeIntranetSession({ email: payload.email, issuedAt: Date.now() });
-  const res = NextResponse.redirect(new URL(`/${payload.locale}/intranet`, req.nextUrl.origin));
+  const destino = safeIntranetNext(payload.next, payload.locale) ?? `/${payload.locale}/intranet`;
+  const res = NextResponse.redirect(new URL(destino, req.nextUrl.origin));
   res.cookies.set(INTRANET_SESSION_COOKIE, cookieValue, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

@@ -102,6 +102,24 @@ código; las columnas calculadas (ángulos LPR y «Control») las sigue calculan
 Se activa con `PARTE_LEVANTAMIENTO_PLANILLA` y `PARTE_LEVANTAMIENTO_COLA` en `.env` (y `EVIDENCIAS_LEVANTAMIENTO_COLA`
 en Vercel, con la misma carpeta de cola).
 
+## Correos del contrato (directriz DIR-P07)
+
+Todo correo que envía el servicio pasa por `parte/correo.py`, que arma el asunto
+`[licitación][proyecto][TIPO][TEMA]` con los datos de `proyecto.json` (copia de `proyecto.ejemplo.json`; no se sube
+al repositorio). Ahí también están el máximo del asunto (120), los dominios internos, el remitente y los
+destinatarios por rol. La app solo envía correos INT al equipo: un CL o EXT, un destinatario externo, montos, RUT o
+teléfonos en el cuerpo hacen que el correo se rechace. Cada intento queda en la tabla `correos` con su asunto final
+y la hora de Chile. Sin `PARTE_RESEND_API_KEY` en `.env` no se envía nada.
+
+Hoy envía un correo: las fallas de planilla (rol `fallas`), además del aviso en `AVISOS`. Los avisos de una misma
+planilla van en el mismo hilo.
+
+```bash
+docker compose run --rm -v "$PWD/tests:/app/tests:ro" -v "$PWD/proyecto.ejemplo.json:/app/proyecto.ejemplo.json:ro" \
+    parte python3 -m unittest discover -s /app/tests -v
+docker compose exec db psql -U parte -d parte -c "select en_chile, estado, asunto, para from correos order by id desc limit 20"
+```
+
 ## Prueba sin Dropbox ni servidor
 
 Con PostgreSQL y LibreOffice locales, `PARTE_DB` apuntando a una base de prueba y un Dropbox simulado se puede
