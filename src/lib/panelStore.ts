@@ -1,10 +1,10 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto';
-import { put, head } from '@vercel/blob';
+import { put, get } from '@vercel/blob';
 
 /**
  * The executive panel's data: a summary the parte diario service (on the office server) pushes here
  * every cycle. The office database is never exposed; only this summary leaves it. It holds emails, GPS
- * positions and field notes, and the Blob store is public, so it is stored AES-256-GCM encrypted under
+ * positions and field notes, so besides living in a private Blob store it is AES-256-GCM encrypted under
  * a key derived from PANEL_INGEST_TOKEN, at a path derived from it too.
  */
 
@@ -62,7 +62,7 @@ export async function savePanelSnapshot(snapshot: PanelSnapshot): Promise<void> 
   const cipher = createCipheriv('aes-256-gcm', key(), iv);
   const body = Buffer.concat([cipher.update(JSON.stringify(snapshot), 'utf8'), cipher.final()]);
   await put(blobPath(), Buffer.concat([iv, cipher.getAuthTag(), body]), {
-    access: 'public',
+    access: 'private',
     contentType: 'application/octet-stream',
     allowOverwrite: true,
     cacheControlMaxAge: 60,
@@ -71,16 +71,10 @@ export async function savePanelSnapshot(snapshot: PanelSnapshot): Promise<void> 
 
 /** null until the service has pushed its first summary. */
 export async function getPanelSnapshot(): Promise<PanelSnapshot | null> {
-  let url: string;
-  try {
-    url = (await head(blobPath())).url;
-  } catch {
-    return null;
-  }
-  // The query string skips the CDN copy, so a new summary shows up on the next poll.
-  const res = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
-  if (!res.ok) return null;
-  const raw = Buffer.from(await res.arrayBuffer());
+  // useCache: false reads from origin, so a new summary shows up on the next poll.
+  const res = await get(blobPath(), { access: 'private', useCache: false }).catch(() => null);
+  if (res?.statusCode !== 200) return null;
+  const raw = Buffer.from(await new Response(res.stream).arrayBuffer());
   const decipher = createDecipheriv('aes-256-gcm', key(), raw.subarray(0, 12));
   decipher.setAuthTag(raw.subarray(12, 28));
   const json = Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]).toString('utf8');
