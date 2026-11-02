@@ -1,4 +1,4 @@
-import { put, head } from '@vercel/blob';
+import { put, get } from '@vercel/blob';
 
 export interface IntranetLink {
   id: string;
@@ -21,10 +21,9 @@ const DEFAULT_LINKS: IntranetLink[] = [
 export async function getIntranetLinks(): Promise<IntranetLink[]> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return DEFAULT_LINKS;
   try {
-    const info = await head(BLOB_PATH);
-    const res = await fetch(info.url, { cache: 'no-store' });
-    if (!res.ok) return DEFAULT_LINKS;
-    const data = await res.json();
+    const res = await get(BLOB_PATH, { access: 'private', useCache: false });
+    if (res?.statusCode !== 200) return DEFAULT_LINKS;
+    const data = await new Response(res.stream).json();
     return Array.isArray(data) ? data : DEFAULT_LINKS;
   } catch {
     // No blob written yet, or storage not reachable -- fall back to the starter set.
@@ -34,7 +33,7 @@ export async function getIntranetLinks(): Promise<IntranetLink[]> {
 
 export async function saveIntranetLinks(links: IntranetLink[]): Promise<void> {
   await put(BLOB_PATH, JSON.stringify(links), {
-    access: 'public',
+    access: 'private',
     contentType: 'application/json',
     allowOverwrite: true,
   });
