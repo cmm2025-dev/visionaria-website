@@ -15,7 +15,7 @@ import urllib.parse
 
 from psycopg.types.json import Jsonb
 
-from . import db
+from . import correo, db
 from .dropbox import DropboxError
 from .generar import planilla_en_uso
 from .planilla import FECHA_BASE
@@ -201,6 +201,7 @@ def avisar(dbx, conn, texto):
     conn.execute('''INSERT INTO planilla_levantamiento (id, ultimo_aviso) VALUES (1, %s)
                     ON CONFLICT (id) DO UPDATE SET ultimo_aviso=EXCLUDED.ultimo_aviso''', (texto,))
     conn.commit()
+    correo.avisar_falla(conn, 'LEVANTAMIENTO DEC-020', texto)
     ruta = '%s/AVISOS/Levantamiento_%s.txt' % (os.environ['PARTE_LEVANTAMIENTO_COLA'].rstrip('/'),
                                                 datetime.datetime.now().strftime('%Y-%m-%d_%H%M'))
     try:

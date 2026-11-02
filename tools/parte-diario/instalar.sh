@@ -28,6 +28,10 @@ if [ ! -f comunas.json ]; then
   cp comunas.ejemplo.json comunas.json
   echo ">> Se creó comunas.json con la configuración de prueba. Revísalo y vuelve a ejecutar."; exit 1
 fi
+if [ ! -f proyecto.json ]; then
+  cp proyecto.ejemplo.json proyecto.json
+  echo ">> Se creó proyecto.json (prefijo de los correos, DIR-P07). Agrega los destinatarios cuando haya que enviar correos."
+fi
 
 docker compose up -d --build
 docker compose ps

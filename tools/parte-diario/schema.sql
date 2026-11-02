@@ -94,3 +94,19 @@ CREATE TABLE IF NOT EXISTS planilla_levantamiento (
   filas_generadas jsonb,                       -- {codigo: [S..BU]} tal como quedó escrito; detecta ediciones a mano
   ultimo_aviso    text
 );
+
+-- Correos del contrato (DIR-P07): cada envío o intento, con su asunto final. Nada se borra.
+CREATE TABLE IF NOT EXISTS correos (
+  id            bigserial PRIMARY KEY,
+  en            timestamptz NOT NULL DEFAULT now(),
+  en_chile      text NOT NULL,                 -- fecha y hora en America/Santiago, tal como se informa
+  evento        text NOT NULL,                 -- clave del hecho; los avisos del mismo hecho van en el mismo hilo
+  tipo          text NOT NULL,                 -- INT / CL / EXT
+  tema          text NOT NULL,
+  asunto        text NOT NULL,                 -- el asunto final, con el prefijo
+  para          text[] NOT NULL,
+  estado        text NOT NULL,                 -- enviado / rechazado / sin_configurar / error
+  detalle       text,
+  proveedor_id  text                           -- id que devolvió Resend
+);
+CREATE INDEX IF NOT EXISTS correos_evento ON correos (evento);

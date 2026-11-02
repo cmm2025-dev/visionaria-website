@@ -3,7 +3,7 @@ import datetime
 import logging
 import os
 
-from . import db, planilla
+from . import correo, db, planilla
 from .dropbox import DropboxError
 
 log = logging.getLogger('parte.generar')
@@ -28,6 +28,7 @@ def avisar(dbx, conn, c, texto):
     db.evento(conn, 'aviso', c['comuna'], detalle=texto)
     conn.execute('UPDATE comunas SET ultimo_aviso=%s WHERE comuna=%s', (texto, c['comuna']))
     conn.commit()
+    correo.avisar_falla(conn, 'PLANILLA ' + c['comuna'], texto)
     if c['colas']:
         ruta = '%s/AVISOS/%s_%s.txt' % (c['colas'][0], c['comuna'], datetime.datetime.now().strftime('%Y-%m-%d_%H%M'))
         try:

@@ -1,0 +1,10 @@
+{
+  "licitacion": "1604-4-LR25",
+  "nombre": "DPR Antofagasta",
+  "asunto_max": 120,
+  "dominios_internos": ["visionaria.cl"],
+  "correo": { "remitente": "reportes@visionaria.cl" },
+  "destinatarios": {
+    "fallas": []
+  }
+}
