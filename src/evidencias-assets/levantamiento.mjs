@@ -11,7 +11,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs';
 const FECHA_BASE=Date.UTC(1899,11,30);
 const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable'];
-let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:''},busy=false,urls=[],guardarTimer=null,aqui=null;
+let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
 
@@ -68,12 +68,13 @@ const estadoDe=codigo=>{const {F,punto}=ubicar(codigo),v=valoresCompletos(codigo
 function envioValores(F,punto,v){const out={};for(const c of F.campos){if(!visible(c,punto))continue;const x=v[c.key];if(vacio(x))continue;
   if(c.type==='decimal'){const n=num(x);if(n!==null)out[c.key]=n;}else if(c.type==='whole'){const n=num(x);if(n!==null)out[c.key]=Math.round(n);}else out[c.key]=String(x).trim();}
   return out;}
+const fechaCorta=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
 const huella=o=>JSON.stringify(o,Object.keys(o).sort());
 function estadoEnvio(codigo){const p=puntos.get(codigo),fs=fotos.filter(f=>f.codigo===codigo);
-  if(!p||(!Object.keys(p.valores||{}).length&&!fs.length))return {texto:'Sin datos',clase:''};
+  if(!p||(!Object.keys(p.valores||{}).length&&!fs.length))return p?.anulado?{texto:'Anulado '+fechaCorta(p.anulado.at),clase:''}:{texto:'Sin datos',clase:''};
   if(p.error)return {texto:'Error al enviar',clase:'error'};
   const {F,punto}=ubicar(codigo),actual=huella({v:envioValores(F,punto,valoresCompletos(codigo)),f:fs.map(f=>f.id).sort(),g:p.gpsPoste?.at??''});
-  if(p.sent&&p.sent.huella===actual&&fs.every(f=>f.status==='sent'))return {texto:'Enviado '+new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(p.sent.at)),clase:'sent'};
+  if(p.sent&&p.sent.huella===actual&&fs.every(f=>f.status==='sent'))return {texto:'Enviado '+fechaCorta(p.sent.at),clase:'sent'};
   return {texto:p.sent?'Cambios sin enviar':'Guardado en el teléfono',clase:'pending'};
 }
 const distanciaM=(a,b)=>{const R=6371000,r=x=>x*Math.PI/180,dLat=r(b.lat-a.lat),dLon=r(b.lon-a.lon);
@@ -136,7 +137,17 @@ function renderFicha(){
     <fieldset class="lev-grupo"><legend>Fotos guiadas</legend><p class="field-hint">Mínimo 3. Cada foto queda estampada con el punto, la toma, la fecha y el GPS.</p>
       ${tomasDe(F,punto).map(t=>{const fs=fotos.filter(f=>f.codigo===abierto&&f.toma===t.code);return `<div class="proto-slot${fs.length?' done':''}"><div class="proto-head"><div><strong>${esc(t.code)} · ${esc(t.label)}${t.required?' <span class="lev-req">*</span>':''}${fs.length?` · ${fs.length}`:''}</strong><span class="field-hint">${esc(t.hint)}</span></div><div class="proto-actions"><button type="button" class="btn btn-camera" data-lev-foto="${esc(t.code)}|camera"><svg><use href="#i-camera"/></svg>Cámara</button><button type="button" class="btn btn-secondary" data-lev-foto="${esc(t.code)}|gallery"><svg><use href="#i-plus"/></svg>Galería</button></div></div>${fs.length?`<div class="proto-thumbs">${fs.map(f=>{const u=URL.createObjectURL(f.blob);urls.push(u);return `<div class="photo-tile"><img src="${u}" alt="${esc(t.code)}"><code>${esc(nombreFoto(f))} · ${f.status==='sent'?'✓ Dropbox':'○ En el teléfono'}</code>${f.status==='sent'?'':`<button type="button" class="remove-photo" data-lev-quitar="${esc(f.id)}" aria-label="Quitar fotografía">×</button>`}</div>`}).join('')}</div>`:''}</div>`;}).join('')}
     </fieldset>
-    <div class="lev-acciones"><span id="lev-envio-estado" class="lev-envio ${s.clase}">${esc(s.texto)}${p?.error?' · '+esc(p.error):''}</span><button type="button" class="btn btn-primary" data-lev-enviar ${busy?'disabled':''}>Enviar a Dropbox</button></div>`;
+    ${bloqueConfirmar(p)}
+    <div class="lev-acciones"><span id="lev-envio-estado" class="lev-envio ${s.clase}">${esc(s.texto)}${p?.error?' · '+esc(p.error):''}</span><div class="lev-botones">${p?.sent?`<button type="button" class="text-button lev-peligro" data-lev-confirmar="anular" ${busy?'disabled':''}>Anular levantamiento</button>`:p&&s.clase?`<button type="button" class="text-button lev-peligro" data-lev-confirmar="descartar" ${busy?'disabled':''}>Descartar borrador</button>`:''}<button type="button" class="btn btn-primary" data-lev-enviar ${busy?'disabled':''}>Enviar a Dropbox</button></div></div>`;
+}
+// Undoing a point: a draft that never left the phone is simply discarded; one already sent is annulled through the
+// queue, so the planilla row is emptied and the history (and the photos in Dropbox) stays.
+function bloqueConfirmar(p){
+  if(confirmando==='descartar')return `<div class="lev-confirmar"><p><strong>¿Descartar el borrador de ${esc(abierto)}?</strong> Se borran del teléfono los datos y las fotos de este punto. Nunca se enviaron, así que no queda copia en ningún lado.</p><div class="lev-botones"><button type="button" class="btn btn-secondary" data-lev-confirmar="">Volver</button><button type="button" class="btn lev-btn-peligro" data-lev-descartar>Descartar borrador</button></div></div>`;
+  if(confirmando==='anular')return `<div class="lev-confirmar"><p><strong>¿Anular el levantamiento de ${esc(abierto)}?</strong> Se envía una anulación y el servicio vacía las celdas amarillas de este punto en la planilla. Lo enviado antes queda en el historial y las fotos siguen en Dropbox. Las fotos que no alcanzaste a enviar se borran del teléfono. El punto vuelve a «Sin levantar» y se puede levantar de nuevo.</p>
+    <label class="lev-campo">Motivo de la anulación <span class="lev-req">*</span><textarea id="lev-motivo" rows="2" maxlength="500" placeholder="Ej.: punto equivocado, datos de prueba"></textarea></label>
+    <div class="lev-botones"><button type="button" class="btn btn-secondary" data-lev-confirmar="">Volver</button><button type="button" class="btn lev-btn-peligro" data-lev-anular ${busy?'disabled':''}>Confirmar anulación</button></div></div>`;
+  return '';
 }
 const angulosTexto=a=>`Ángulo vertical: <strong>${a.vertical??'—'}°</strong> · Ángulo horizontal: <strong>${a.horizontal??'—'}°</strong>${(a.vertical??0)>30||(a.horizontal??0)>30?' · <span class="lev-req">sobre 30°</span>':''}`;
 function render(){if(!C)return;$('lev-lista-wrap').hidden=!!abierto;$('lev-ficha').hidden=!abierto;if(abierto)renderFicha();else renderLista();}
@@ -232,6 +243,32 @@ async function enviar(codigo){
   }catch(error){p.error=error.name==='TimeoutError'?'La respuesta tardó demasiado. Reintenta.':error.message;ctx.toast('No se pudo enviar: '+p.error);}
   finally{puntos.set(codigo,p);await put('puntos',[p]);busy=false;render();}
 }
+async function descartar(codigo){
+  const ids=fotos.filter(f=>f.codigo===codigo).map(f=>f.id);
+  await del('fotos',ids);fotos=fotos.filter(f=>f.codigo!==codigo);
+  const p=puntos.get(codigo);
+  if(p?.anulado){const limpio={...nuevoPunto(codigo),anulado:p.anulado};puntos.set(codigo,limpio);await put('puntos',[limpio]);}
+  else{puntos.delete(codigo);await del('puntos',[codigo]);}
+  confirmando=null;ctx.toast(`Borrador de ${codigo} descartado.`);render();
+}
+async function anular(codigo,motivo){
+  const cfg=ctx.config();
+  if(!motivo){ctx.toast('Escribe el motivo de la anulación.');$('lev-motivo')?.focus();return;}
+  if(!cfg.levantamientoQueue){ctx.toast('El envío del levantamiento no está activado todavía.');return;}
+  if(!navigator.onLine){ctx.toast('Sin señal. La anulación necesita cobertura: inténtalo cuando haya señal.');return;}
+  if(busy)return;busy=true;render();
+  const {F,punto}=ubicar(codigo);
+  try{
+    const id=randomId(),guardado=new Date().toISOString();
+    const cuerpo={version:2,tipo:'anulacion',app:'evidencias',formulario:F.id,id,codigo,comuna:punto.comuna,guardado,registro:cfg.email,piloto:!!cfg.pilot,motivo};
+    const path=`${cfg.levantamientoQueue}/${cfg.pilot?'_PILOTO/':''}${punto.comuna}/${codigo}_${guardado.replace(/[:.]/g,'-')}_${id.slice(0,8)}_anulacion.json`;
+    await dropbox.api('files/upload',null,{binary:new Blob([JSON.stringify(cuerpo,null,1)],{type:'application/json'}),args:{path,mode:'add',autorename:false,strict_conflict:true}});
+    await del('fotos',fotos.filter(f=>f.codigo===codigo).map(f=>f.id));fotos=fotos.filter(f=>f.codigo!==codigo);
+    const p={...nuevoPunto(codigo),anulado:{id,at:guardado,path,motivo}};puntos.set(codigo,p);await put('puntos',[p]);
+    confirmando=null;ctx.toast(`${codigo} anulado. La planilla se actualiza en el próximo ciclo del servicio.`);
+  }catch(error){ctx.toast('No se pudo anular: '+(error.name==='TimeoutError'?'la respuesta tardó demasiado. Reintenta.':error.message));}
+  finally{busy=false;render();}
+}
 async function enviarPendientes(){for(const p of activo().puntos)if(['pending','error'].includes(estadoEnvio(p.codigo).clase))await enviar(p.codigo);}
 
 // The same columns as the form, by header, so the file can be pasted into the planilla if something fails in the field.
@@ -283,9 +320,12 @@ export async function setupLevantamiento(context){
   $('lev-cerca').addEventListener('click',async()=>{ctx.toast('Obteniendo ubicación GPS…');const fix=await requestFix(()=>ctx.toast('Ubicación desactivada.'));if(fix){aqui=fix;render();ctx.toast('Lista ordenada por cercanía dentro de cada grupo y nodo.');}});
   const view=$('levantamiento-view');
   view.addEventListener('click',async e=>{
-    const t=e.target.closest('[data-lev-abrir],[data-lev-volver],[data-lev-gps],[data-lev-foto],[data-lev-quitar],[data-lev-enviar]');if(!t)return;
-    if(t.dataset.levAbrir){abierto=t.dataset.levAbrir;render();window.scrollTo({top:0,behavior:'instant'});}
-    else if('levVolver'in t.dataset){abierto=null;render();}
+    const t=e.target.closest('[data-lev-abrir],[data-lev-volver],[data-lev-gps],[data-lev-foto],[data-lev-quitar],[data-lev-enviar],[data-lev-confirmar],[data-lev-descartar],[data-lev-anular]');if(!t)return;
+    if(t.dataset.levAbrir){abierto=t.dataset.levAbrir;confirmando=null;render();window.scrollTo({top:0,behavior:'instant'});}
+    else if('levVolver'in t.dataset){abierto=null;confirmando=null;render();}
+    else if('levConfirmar'in t.dataset){confirmando=t.dataset.levConfirmar||null;render();if(confirmando)document.querySelector('.lev-confirmar')?.scrollIntoView({behavior:'smooth',block:'center'});}
+    else if('levDescartar'in t.dataset)await descartar(abierto);
+    else if('levAnular'in t.dataset)await anular(abierto,$('lev-motivo').value.trim());
     else if(t.dataset.levGps)await tomarGps(t.dataset.levGps);
     else if(t.dataset.levFoto){const [toma,origen]=t.dataset.levFoto.split('|');const input=document.createElement('input');input.type='file';input.accept='image/*';if(origen==='camera')input.capture='environment';else input.multiple=true;input.onchange=()=>agregarFotos(toma,[...input.files],origen);input.click();}
     else if(t.dataset.levQuitar){const id=t.dataset.levQuitar;await del('fotos',[id]);fotos=fotos.filter(f=>f.id!==id);render();}
@@ -296,4 +336,4 @@ export async function setupLevantamiento(context){
   view.addEventListener('change',async e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);if(await guardarCampo(clave,e.target.value))render();else actualizarEstado(e.target);});
   render();
 }
-export function showLevantamiento(){abierto=null;render();}
+export function showLevantamiento(){abierto=null;confirmando=null;render();}
