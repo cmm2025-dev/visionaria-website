@@ -88,7 +88,7 @@ def valor_valido(campo, v):
 
 def validar(r, comuna):
     """(motivo, valores normalizados). motivo es None si el envío es válido."""
-    if not isinstance(r, dict) or r.get('version') != VERSION or r.get('tipo') != 'levantamiento':
+    if not isinstance(r, dict) or r.get('version') != VERSION or r.get('tipo') not in ('levantamiento', 'anulacion'):
         return 'Versión de envío no reconocida.', None
     for campo in ('id', 'formulario', 'codigo', 'comuna', 'guardado'):
         if not isinstance(r.get(campo), str) or not r[campo].strip():
@@ -102,6 +102,11 @@ def validar(r, comuna):
         datetime.datetime.fromisoformat(r['guardado'].replace('Z', '+00:00'))
     except ValueError:
         return 'Fecha de guardado no válida.', None
+    if r['tipo'] == 'anulacion':
+        motivo = r.get('motivo')
+        if not isinstance(motivo, str) or not motivo.strip() or len(motivo) > 500:
+            return 'Una anulación necesita un motivo (hasta 500 caracteres).', None
+        return None, {}
     campos = {c['key']: c for c in f['campos']}
     valores, errores = {}, []
     for clave, v in (r.get('valores') or {}).items():
@@ -159,7 +164,9 @@ def ingestar(dbx, conn):
 
 
 def recibir(conn, r, comuna, valores):
-    """Guarda el envío y, si es el más reciente del punto, lo deja vigente. Nada se borra."""
+    """Guarda el envío y, si es el más reciente del punto, lo deja vigente. Nada se borra: una anulación es un envío más,
+    que deja el punto sin valores (la fila de la planilla vuelve a quedar vacía) y guarda el motivo."""
+    anulacion = r['tipo'] == 'anulacion'
     if conn.execute('SELECT 1 FROM levantamiento_envios WHERE id=%s', (r['id'],)).fetchone():
         return {'estado': 'ya_recibido', 'codigo': r['codigo']}
     guardado = datetime.datetime.fromisoformat(r['guardado'].replace('Z', '+00:00'))
@@ -170,18 +177,23 @@ def recibir(conn, r, comuna, valores):
         estado = 'vigente'
         if actual:
             conn.execute("UPDATE levantamiento_envios SET estado='reemplazado' WHERE id=%s", (actual['envio_id'],))
-        conn.execute('''INSERT INTO levantamientos (codigo, formulario, comuna, valores, fotos, gps, gps_poste, registrado_por, envio_id, guardado_en)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        conn.execute('''INSERT INTO levantamientos (codigo, formulario, comuna, valores, fotos, gps, gps_poste, registrado_por, envio_id, guardado_en,
+                          anulado, motivo_anulacion)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                         ON CONFLICT (codigo) DO UPDATE SET formulario=EXCLUDED.formulario, valores=EXCLUDED.valores, fotos=EXCLUDED.fotos,
                           gps=EXCLUDED.gps, gps_poste=EXCLUDED.gps_poste, registrado_por=EXCLUDED.registrado_por,
-                          envio_id=EXCLUDED.envio_id, guardado_en=EXCLUDED.guardado_en, actualizado_en=clock_timestamp()''',
-                     (r['codigo'], r['formulario'], comuna, Jsonb(valores), Jsonb(r.get('fotos') or []),
-                      Jsonb(r.get('gps')) if r.get('gps') else None, Jsonb(r.get('gpsPosteCGE')) if r.get('gpsPosteCGE') else None,
-                      r.get('registro') or None, r['id'], guardado))
+                          envio_id=EXCLUDED.envio_id, guardado_en=EXCLUDED.guardado_en, anulado=EXCLUDED.anulado,
+                          motivo_anulacion=EXCLUDED.motivo_anulacion, actualizado_en=clock_timestamp()''',
+                     (r['codigo'], r['formulario'], comuna, Jsonb(valores), Jsonb([] if anulacion else r.get('fotos') or []),
+                      Jsonb(r.get('gps')) if r.get('gps') and not anulacion else None,
+                      Jsonb(r.get('gpsPosteCGE')) if r.get('gpsPosteCGE') and not anulacion else None,
+                      r.get('registro') or None, r['id'], guardado, anulacion, r['motivo'].strip() if anulacion else None))
     conn.execute('INSERT INTO levantamiento_envios (id, codigo, contenido, estado) VALUES (%s,%s,%s,%s)',
                  (r['id'], r['codigo'], Jsonb(r), estado))
-    db.evento(conn, 'levantamiento_' + estado, comuna, r['codigo'], r.get('registro'), envio=r['id'], formulario=r['formulario'])
-    return {'estado': estado, 'codigo': r['codigo']}
+    detalle = {'motivo': r['motivo'].strip()} if anulacion else {}
+    db.evento(conn, 'levantamiento_' + ('anulacion_' if anulacion else '') + estado, comuna, r['codigo'], r.get('registro'),
+              envio=r['id'], formulario=r['formulario'], **detalle)
+    return {'estado': estado, 'codigo': r['codigo'], **({'anulacion': True} if anulacion else {})}
 
 
 # --- Base de datos → planilla -----------------------------------------------------------------------------------
@@ -374,9 +386,11 @@ def _enlace_fotos(hoja, enc, f, fila0, fotos):
         encabezado.setString(nombre)
         enc[nombre] = col
     fotos = [x for x in fotos if x.get('ruta')]
+    cel = hoja.getCellByPosition(enc[nombre], fila0)
     if fotos:
-        hoja.getCellByPosition(enc[nombre], fila0).setFormula(
-            '=HYPERLINK("%s";"%d foto%s")' % (url_carpeta(fotos[0]['ruta']), len(fotos), '' if len(fotos) == 1 else 's'))
+        cel.setFormula('=HYPERLINK("%s";"%d foto%s")' % (url_carpeta(fotos[0]['ruta']), len(fotos), '' if len(fotos) == 1 else 's'))
+    elif cel.getType().value != 'EMPTY':
+        cel.setFormula('')   # punto anulado: las fotos siguen en Dropbox, pero la fila ya no las enlaza
 
 
 def pasada(dbx, office, conn, trabajo, reposo_min=10, forzar=()):

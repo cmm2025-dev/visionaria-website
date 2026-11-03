@@ -100,6 +100,9 @@ CREATE TABLE IF NOT EXISTS planilla_levantamiento (
 ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS formulario text;
 ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS gps_poste jsonb;
 ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS tramite text;
+-- Anulación desde la app: el punto queda sin valores y la fila de la planilla vacía; el motivo y la historia se guardan.
+ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS anulado boolean NOT NULL DEFAULT false;
+ALTER TABLE levantamientos ADD COLUMN IF NOT EXISTS motivo_anulacion text;
 CREATE TABLE IF NOT EXISTS planillas_levantamiento (
   formulario      text PRIMARY KEY,            -- DEC-020, VR-Antofagasta, …
   rev_generada    text,
