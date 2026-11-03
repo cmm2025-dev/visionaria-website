@@ -73,8 +73,11 @@ function envioValores(F,punto,v){const out={};for(const c of F.campos){if(!visib
   return out;}
 const fechaCorta=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
 const huella=o=>JSON.stringify(o,Object.keys(o).sort());
+// Fecha and Levantó are stamped by the app as soon as a point is touched: on their own they are not a draft.
+const AUTOMATICOS=['Fecha','Levantó'];
+const tieneDatos=(p,fs)=>fs.length>0||Object.keys(p?.valores||{}).some(k=>!AUTOMATICOS.includes(k));
 function estadoEnvio(codigo){const p=puntos.get(codigo),fs=fotos.filter(f=>f.codigo===codigo);
-  if(!p||(!Object.keys(p.valores||{}).length&&!fs.length))return p?.anulado?{texto:'Anulado '+fechaCorta(p.anulado.at),clase:''}:{texto:'Sin datos',clase:''};
+  if(!p||!tieneDatos(p,fs))return p?.anulado?{texto:'Anulado '+fechaCorta(p.anulado.at),clase:''}:{texto:'Sin datos',clase:''};
   if(p.error)return {texto:'Error al enviar',clase:'error'};
   const {F,punto}=ubicar(codigo),actual=huella({v:envioValores(F,punto,valoresCompletos(codigo)),f:fs.map(f=>f.id).sort(),g:p.gpsPoste?.at??''});
   if(p.sent&&p.sent.huella===actual&&fs.every(f=>f.status==='sent'))return {texto:'Enviado '+fechaCorta(p.sent.at),clase:'sent'};
@@ -97,11 +100,11 @@ function situacion(codigo){
   else if(s.clase==='sent')estado='enviado';
   else if(p?.anulado)estado='anulado';
   else estado='sin';
-  const deOficina=estado==='ingresado';
+  const deOficina=estado==='ingresado',vacioLocal=!tieneDatos(p,fotos.filter(f=>f.codigo===codigo));
   return {estado,etiqueta:ETIQUETA[estado],clase:estado==='sin'||estado==='anulado'?'':estado==='borrador'?'pending':'sent',
-    control:deOficina?o.control||'Sin levantar':local.control,tramite:deOficina?o.tramite||'':local.tramite};
+    control:deOficina?o.control||'Sin levantar':vacioLocal?'Sin levantar':local.control,tramite:deOficina?o.tramite||'':vacioLocal?'':local.tramite};
 }
-const ESTADOS=[['sin','Sin levantar'],['borrador','Borradores en el teléfono'],['enviado','Enviados, en cola'],['ingresado','Ingresados en la planilla'],['anulado','Anulados'],['ok','Control OK'],['faltan','Con datos pendientes'],['via-rapida','Vía rápida confirmada'],['largo','Trámite largo o por revisar']];
+const ESTADOS=[['sin','Sin levantar'],['borrador','Borradores en el teléfono'],['enviado','Enviados, en cola'],['ingresado','Ingresados en la planilla'],['anulado','Anulados'],['ok','Control OK'],['faltan','Con datos pendientes'],['via-rapida','Levantados: vía rápida confirmada'],['largo','Levantados: trámite largo o por revisar']];
 function coincideEstado(codigo,filtroEstado){const e=situacion(codigo);
   if(filtroEstado==='ok')return e.control==='OK';
   if(filtroEstado==='faltan')return !['OK','Sin levantar'].includes(e.control);
@@ -124,6 +127,12 @@ async function cargarOficina(){
     oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
     try{localStorage.setItem(OFICINA,JSON.stringify(o))}catch{}
     if(!abierto)render();}catch{}
+}
+
+// Right under the filters, so the result of a filter is visible without scrolling to the list.
+function renderConteo(F,n){
+  const total=F.puntos.filter(p=>!p.porUbicar).length,activos=[filtro.comuna&&$('lev-comuna-wrap').hidden===false?filtro.comuna:'',filtro.estado&&ESTADOS.find(([k])=>k===filtro.estado)?.[1],filtro.clasif,filtro.quien&&'asignado a '+filtro.quien,filtro.dia,filtro.texto&&`«${filtro.texto}»`].filter(Boolean);
+  $('lev-conteo').innerHTML=`<strong>${n===total?`${total} puntos`:`${n} de ${total} puntos`}</strong>${activos.length?` · ${esc(activos.join(' · '))} <button type="button" class="text-button" data-lev-limpiar>Quitar filtros</button>`:''}${n?' <button type="button" class="text-button" data-lev-ir-lista>Ver lista ↓</button>':''}`;
 }
 
 // The executive board: every point of every form, per comuna, with what is in the planilla, in the queue and on this phone.
@@ -164,7 +173,8 @@ function renderLista(){
   $('lev-lista').innerHTML=lista.length?lista.map(p=>{const e=situacion(p.codigo),s=estadoEnvio(p.codigo),k=kmz(p);
     const cab=F.tipo==='via-rapida'&&p.clasificacion!==grupo?(grupo=p.clasificacion,`<h3 class="lev-grupo-titulo ${claseGrupo(grupo)}">${esc(grupo)}<span>${porGrupo(grupo)} punto${porGrupo(grupo)===1?'':'s'}</span></h3>`):'';
     const lejos=aqui&&k?` · a ${(distanciaM(aqui,k)/1000).toFixed(1).replace('.',',')} km`:'';
-    return `${cab}<button type="button" class="lev-item" data-lev-abrir="${esc(p.codigo)}"><div><strong>${esc(p.codigo)}</strong>${p.lpr?' <span class="lev-tag">LPR</span>':''}${p.sinSolucion?' <span class="lev-tag">Sin solución</span>':''}<div class="record-meta">${esc(p.comuna)}${p.nodo?' · '+esc(p.nodo):''} · ${esc(p.pre['Ubicación según el KMZ de las bases'])}${asignado(F,p,'quien')?' · '+esc(asignado(F,p,'quien')):''}${lejos}</div></div><div class="lev-estados">${e.tramite?`<span class="status ${chipClase(e.tramite)}">${esc(e.tramite)}</span>`:''}<span class="status ${chipClase(e.control)}">${esc(e.control)}</span><span class="lev-envio ${s.clase||e.clase}">${esc(s.clase?s.texto:e.etiqueta)}</span></div></button>`;}).join(''):'<p class="muted">Ningún punto coincide con el filtro.</p>';
+    return `${cab}<button type="button" class="lev-item" data-lev-abrir="${esc(p.codigo)}"><div><strong>${esc(p.codigo)}</strong>${p.lpr?' <span class="lev-tag">LPR</span>':''}${p.sinSolucion?' <span class="lev-tag">Sin solución</span>':''}<div class="record-meta">${esc(p.comuna)}${p.nodo?' · '+esc(p.nodo):''} · ${esc(p.pre['Ubicación según el KMZ de las bases'])}${asignado(F,p,'quien')?' · '+esc(asignado(F,p,'quien')):''}${lejos}</div></div><div class="lev-estados">${e.tramite?`<span class="status ${chipClase(e.tramite)}">${esc(e.tramite)}</span>`:''}<span class="status ${chipClase(e.control)}">${esc(e.control)}</span><span class="lev-envio ${s.clase||e.clase}">${esc(s.clase?s.texto:e.etiqueta)}</span></div></button>`;}).join(''):`<p class="muted">Ningún punto coincide con el filtro.${['via-rapida','largo','ok','faltan'].includes(filtro.estado)?' El trámite y el «Control» se calculan cuando el punto se levanta. Para ver los puntos según la clasificación de la oferta, usa «Clasificación».':''}</p>`;
+  renderConteo(F,lista.length);
 }
 function campoHTML(F,c,v,punto){
   const val=v[c.key]??'',id='lev-c-'+F.campos.indexOf(c),req=c.required||(c.requiredLpr&&punto.lpr)||(c.key===F.reglas.enlace.campo&&punto.enlace);
@@ -404,6 +414,8 @@ export async function setupLevantamiento(context){
       else{if(!F.puntos.some(p=>p.comuna===comuna)){const otro=C.formularios.find(x=>x.tipo==='via-rapida'&&x.puntos.some(p=>p.comuna===comuna))??C.formularios.find(x=>x.puntos.some(p=>p.comuna===comuna));prefs.formulario=otro.id;savePrefs();$('lev-formulario').value=otro.id;filtro.dia='';}
         filtro.comuna=comuna;}
       poblarFiltros();render();return;}
+    if(e.target.closest('[data-lev-limpiar]')){Object.assign(filtro,{quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:''});$('lev-buscar').value='';poblarFiltros();render();return;}
+    if(e.target.closest('[data-lev-ir-lista]')){$('lev-lista').scrollIntoView?.({behavior:'smooth',block:'start'});return;}
     const t=e.target.closest('[data-lev-abrir],[data-lev-volver],[data-lev-gps],[data-lev-foto],[data-lev-quitar],[data-lev-enviar],[data-lev-confirmar],[data-lev-descartar],[data-lev-anular]');if(!t)return;
     if(t.dataset.levAbrir){abierto=t.dataset.levAbrir;confirmando=null;render();window.scrollTo({top:0,behavior:'instant'});}
     else if('levVolver'in t.dataset){abierto=null;confirmando=null;render();}
