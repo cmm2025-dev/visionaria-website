@@ -30,7 +30,13 @@ def resumen(conn):
         r['fecha'] = r['fecha'].isoformat()
         for k in ('recibido_en', 'guardado_en'):
             r[k] = r[k].isoformat() if r[k] else None
-    return {'comunas': comunas, 'registros': registros}
+    # Estado de cada punto del levantamiento, para el tablero de la app: sin valores ni fotos, solo cómo va.
+    levantamientos = conn.execute('''
+        SELECT codigo, formulario, comuna, control, tramite, anulado, valores->>'Levantó' AS levanto, registrado_por, guardado_en
+        FROM levantamientos ORDER BY codigo''').fetchall()
+    for r in levantamientos:
+        r['guardado_en'] = r['guardado_en'].isoformat() if r['guardado_en'] else None
+    return {'comunas': comunas, 'registros': registros, 'levantamientos': levantamientos}
 
 
 class Publicador:

@@ -37,10 +37,24 @@ export interface PanelRegistro {
   guardado_en: string | null;
 }
 
+/** One levantamiento point as the office has it: how it is going, never its values or photos. */
+export interface PanelLevantamiento {
+  codigo: string;
+  formulario: string | null;
+  comuna: string;
+  control: string | null;
+  tramite: string | null;
+  anulado: boolean;
+  levanto: string | null;
+  registrado_por: string | null;
+  guardado_en: string | null;
+}
+
 export interface PanelSnapshot {
   generado: string;
   comunas: PanelComuna[];
   registros: PanelRegistro[];
+  levantamientos?: PanelLevantamiento[];
 }
 
 function secret(): string {

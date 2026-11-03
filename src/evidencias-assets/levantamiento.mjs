@@ -8,12 +8,15 @@ import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix} from './media.mjs';
 
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs';
+const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
 const FECHA_BASE=Date.UTC(1899,11,30);
 const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable'];
-let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
+let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
+// What the office already has, per point (from the panel summary): read when the screen opens, kept for offline use.
+let oficina={generado:null,puntos:new Map()};
+try{const o=JSON.parse(localStorage.getItem(OFICINA)||'null');if(o)oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(r=>[r.codigo,r]))};}catch{}
 
 // --- Storage: its own database, so a levantamiento never mixes with the evidence records ---------------------------
 let dbp;
@@ -82,30 +85,94 @@ const distanciaM=(a,b)=>{const R=6371000,r=x=>x*Math.PI/180,dLat=r(b.lat-a.lat),
 const kmz=punto=>{const lat=num(punto.pre['Latitud KMZ']),lon=num(punto.pre['Longitud KMZ']);return lat!==null&&lon!==null?{lat,lon}:null;};
 const nodoOrden=n=>{const m=String(n).match(/\d+/);return m?Number(m[0]):999;};
 
+// Where each point stands, joining this phone (drafts, sends not yet processed) with what the office already wrote.
+// estado: sin | borrador | enviado (in the queue) | ingresado (in the planilla) | anulado.
+const ETIQUETA={sin:'Sin levantar',borrador:'Borrador en el teléfono',enviado:'Enviado, en cola',ingresado:'Ingresado en la planilla',anulado:'Anulado'};
+function situacion(codigo){
+  const p=puntos.get(codigo),s=estadoEnvio(codigo),o=oficina.puntos.get(codigo),local=estadoDe(codigo);
+  const t=x=>Date.parse(x)||0,oficinaVigente=o&&(!p?.sent||t(o.guardado_en)>=t(p.sent.at))&&(!p?.anulado||t(o.guardado_en)>=t(p.anulado.at));
+  let estado;
+  if(s.clase==='pending'||s.clase==='error')estado='borrador';
+  else if(oficinaVigente)estado=o.anulado?'anulado':'ingresado';
+  else if(s.clase==='sent')estado='enviado';
+  else if(p?.anulado)estado='anulado';
+  else estado='sin';
+  const deOficina=estado==='ingresado';
+  return {estado,etiqueta:ETIQUETA[estado],clase:estado==='sin'||estado==='anulado'?'':estado==='borrador'?'pending':'sent',
+    control:deOficina?o.control||'Sin levantar':local.control,tramite:deOficina?o.tramite||'':local.tramite};
+}
+const ESTADOS=[['sin','Sin levantar'],['borrador','Borradores en el teléfono'],['enviado','Enviados, en cola'],['ingresado','Ingresados en la planilla'],['anulado','Anulados'],['ok','Control OK'],['faltan','Con datos pendientes'],['via-rapida','Vía rápida confirmada'],['largo','Trámite largo o por revisar']];
+function coincideEstado(codigo,filtroEstado){const e=situacion(codigo);
+  if(filtroEstado==='ok')return e.control==='OK';
+  if(filtroEstado==='faltan')return !['OK','Sin levantar'].includes(e.control);
+  if(filtroEstado==='via-rapida')return String(e.tramite).startsWith('Vía rápida');
+  if(filtroEstado==='largo')return !!e.tramite&&!String(e.tramite).startsWith('Vía rápida');
+  return e.estado===filtroEstado;}
+const claseGrupo=g=>g==='Vía rápida probable'?'rapida':g==='Revisar'?'revisar':'largo';
+
+// The person comes from the session: the email's surname matched against the form's levantadores.
+const sinTildes=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+function nombreSesion(){const email=ctx?.config().email||'',local=sinTildes(email.split('@')[0]);if(!local)return null;
+  const hay=C.levantadores.filter(n=>{const partes=n.split(/\s+/).map(sinTildes).filter(x=>x.length>2);return partes.length>1&&local.includes(partes.at(-1));});
+  return hay.length===1?hay[0]:null;}
+function levantoSesion(F){const campo=F.campos.find(c=>c.key==='Levantó'),nombre=nombreSesion();
+  if(campo?.type==='list')return nombre&&campo.options.includes(nombre)?nombre:null;
+  return nombre||ctx?.config().email||null;}
+
+async function cargarOficina(){
+  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)return;const o=await r.json();
+    oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
+    try{localStorage.setItem(OFICINA,JSON.stringify(o))}catch{}
+    if(!abierto)render();}catch{}
+}
+
+// The executive board: every point of every form, per comuna, with what is in the planilla, in the queue and on this phone.
+function renderTablero(){
+  const comunas=[...new Set(C.formularios.flatMap(F=>F.puntos.map(p=>p.comuna)))].sort();
+  const hora=oficina.generado?new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(oficina.generado)):null;
+  const tarjetas=comunas.map(comuna=>{
+    const filas=C.formularios.map(F=>({F,lista:F.puntos.filter(p=>p.comuna===comuna&&!p.porUbicar)})).filter(x=>x.lista.length);
+    const todos=filas.flatMap(x=>x.lista.map(p=>situacion(p.codigo))),total=todos.length,cuenta=k=>todos.filter(e=>e.estado===k).length;
+    const ing=cuenta('ingresado'),env=cuenta('enviado'),bor=cuenta('borrador'),ok=todos.filter(e=>e.control==='OK').length;
+    const vr=todos.filter(e=>String(e.tramite).startsWith('Vía rápida')).length,largo=todos.filter(e=>e.tramite&&!String(e.tramite).startsWith('Vía rápida')).length;
+    const pct=x=>total?(x/total*100).toFixed(1):0,avance=total?Math.round((ing+env)/total*100):0;
+    return `<button type="button" class="lev-tarjeta${filtro.comuna===comuna?' activa':''}" data-lev-comuna="${esc(comuna)}">
+      <div class="lev-tarjeta-top"><strong>${esc(comuna)}</strong><span>${avance}%</span></div>
+      <div class="lev-barra" role="img" aria-label="${ing} ingresados, ${env} en cola, ${bor} borradores de ${total}"><i class="ing" style="width:${pct(ing)}%"></i><i class="env" style="width:${pct(env)}%"></i><i class="bor" style="width:${pct(bor)}%"></i></div>
+      <dl><div><dt>Ingresados</dt><dd>${ing}</dd></div><div><dt>En cola</dt><dd>${env}</dd></div><div><dt>Borradores</dt><dd>${bor}</dd></div><div><dt>Sin levantar</dt><dd>${cuenta('sin')+cuenta('anulado')}</dd></div></dl>
+      <p>${ok} con Control OK${vr||largo?` · ${vr} vía rápida · ${largo} trámite largo o por revisar`:''}</p>
+      <p class="lev-tarjeta-forms">${filas.map(x=>`${esc(x.F.tipo==='dec020'?'DEC-020':'Vía rápida')} ${x.lista.length}`).join(' · ')} puntos</p></button>`;}).join('');
+  $('lev-tablero').innerHTML=`<div class="lev-tablero-grid">${tarjetas}</div><p class="field-hint">${hora?`Planilla: estado de la oficina al ${hora}.`:'Sin datos de la oficina todavía: se muestra solo lo de este teléfono.'} Los borradores son solo los de este teléfono. Toca una comuna para filtrar la lista.</p>`;
+}
+
 // --- Rendering ------------------------------------------------------------------------------------------------------
 const chipClase=t=>t==='OK'||String(t).startsWith('Vía rápida')?'sent':t==='Sin levantar'||!t?'':'error';
 function bandeja(F){
   let lista=F.puntos.filter(p=>!p.porUbicar&&(!filtro.quien||asignado(F,p,'quien').includes(filtro.quien))&&(!filtro.dia||asignado(F,p,'dia')===filtro.dia)
+    &&(!filtro.comuna||p.comuna===filtro.comuna)&&(!filtro.clasif||p.clasificacion===filtro.clasif)&&(!filtro.estado||coincideEstado(p.codigo,filtro.estado))
     &&(!filtro.texto||(p.codigo+' '+(p.pre['Ubicación según el KMZ de las bases']??'')+' '+(p.nodo??'')).toLowerCase().includes(filtro.texto.toLowerCase())));
   if(F.tipo==='via-rapida'){const dist=p=>{const k=kmz(p);return aqui&&k?distanciaM(aqui,k):Infinity;};
     lista=[...lista].sort((a,b)=>ORDEN_CLASIFICACION.indexOf(a.clasificacion)-ORDEN_CLASIFICACION.indexOf(b.clasificacion)||nodoOrden(a.nodo)-nodoOrden(b.nodo)||dist(a)-dist(b));}
   return lista;
 }
 function renderLista(){
-  const F=activo(),lista=bandeja(F),estados=F.puntos.filter(p=>!p.porUbicar).map(p=>estadoDe(p.codigo));
+  const F=activo(),lista=bandeja(F),estados=F.puntos.filter(p=>!p.porUbicar).map(p=>situacion(p.codigo));
   const n=t=>estados.filter(e=>e.control===t).length,vr=estados.filter(e=>String(e.tramite).startsWith('Vía rápida')).length;
   $('lev-resumen').textContent=`${n('OK')} OK · ${estados.length-n('OK')-n('Sin levantar')} en curso · ${n('Sin levantar')} sin levantar · ${estados.length} puntos${F.tipo==='via-rapida'?` · ${vr} vía rápida confirmada`:''}`;
-  let grupo='';
-  $('lev-lista').innerHTML=lista.length?lista.map(p=>{const e=estadoDe(p.codigo),s=estadoEnvio(p.codigo),k=kmz(p);
-    const cab=F.tipo==='via-rapida'&&p.clasificacion!==grupo?(grupo=p.clasificacion,`<h3 class="lev-grupo-titulo">${esc(p.clasificacion)}</h3>`):'';
+  renderTablero();
+  let grupo='';const porGrupo=g=>lista.filter(p=>p.clasificacion===g).length;
+  $('lev-lista').innerHTML=lista.length?lista.map(p=>{const e=situacion(p.codigo),s=estadoEnvio(p.codigo),k=kmz(p);
+    const cab=F.tipo==='via-rapida'&&p.clasificacion!==grupo?(grupo=p.clasificacion,`<h3 class="lev-grupo-titulo ${claseGrupo(grupo)}">${esc(grupo)}<span>${porGrupo(grupo)} punto${porGrupo(grupo)===1?'':'s'}</span></h3>`):'';
     const lejos=aqui&&k?` · a ${(distanciaM(aqui,k)/1000).toFixed(1).replace('.',',')} km`:'';
-    return `${cab}<button type="button" class="lev-item" data-lev-abrir="${esc(p.codigo)}"><div><strong>${esc(p.codigo)}</strong>${p.lpr?' <span class="lev-tag">LPR</span>':''}${p.sinSolucion?' <span class="lev-tag">Sin solución</span>':''}<div class="record-meta">${esc(p.comuna)}${p.nodo?' · '+esc(p.nodo):''} · ${esc(p.pre['Ubicación según el KMZ de las bases'])}${asignado(F,p,'quien')?' · '+esc(asignado(F,p,'quien')):''}${lejos}</div></div><div class="lev-estados">${e.tramite?`<span class="status ${chipClase(e.tramite)}">${esc(e.tramite)}</span>`:''}<span class="status ${chipClase(e.control)}">${esc(e.control)}</span><span class="lev-envio ${s.clase}">${esc(s.texto)}</span></div></button>`;}).join(''):'<p class="muted">Ningún punto coincide con el filtro.</p>';
+    return `${cab}<button type="button" class="lev-item" data-lev-abrir="${esc(p.codigo)}"><div><strong>${esc(p.codigo)}</strong>${p.lpr?' <span class="lev-tag">LPR</span>':''}${p.sinSolucion?' <span class="lev-tag">Sin solución</span>':''}<div class="record-meta">${esc(p.comuna)}${p.nodo?' · '+esc(p.nodo):''} · ${esc(p.pre['Ubicación según el KMZ de las bases'])}${asignado(F,p,'quien')?' · '+esc(asignado(F,p,'quien')):''}${lejos}</div></div><div class="lev-estados">${e.tramite?`<span class="status ${chipClase(e.tramite)}">${esc(e.tramite)}</span>`:''}<span class="status ${chipClase(e.control)}">${esc(e.control)}</span><span class="lev-envio ${s.clase||e.clase}">${esc(s.clase?s.texto:e.etiqueta)}</span></div></button>`;}).join(''):'<p class="muted">Ningún punto coincide con el filtro.</p>';
 }
 function campoHTML(F,c,v,punto){
   const val=v[c.key]??'',id='lev-c-'+F.campos.indexOf(c),req=c.required||(c.requiredLpr&&punto.lpr)||(c.key===F.reglas.enlace.campo&&punto.enlace);
   const label=`<span class="lev-col">${esc(c.col)}</span> ${esc(c.key)}${req?' <span class="lev-req">*</span>':''}${c.key.startsWith('Señal celular')&&punto.sinSolucion?' <span class="lev-tag">Anotar cada operador</span>':''}`;
   const attr=`id="${id}" data-lev-campo="${esc(c.key)}"`;let input;
+  const quien=c.key==='Levantó'?levantoSesion(F):null;
   if(c.key===F.reglas.fotos.campo)input=`<input id="${id}" value="${esc(val)}" readonly>`;
+  else if(quien)input=`<input id="${id}" value="${esc(val||quien)}" readonly><span class="field-hint">Se asigna con la sesión iniciada.</span>`;
   else if(c.type==='list')input=`<select ${attr}><option value=""></option>${c.options.map(o=>`<option${o===val?' selected':''}>${esc(o)}</option>`).join('')}</select>`;
   else if(c.type==='date')input=`<input ${attr} type="date" min="${minFecha()}" max="${chileDate()}" value="${esc(val)}">`;
   else if(c.type==='decimal'||c.type==='whole')input=`<input ${attr} type="text" inputmode="${c.type==='whole'?'numeric':'decimal'}" value="${esc(val)}" autocomplete="off">`;
@@ -160,8 +227,8 @@ async function guardarCampo(clave,valor){
   // The first thing typed stamps the day and who surveyed it; both stay editable.
   let auto=false;
   if(!p.valores['Fecha']&&chileDate()>=minFecha()){p.valores['Fecha']=chileDate();auto=true;}
-  if(!p.valores['Levantó']&&prefs.levanto){p.valores['Levantó']=prefs.levanto;auto=true;}
-  if(clave==='Levantó'&&valor){prefs.levanto=valor;savePrefs();}
+  const quien=levantoSesion(ubicar(abierto).F);
+  if(quien&&p.valores['Levantó']!==quien){p.valores['Levantó']=quien;auto=true;}
   p.error='';p.updatedAt=new Date().toISOString();puntos.set(abierto,p);await put('puntos',[p]);
   return auto;
 }
@@ -295,6 +362,15 @@ function poblarFiltros(){
   const dias=[...new Set(F.puntos.map(p=>asignado(F,p,'dia')).filter(Boolean))].sort();
   $('lev-dia').innerHTML='<option value="">Todos los días</option>'+dias.map(d=>`<option${d===filtro.dia?' selected':''}>${esc(d)}</option>`).join('');
   $('lev-cerca').hidden=F.tipo!=='via-rapida';
+  const comunas=[...new Set(F.puntos.map(p=>p.comuna))].sort();
+  if(!comunas.includes(filtro.comuna))filtro.comuna='';
+  $('lev-comuna-wrap').hidden=comunas.length<2;
+  $('lev-comuna').innerHTML='<option value="">Todas</option>'+comunas.map(c=>`<option${c===filtro.comuna?' selected':''}>${esc(c)}</option>`).join('');
+  $('lev-estado').innerHTML='<option value="">Todos</option>'+ESTADOS.filter(([k])=>F.tipo==='via-rapida'||!['via-rapida','largo'].includes(k)).map(([k,t])=>`<option value="${k}"${k===filtro.estado?' selected':''}>${esc(t)}</option>`).join('');
+  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&!p.porUbicar));
+  if(!clases.includes(filtro.clasif))filtro.clasif='';
+  $('lev-clasif-wrap').hidden=!clases.length;
+  $('lev-clasif').innerHTML='<option value="">Todas</option>'+clases.map(c=>`<option${c===filtro.clasif?' selected':''}>${esc(c)}</option>`).join('');
 }
 export async function setupLevantamiento(context){
   ctx=context;
@@ -308,18 +384,26 @@ export async function setupLevantamiento(context){
   for(const f of sinN){f.n=Math.max(0,...fotos.filter(x=>x.codigo===f.codigo&&x.n).map(x=>x.n))+1;f.formulario??='DEC-020';}
   if(sinN.length)await put('fotos',sinN);
   if(!formulario(prefs.formulario))prefs.formulario=C.formularios[0].id;
-  filtro.quien=prefs.levanto&&C.levantadores.includes(prefs.levanto)?prefs.levanto:'';
   $('lev-formulario').innerHTML=C.formularios.map(F=>`<option value="${esc(F.id)}"${F.id===prefs.formulario?' selected':''}>${esc(F.titulo)}</option>`).join('');
   poblarFiltros();
   $('lev-formulario').addEventListener('change',e=>{prefs.formulario=e.target.value;savePrefs();filtro.dia='';poblarFiltros();render();});
   $('lev-quien').addEventListener('change',e=>{filtro.quien=e.target.value;render();});
   $('lev-dia').addEventListener('change',e=>{filtro.dia=e.target.value;render();});
+  $('lev-comuna').addEventListener('change',e=>{filtro.comuna=e.target.value;render();});
+  $('lev-estado').addEventListener('change',e=>{filtro.estado=e.target.value;render();});
+  $('lev-clasif').addEventListener('change',e=>{filtro.clasif=e.target.value;render();});
   $('lev-buscar').addEventListener('input',e=>{filtro.texto=e.target.value;render();});
   $('lev-csv').addEventListener('click',descargarCSV);
   $('lev-enviar-todo').addEventListener('click',enviarPendientes);
   $('lev-cerca').addEventListener('click',async()=>{ctx.toast('Obteniendo ubicación GPS…');const fix=await requestFix(()=>ctx.toast('Ubicación desactivada.'));if(fix){aqui=fix;render();ctx.toast('Lista ordenada por cercanía dentro de cada grupo y nodo.');}});
   const view=$('levantamiento-view');
   view.addEventListener('click',async e=>{
+    const tarjeta=e.target.closest('[data-lev-comuna]');
+    if(tarjeta){const comuna=tarjeta.dataset.levComuna,F=activo();
+      if(filtro.comuna===comuna){filtro.comuna='';}
+      else{if(!F.puntos.some(p=>p.comuna===comuna)){const otro=C.formularios.find(x=>x.tipo==='via-rapida'&&x.puntos.some(p=>p.comuna===comuna))??C.formularios.find(x=>x.puntos.some(p=>p.comuna===comuna));prefs.formulario=otro.id;savePrefs();$('lev-formulario').value=otro.id;filtro.dia='';}
+        filtro.comuna=comuna;}
+      poblarFiltros();render();return;}
     const t=e.target.closest('[data-lev-abrir],[data-lev-volver],[data-lev-gps],[data-lev-foto],[data-lev-quitar],[data-lev-enviar],[data-lev-confirmar],[data-lev-descartar],[data-lev-anular]');if(!t)return;
     if(t.dataset.levAbrir){abierto=t.dataset.levAbrir;confirmando=null;render();window.scrollTo({top:0,behavior:'instant'});}
     else if('levVolver'in t.dataset){abierto=null;confirmando=null;render();}
@@ -334,6 +418,6 @@ export async function setupLevantamiento(context){
   view.addEventListener('toggle',e=>{if(e.target.classList?.contains('lev-mas')){prefs.abrirResto=e.target.open;savePrefs();}},true);
   view.addEventListener('input',e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);const valor=e.target.value;guardarTimer=setTimeout(()=>guardarCampo(clave,valor),300);});
   view.addEventListener('change',async e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);if(await guardarCampo(clave,e.target.value))render();else actualizarEstado(e.target);});
-  render();
+  render();cargarOficina();
 }
-export function showLevantamiento(){abierto=null;confirmando=null;render();}
+export function showLevantamiento(){abierto=null;confirmando=null;render();cargarOficina();}
