@@ -11,7 +11,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
 const FECHA_BASE=Date.UTC(1899,11,30);
 const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable'];
-let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
+let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:'',nodo:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
 // What the office already has, per point (from the panel summary): read when the screen opens, kept for offline use.
@@ -129,9 +129,53 @@ async function cargarOficina(){
     if(!abierto)render();}catch{}
 }
 
+// --- Route: the listed points in a short order, opened in Google Maps --------------------------------------------
+// The order is computed here from straight-line distances (nearest neighbour, then 2-opt), starting where the
+// technician stands; Google Maps then draws the real road route and its times. A Maps link holds up to 10 stops,
+// so a longer route is split into legs, each starting where the previous one ended.
+const PARADAS_POR_TRAMO=10;
+let ruta={firma:null};
+const firmaFiltro=()=>JSON.stringify([prefs.formulario,filtro]);
+function ordenar(inicio,lista){
+  const d=(a,b)=>distanciaM(a.k,b.k),camino=[];let actual=inicio?{k:inicio}:null,resto=[...lista];
+  if(!actual){camino.push(resto.shift());actual=camino[0];}
+  while(resto.length){let i=0;for(let j=1;j<resto.length;j++)if(d(actual,resto[j])<d(actual,resto[i]))i=j;actual=resto.splice(i,1)[0];camino.push(actual);}
+  const nodos=inicio?[{k:inicio},...camino]:camino;
+  for(let mejora=true,vueltas=0;mejora&&vueltas<50;vueltas++){mejora=false;
+    for(let i=1;i<nodos.length-2;i++)for(let j=i+1;j<nodos.length-1;j++){
+      if(d(nodos[i-1],nodos[j])+d(nodos[i],nodos[j+1])+1<d(nodos[i-1],nodos[i])+d(nodos[j],nodos[j+1])){nodos.splice(i,j-i+1,...nodos.slice(i,j+1).reverse());mejora=true;}}}
+  return inicio?nodos.slice(1):nodos;
+}
+const coord=k=>`${k.lat},${k.lon}`;
+function urlTramo(desde,paradas){
+  const q=new URLSearchParams({api:'1',travelmode:'driving',destination:coord(paradas.at(-1).k)});
+  if(desde)q.set('origin',coord(desde));
+  if(paradas.length>1)q.set('waypoints',paradas.slice(0,-1).map(p=>coord(p.k)).join('|'));
+  return 'https://www.google.com/maps/dir/?'+q.toString();
+}
+async function armarRuta(conGps){
+  const F=activo(),soloPendientes=prefs.rutaPendientes!==false;
+  const lista=bandeja(F).filter(p=>!soloPendientes||['sin','borrador','anulado'].includes(situacion(p.codigo).estado));
+  const conCoord=lista.map(p=>({p,k:kmz(p)})).filter(x=>x.k),sinCoord=lista.filter(p=>!kmz(p));
+  const panel=$('lev-ruta-panel');panel.hidden=false;
+  if(!conCoord.length){panel.innerHTML=`<p>No hay puntos ${soloPendientes?'pendientes ':''}con coordenada en la lista actual. Ajusta los filtros (día, nodo, clasificación) y vuelve a tocar «Ruta en Google Maps».</p>${opcionesRuta(soloPendientes)}`;return;}
+  if(conGps){panel.innerHTML='<p>Obteniendo tu ubicación para partir desde aquí…</p>';const fix=await requestFix(()=>ctx.toast('Ubicación desactivada: la ruta parte desde el primer punto.'));if(fix)aqui=fix;}
+  const orden=ordenar(aqui,conCoord);
+  let total=0,previo=aqui;for(const x of orden){if(previo)total+=distanciaM(previo,x.k);previo=x.k;}
+  const tramos=[];for(let i=0;i<orden.length;i+=PARADAS_POR_TRAMO)tramos.push(orden.slice(i,i+PARADAS_POR_TRAMO));
+  ruta={firma:firmaFiltro()};
+  panel.innerHTML=`<div class="lev-ruta-top"><strong>Ruta sugerida · ${orden.length} punto${orden.length===1?'':'s'}</strong><button type="button" class="text-button" data-lev-ruta-cerrar>Cerrar</button></div>
+    <p class="field-hint">Orden calculado ${aqui?'desde tu ubicación':'desde el primer punto'}, por cercanía (~${(total/1000).toFixed(1).replace('.',',')} km en línea recta). Google Maps calcula el camino real y el tiempo. ${tramos.length>1?`Google admite ${PARADAS_POR_TRAMO} paradas por enlace: abre los tramos en orden.`:''}</p>
+    <div class="lev-tramos">${tramos.map((t,i)=>{const desde=i?tramos[i-1].at(-1).k:aqui;return `<a class="btn btn-primary" href="${esc(urlTramo(desde,t))}" target="_blank" rel="noopener noreferrer"><svg><use href="#i-pin"/></svg>${tramos.length>1?`Tramo ${i+1} · paradas ${i*PARADAS_POR_TRAMO+1}–${i*PARADAS_POR_TRAMO+t.length}`:'Abrir en Google Maps'}</a>`;}).join('')}</div>
+    <ol class="lev-ruta-lista">${orden.map(x=>`<li><button type="button" class="text-button" data-lev-abrir="${esc(x.p.codigo)}">${esc(x.p.codigo)}</button> · ${esc(x.p.pre['Ubicación según el KMZ de las bases']||'')}${x.p.nodo?' · '+esc(x.p.nodo):''}</li>`).join('')}</ol>
+    ${sinCoord.length?`<p class="field-hint">Sin coordenada, fuera de la ruta: ${sinCoord.map(p=>esc(p.codigo)).join(', ')}.</p>`:''}${opcionesRuta(soloPendientes)}`;
+  panel.scrollIntoView?.({behavior:'smooth',block:'start'});
+}
+const opcionesRuta=solo=>`<label class="check-label lev-ruta-opcion"><input type="checkbox" id="lev-ruta-pendientes"${solo?' checked':''}> Solo puntos por levantar (sin levantar, borradores y anulados)</label>`;
+
 // Right under the filters, so the result of a filter is visible without scrolling to the list.
 function renderConteo(F,n){
-  const total=F.puntos.filter(p=>!p.porUbicar).length,activos=[filtro.comuna&&$('lev-comuna-wrap').hidden===false?filtro.comuna:'',filtro.estado&&ESTADOS.find(([k])=>k===filtro.estado)?.[1],filtro.clasif,filtro.quien&&'asignado a '+filtro.quien,filtro.dia,filtro.texto&&`«${filtro.texto}»`].filter(Boolean);
+  const total=F.puntos.filter(p=>!p.porUbicar).length,activos=[filtro.comuna&&$('lev-comuna-wrap').hidden===false?filtro.comuna:'',filtro.estado&&ESTADOS.find(([k])=>k===filtro.estado)?.[1],filtro.clasif,filtro.quien&&'asignado a '+filtro.quien,filtro.dia,filtro.nodo,filtro.texto&&`«${filtro.texto}»`].filter(Boolean);
   $('lev-conteo').innerHTML=`<strong>${n===total?`${total} puntos`:`${n} de ${total} puntos`}</strong>${activos.length?` · ${esc(activos.join(' · '))} <button type="button" class="text-button" data-lev-limpiar>Quitar filtros</button>`:''}${n?' <button type="button" class="text-button" data-lev-ir-lista>Ver lista ↓</button>':''}`;
 }
 
@@ -158,7 +202,7 @@ function renderTablero(){
 const chipClase=t=>t==='OK'||String(t).startsWith('Vía rápida')?'sent':t==='Sin levantar'||!t?'':'error';
 function bandeja(F){
   let lista=F.puntos.filter(p=>!p.porUbicar&&(!filtro.quien||asignado(F,p,'quien').includes(filtro.quien))&&(!filtro.dia||asignado(F,p,'dia')===filtro.dia)
-    &&(!filtro.comuna||p.comuna===filtro.comuna)&&(!filtro.clasif||p.clasificacion===filtro.clasif)&&(!filtro.estado||coincideEstado(p.codigo,filtro.estado))
+    &&(!filtro.comuna||p.comuna===filtro.comuna)&&(!filtro.nodo||p.nodo===filtro.nodo)&&(!filtro.clasif||p.clasificacion===filtro.clasif)&&(!filtro.estado||coincideEstado(p.codigo,filtro.estado))
     &&(!filtro.texto||(p.codigo+' '+(p.pre['Ubicación según el KMZ de las bases']??'')+' '+(p.nodo??'')).toLowerCase().includes(filtro.texto.toLowerCase())));
   if(F.tipo==='via-rapida'){const dist=p=>{const k=kmz(p);return aqui&&k?distanciaM(aqui,k):Infinity;};
     lista=[...lista].sort((a,b)=>ORDEN_CLASIFICACION.indexOf(a.clasificacion)-ORDEN_CLASIFICACION.indexOf(b.clasificacion)||nodoOrden(a.nodo)-nodoOrden(b.nodo)||dist(a)-dist(b));}
@@ -175,6 +219,7 @@ function renderLista(){
     const lejos=aqui&&k?` · a ${(distanciaM(aqui,k)/1000).toFixed(1).replace('.',',')} km`:'';
     return `${cab}<button type="button" class="lev-item" data-lev-abrir="${esc(p.codigo)}"><div><strong>${esc(p.codigo)}</strong>${p.lpr?' <span class="lev-tag">LPR</span>':''}${p.sinSolucion?' <span class="lev-tag">Sin solución</span>':''}<div class="record-meta">${esc(p.comuna)}${p.nodo?' · '+esc(p.nodo):''} · ${esc(p.pre['Ubicación según el KMZ de las bases'])}${asignado(F,p,'quien')?' · '+esc(asignado(F,p,'quien')):''}${lejos}</div></div><div class="lev-estados">${e.tramite?`<span class="status ${chipClase(e.tramite)}">${esc(e.tramite)}</span>`:''}<span class="status ${chipClase(e.control)}">${esc(e.control)}</span><span class="lev-envio ${s.clase||e.clase}">${esc(s.clase?s.texto:e.etiqueta)}</span></div></button>`;}).join(''):`<p class="muted">Ningún punto coincide con el filtro.${['via-rapida','largo','ok','faltan'].includes(filtro.estado)?' El trámite y el «Control» se calculan cuando el punto se levanta. Para ver los puntos según la clasificación de la oferta, usa «Clasificación».':''}</p>`;
   renderConteo(F,lista.length);
+  if(!$('lev-ruta-panel').hidden&&ruta.firma!==firmaFiltro())$('lev-ruta-panel').hidden=true;
 }
 function campoHTML(F,c,v,punto){
   const val=v[c.key]??'',id='lev-c-'+F.campos.indexOf(c),req=c.required||(c.requiredLpr&&punto.lpr)||(c.key===F.reglas.enlace.campo&&punto.enlace);
@@ -380,6 +425,10 @@ function poblarFiltros(){
   const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&!p.porUbicar));
   if(!clases.includes(filtro.clasif))filtro.clasif='';
   $('lev-clasif-wrap').hidden=!clases.length;
+  const nodos=[...new Set(F.puntos.filter(p=>!p.porUbicar&&p.nodo&&p.nodo!=='—').map(p=>p.nodo))].sort((a,b)=>nodoOrden(a)-nodoOrden(b)||a.localeCompare(b));
+  if(!nodos.includes(filtro.nodo))filtro.nodo='';
+  $('lev-nodo-wrap').hidden=nodos.length<2;
+  $('lev-nodo').innerHTML='<option value="">Todos</option>'+nodos.map(n=>`<option${n===filtro.nodo?' selected':''}>${esc(n)}</option>`).join('');
   $('lev-clasif').innerHTML='<option value="">Todas</option>'+clases.map(c=>`<option${c===filtro.clasif?' selected':''}>${esc(c)}</option>`).join('');
 }
 export async function setupLevantamiento(context){
@@ -402,6 +451,8 @@ export async function setupLevantamiento(context){
   $('lev-comuna').addEventListener('change',e=>{filtro.comuna=e.target.value;render();});
   $('lev-estado').addEventListener('change',e=>{filtro.estado=e.target.value;render();});
   $('lev-clasif').addEventListener('change',e=>{filtro.clasif=e.target.value;render();});
+  $('lev-nodo').addEventListener('change',e=>{filtro.nodo=e.target.value;render();});
+  $('lev-ruta').addEventListener('click',()=>armarRuta(true));
   $('lev-buscar').addEventListener('input',e=>{filtro.texto=e.target.value;render();});
   $('lev-csv').addEventListener('click',descargarCSV);
   $('lev-enviar-todo').addEventListener('click',enviarPendientes);
@@ -414,7 +465,9 @@ export async function setupLevantamiento(context){
       else{if(!F.puntos.some(p=>p.comuna===comuna)){const otro=C.formularios.find(x=>x.tipo==='via-rapida'&&x.puntos.some(p=>p.comuna===comuna))??C.formularios.find(x=>x.puntos.some(p=>p.comuna===comuna));prefs.formulario=otro.id;savePrefs();$('lev-formulario').value=otro.id;filtro.dia='';}
         filtro.comuna=comuna;}
       poblarFiltros();render();return;}
-    if(e.target.closest('[data-lev-limpiar]')){Object.assign(filtro,{quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:''});$('lev-buscar').value='';poblarFiltros();render();return;}
+    if(e.target.closest('[data-lev-ruta-cerrar]')){$('lev-ruta-panel').hidden=true;return;}
+    if(e.target.id==='lev-ruta-pendientes'){prefs.rutaPendientes=e.target.checked;savePrefs();armarRuta(false);return;}
+    if(e.target.closest('[data-lev-limpiar]')){Object.assign(filtro,{quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:'',nodo:''});$('lev-buscar').value='';poblarFiltros();render();return;}
     if(e.target.closest('[data-lev-ir-lista]')){$('lev-lista').scrollIntoView?.({behavior:'smooth',block:'start'});return;}
     const t=e.target.closest('[data-lev-abrir],[data-lev-volver],[data-lev-gps],[data-lev-foto],[data-lev-quitar],[data-lev-enviar],[data-lev-confirmar],[data-lev-descartar],[data-lev-anular]');if(!t)return;
     if(t.dataset.levAbrir){abierto=t.dataset.levAbrir;confirmando=null;render();window.scrollTo({top:0,behavior:'instant'});}
