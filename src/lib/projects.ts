@@ -1,4 +1,5 @@
 import { isIntranetAdmin, emailInAllowlists } from '@/lib/session';
+import { personaVigente } from '@/lib/personas';
 
 /**
  * Projects the Intranet groups its tools under. Each project gets its own mini-site at
@@ -11,11 +12,13 @@ import { isIntranetAdmin, emailInAllowlists } from '@/lib/session';
  * To add a project: add an entry below and create its PROYECTO_<CODIGO>_<ROL> vars in Vercel.
  */
 
-export type ProjectRole = 'tecnico' | 'gestion';
+export type ProjectRole = 'tecnico' | 'gestion' | 'calidad' | 'personas';
 
 export const ROLE_LABEL: Record<ProjectRole, string> = {
   tecnico: 'Terreno',
   gestion: 'Gestión y control',
+  calidad: 'Calidad de fibra',
+  personas: 'Personas del proyecto',
 };
 
 export interface ProjectModule {
@@ -35,7 +38,11 @@ export interface Project {
   summary: string;
   details: string[];
   status: string;
-  members: Record<ProjectRole, string[]>;
+  /** Env-var allowlists per role. «calidad» comes from the project's people registry (src/lib/personas.ts). */
+  members: Partial<Record<ProjectRole, string[]>>;
+  /** Who administers «Personas del proyecto» (besides the Intranet admins). */
+  adminPersonas: string[];
+  comunas: string[];
   modules: ProjectModule[];
 }
 
@@ -51,6 +58,8 @@ export const PROJECTS: Project[] = [
       tecnico: ['PROYECTO_DPR_ANF_TERRENO', 'EVIDENCIAS_TECH_EMAILS'],
       gestion: ['PROYECTO_DPR_ANF_GESTION', 'INTRANET_PANEL_EMAILS'],
     },
+    adminPersonas: ['iandaur@visionaria.cl', 'rmartinez@visionaria.cl'],
+    comunas: ['Antofagasta', 'Calama', 'Tocopilla'],
     modules: [
       {
         id: 'evidencias',
@@ -58,7 +67,14 @@ export const PROJECTS: Project[] = [
         description: 'Fotos, protocolo de instalación, levantamiento DEC-020 y registro del parte diario.',
         href: '/api/evidencias/app',
         standalone: true,
-        roles: ['tecnico', 'gestion'],
+        roles: ['tecnico', 'gestion', 'calidad'],
+      },
+      {
+        id: 'personas',
+        title: 'Personas del proyecto',
+        description: 'Cuentas y roles de quienes trabajan en el proyecto, incluido el contratista de fibra, con su vigencia.',
+        href: '/intranet/proyectos/dpr-antofagasta/personas',
+        roles: ['personas'],
       },
       {
         id: 'panel',
@@ -77,9 +93,18 @@ export function getProject(slug: string): Project | undefined {
 
 export function projectRoles(email: string, project: Project): ProjectRole[] {
   const admin = isIntranetAdmin(email);
-  return (Object.entries(project.members) as [ProjectRole, string[]][])
+  const roles = (Object.entries(project.members) as [ProjectRole, string[]][])
     .filter(([role, vars]) => (admin && role === 'gestion') || emailInAllowlists(email, vars))
     .map(([role]) => role);
+  if (admin || project.adminPersonas.includes(email.trim().toLowerCase())) roles.push('personas');
+  return roles;
+}
+
+/** The env-var roles plus «calidad» when the people registry lists the person, active and in date. */
+export async function projectRolesAsync(email: string, project: Project): Promise<ProjectRole[]> {
+  const roles = projectRoles(email, project);
+  if (await personaVigente(project.slug, email)) roles.push('calidad');
+  return roles;
 }
 
 export function hasProjectRole(email: string, slug: string, role: ProjectRole): boolean {
@@ -99,9 +124,9 @@ export interface ProjectView {
   modules: Omit<ProjectModule, 'roles'>[];
 }
 
-export function projectsFor(email: string, locale: string): ProjectView[] {
-  return PROJECTS.flatMap(p => {
-    const roles = projectRoles(email, p);
+export async function projectsFor(email: string, locale: string): Promise<ProjectView[]> {
+  const vistas = await Promise.all(PROJECTS.map(async p => ({ p, roles: await projectRolesAsync(email, p) })));
+  return vistas.flatMap(({ p, roles }) => {
     if (!roles.length) return [];
     return [{
       slug: p.slug,

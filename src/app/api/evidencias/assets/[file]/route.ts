@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
-import { requireEvidenciasTech } from '@/lib/evidenciasAuth';
+import { accesoEvidencias } from '@/lib/evidenciasAuth';
 
 export const runtime = 'nodejs';
 
@@ -30,8 +30,8 @@ const ASSETS: Record<string, string> = {
 const ASSETS_DIR = path.join(process.cwd(), 'src', 'evidencias-assets');
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ file: string }> }) {
-  const email = requireEvidenciasTech(req);
-  if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const acceso = await accesoEvidencias(req);
+  if (!acceso) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const { file } = await params;
   const contentType = ASSETS[file];

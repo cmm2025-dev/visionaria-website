@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decodeIntranetMagicLink, encodeIntranetSession, isStaffEmail, safeIntranetNext, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { PROJECTS } from '@/lib/projects';
+import { personaVigente } from '@/lib/personas';
 
 export const runtime = 'nodejs';
 
@@ -9,7 +11,8 @@ export async function GET(req: NextRequest) {
 
   // Re-check the domain at verify time too, not just at request time -- defense in depth in
   // case a token is ever minted or replayed outside the request flow above.
-  if (!payload || !isStaffEmail(payload.email)) {
+  const externoVigente = async (email: string) => { for (const p of PROJECTS) if (await personaVigente(p.slug, email)) return true; return false; };
+  if (!payload || !(isStaffEmail(payload.email) || await externoVigente(payload.email))) {
     return NextResponse.redirect(new URL('/es/intranet?error=1', req.nextUrl.origin));
   }
 
