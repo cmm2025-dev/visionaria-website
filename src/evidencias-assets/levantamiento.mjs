@@ -6,6 +6,7 @@
 import {chileDate,csv,randomId} from './core.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix} from './media.mjs';
+import {COMUNAS as COMUNAS_FO,setupFibra,showFibra} from './fibra.mjs';
 
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
@@ -276,7 +277,11 @@ function bloqueConfirmar(p){
   return '';
 }
 const angulosTexto=a=>`Ángulo vertical: <strong>${a.vertical??'—'}°</strong> · Ángulo horizontal: <strong>${a.horizontal??'—'}°</strong>${(a.vertical??0)>30||(a.horizontal??0)>30?' · <span class="lev-req">sobre 30°</span>':''}`;
-function render(){if(!C)return;$('lev-lista-wrap').hidden=!!abierto;$('lev-ficha').hidden=!abierto;if(abierto)renderFicha();else renderLista();}
+// «Fibra · <comuna>» shares the form selector but has its own screens (fibra.mjs).
+const esFibra=()=>String(prefs.formulario).startsWith('FO-');
+function render(){if(!C)return;const fo=esFibra();$('fibra-view').hidden=!fo;$('lev-selector').hidden=!!abierto&&!fo;
+  if(fo){$('lev-lista-wrap').hidden=true;$('lev-ficha').hidden=true;$('lev-resumen').textContent=`Fibra · ${prefs.formulario.slice(3)}: levantamiento de ruta y apoyos para la factibilidad de CGE.`;showFibra(prefs.formulario.slice(3));return;}
+  $('lev-lista-wrap').hidden=!!abierto;$('lev-ficha').hidden=!abierto;if(abierto)renderFicha();else renderLista();}
 
 // --- Editing --------------------------------------------------------------------------------------------------------
 const nuevoPunto=codigo=>({codigo,formulario:ubicar(codigo).F.id,valores:{},gps:null,gpsPoste:null,sent:null,error:''});
@@ -437,8 +442,8 @@ function poblarFiltros(){
   $('lev-comuna-wrap').hidden=comunas.length<2;
   $('lev-comuna').innerHTML='<option value="">Todas</option>'+comunas.map(c=>`<option${c===filtro.comuna?' selected':''}>${esc(c)}</option>`).join('');
   $('lev-estado').innerHTML='<option value="">Todos</option>'+ESTADOS.filter(([k])=>F.tipo==='via-rapida'||!['via-rapida','largo'].includes(k)).map(([k,t])=>`<option value="${k}"${k===filtro.estado?' selected':''}>${esc(t)}</option>`).join('');
-  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&listable(p)));
-  // A municipal form opens on «Vía rápida probable»; the other groups are one tap away.
+  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&!p.porUbicar));
+  // A municipal form opens on «Vía rápida probable» (prompt of 02-11); the other groups are one tap away.
   if(!clases.includes(filtro.clasif))filtro.clasif=clases.includes('Vía rápida probable')&&filtro.clasifPor!==F.id?'Vía rápida probable':'';
   filtro.clasifPor=F.id;
   $('lev-clasif-wrap').hidden=!clases.length;
@@ -459,10 +464,12 @@ export async function setupLevantamiento(context){
   const sinN=fotos.filter(f=>!f.n).sort((a,b)=>a.registeredAt.localeCompare(b.registeredAt));
   for(const f of sinN){f.n=Math.max(0,...fotos.filter(x=>x.codigo===f.codigo&&x.n).map(x=>x.n))+1;f.formulario??='DEC-020';}
   if(sinN.length)await put('fotos',sinN);
-  if(!formulario(prefs.formulario))prefs.formulario=C.formularios[0].id;
-  $('lev-formulario').innerHTML=C.formularios.map(F=>`<option value="${esc(F.id)}"${F.id===prefs.formulario?' selected':''}>${esc(F.titulo)}</option>`).join('');
+  if(!formulario(prefs.formulario)&&!COMUNAS_FO.some(c=>prefs.formulario==='FO-'+c))prefs.formulario=C.formularios[0].id;
+  $('lev-formulario').innerHTML=C.formularios.map(F=>`<option value="${esc(F.id)}"${F.id===prefs.formulario?' selected':''}>${esc(F.titulo)}</option>`).join('')
+    +COMUNAS_FO.map(c=>`<option value="FO-${c}"${prefs.formulario==='FO-'+c?' selected':''}>Fibra · ${c}</option>`).join('');
+  await setupFibra(ctx);
   poblarFiltros();
-  $('lev-formulario').addEventListener('change',e=>{prefs.formulario=e.target.value;savePrefs();filtro.dia='';poblarFiltros();render();});
+  $('lev-formulario').addEventListener('change',e=>{prefs.formulario=e.target.value;savePrefs();filtro.dia='';if(!esFibra())poblarFiltros();render();});
   $('lev-quien').addEventListener('change',e=>{filtro.quien=e.target.value;render();});
   $('lev-dia').addEventListener('change',e=>{filtro.dia=e.target.value;render();});
   $('lev-comuna').addEventListener('change',e=>{filtro.comuna=e.target.value;render();});
