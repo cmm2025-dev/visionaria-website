@@ -58,7 +58,7 @@ export const PROJECTS: Project[] = [
         description: 'Fotos, protocolo de instalación, levantamiento DEC-020 y registro del parte diario.',
         href: '/api/evidencias/app',
         standalone: true,
-        roles: ['tecnico'],
+        roles: ['tecnico', 'gestion'],
       },
       {
         id: 'panel',
