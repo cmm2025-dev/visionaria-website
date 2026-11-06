@@ -12,7 +12,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
 const FECHA_BASE=Date.UTC(1899,11,30);
 const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable','Por ubicar'];
-// «Por ubicar» points are seen only by whoever the server allows (Iván Andaur and management); nobody else lists them.
+// «Por ubicar» points are seen only by whoever the server allows (prompt of 02-11: Iván Andaur); nobody else lists them.
 const listable=p=>!p.porUbicar||!!ctx?.config().verPorUbicar;
 let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:'',nodo:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
@@ -442,7 +442,7 @@ function poblarFiltros(){
   $('lev-comuna-wrap').hidden=comunas.length<2;
   $('lev-comuna').innerHTML='<option value="">Todas</option>'+comunas.map(c=>`<option${c===filtro.comuna?' selected':''}>${esc(c)}</option>`).join('');
   $('lev-estado').innerHTML='<option value="">Todos</option>'+ESTADOS.filter(([k])=>F.tipo==='via-rapida'||!['via-rapida','largo'].includes(k)).map(([k,t])=>`<option value="${k}"${k===filtro.estado?' selected':''}>${esc(t)}</option>`).join('');
-  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&!p.porUbicar));
+  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&listable(p)));
   // A municipal form opens on «Vía rápida probable» (prompt of 02-11); the other groups are one tap away.
   if(!clases.includes(filtro.clasif))filtro.clasif=clases.includes('Vía rápida probable')&&filtro.clasifPor!==F.id?'Vía rápida probable':'';
   filtro.clasifPor=F.id;
