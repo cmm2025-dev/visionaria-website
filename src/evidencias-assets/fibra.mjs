@@ -158,7 +158,9 @@ function pantallaRuta(){
 
 // --- Editing -----------------------------------------------------------------------------------------------------------
 const actual=()=>vista.pantalla==='apoyo'?['Apoyos',vista.apoyo]:['Ruta',vista.tramo];
-function nuevo(h,c){return {clave:clave(h,c),comuna,hoja:h,codigo:c,valores:{},gps:null,sent:null,error:''};}
+// uid: the record's own identity across resends. Two phones that took the same NC code for different poles have
+// different uids, so the office can give the second one the next free code.
+function nuevo(h,c){return {clave:clave(h,c),uid:randomId(),comuna,hoja:h,codigo:c,valores:{},gps:null,sent:null,error:''};}
 async function guardar(h,c,cambios){
   const r=reg(h,c)??nuevo(h,c);
   for(const [k,x] of Object.entries(cambios)){if(x===''||x===null||x===undefined)delete r.valores[k];else r.valores[k]=x;}
@@ -241,7 +243,8 @@ async function enviar(h,c){
     for(const f of fotosDe(h,c).filter(x=>x.status!=='sent')){await subirFoto(f);f.status='sent';await put('fotos',[f]);}
     const id=randomId(),guardado=new Date().toISOString(),fs=fotosDe(h,c),v=valores(h,c),envio={};
     for(const x of amarillas(h))if(v[x.key]!==undefined&&v[x.key]!=='')envio[x.key]=v[x.key];
-    const cuerpo={version:1,tipo:'fibra',app:'evidencias',comuna,hoja:h,codigo:c,id,guardado,registro:cfg.email,piloto:!!cfg.pilot,valores:envio,gps:r.gps??null,
+    r.uid??=randomId();
+    const cuerpo={version:1,tipo:'fibra',app:'evidencias',comuna,hoja:h,codigo:c,registroId:r.uid,id,guardado,registro:cfg.email,piloto:!!cfg.pilot,valores:envio,gps:r.gps??null,
       nc:h==='Apoyos'&&c.includes('-NC-'),fotos:fs.map(f=>({nombre:nombreFoto(f),ruta:f.path,gps:f.gps??null}))};
     const path=`${cfg.levantamientoQueue}/${cfg.pilot?'_PILOTO/':''}Fibra/${comuna}/${c}_${guardado.replace(/[:.]/g,'-')}_${id.slice(0,8)}.json`;
     await dropbox.api('files/upload',null,{binary:new Blob([JSON.stringify(cuerpo,null,1)],{type:'application/json'}),args:{path,mode:'add',autorename:false,strict_conflict:true}});

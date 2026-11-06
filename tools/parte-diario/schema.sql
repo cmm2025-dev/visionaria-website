@@ -111,6 +111,47 @@ CREATE TABLE IF NOT EXISTS planillas_levantamiento (
   ultimo_aviso    text
 );
 
+-- Fibra óptica, levantamiento de ruta y apoyos: un registro vigente por fila de «Ruta» o «Apoyos»; cada envío queda.
+CREATE TABLE IF NOT EXISTS fibra_registros (
+  clave           text PRIMARY KEY,            -- <comuna>|<hoja>|<código>
+  comuna          text NOT NULL,
+  hoja            text NOT NULL,               -- Ruta o Apoyos
+  codigo          text NOT NULL,
+  valores         jsonb NOT NULL,              -- {encabezado: valor} de las columnas amarillas, validados contra el contrato
+  fotos           jsonb NOT NULL DEFAULT '[]',
+  gps             jsonb,
+  registrado_por  text,
+  registro_id     text NOT NULL,               -- identidad del registro en el teléfono (resuelve choques de códigos NC)
+  envio_id        text NOT NULL,
+  guardado_en     timestamptz NOT NULL,
+  recibido_en     timestamptz NOT NULL DEFAULT now(),
+  actualizado_en  timestamptz NOT NULL DEFAULT now(),
+  calculado       jsonb                        -- Control, Veredicto, Permisos del tramo tal como los calculó la planilla
+);
+CREATE TABLE IF NOT EXISTS fibra_envios (
+  id           text PRIMARY KEY,
+  comuna       text NOT NULL,
+  hoja         text NOT NULL,
+  codigo       text NOT NULL,                  -- el código con que quedó (puede ser otro NC si hubo choque)
+  contenido    jsonb NOT NULL,
+  estado       text NOT NULL,                  -- vigente / reemplazado / anterior
+  recibido_en  timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS fibra_nc (
+  comuna       text NOT NULL,
+  codigo       text NOT NULL,
+  registro_id  text NOT NULL,
+  asignado_en  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (comuna, codigo)
+);
+CREATE TABLE IF NOT EXISTS planillas_fibra (
+  comuna          text PRIMARY KEY,
+  rev_generada    text,
+  generada_en     timestamptz,
+  filas_generadas jsonb,                       -- {"<hoja>|<código>": [columnas amarillas]} tal como quedó escrito
+  ultimo_aviso    text
+);
+
 -- Correos del contrato (DIR-P07): cada envío o intento, con su asunto final. Nada se borra.
 CREATE TABLE IF NOT EXISTS correos (
   id            bigserial PRIMARY KEY,

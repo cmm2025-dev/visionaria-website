@@ -11,6 +11,7 @@
   parte respaldar                   pg_dump a Dropbox
   parte panel                       envía ahora el resumen al panel ejecutivo de la Intranet
   parte levantamiento [--forzar COD ...]  una pasada del levantamiento (DEC-020 y vía rápida); --forzar reescribe filas cambiadas a mano
+  parte fibra [--forzar COD ...]          una pasada del levantamiento de fibra (ruta y apoyos); --forzar igual que arriba
 """
 import argparse
 import datetime
@@ -91,6 +92,8 @@ def main(argv=None):
     sub.add_parser('panel')
     p = sub.add_parser('levantamiento')
     p.add_argument('--forzar', nargs='*', default=[], metavar='CODIGO')
+    p = sub.add_parser('fibra')
+    p.add_argument('--forzar', nargs='*', default=[], metavar='CODIGO')
     args = ap.parse_args(argv)
 
     conn = db.conectar()
@@ -140,6 +143,17 @@ def main(argv=None):
                 if formulario in levantamiento.config()['planillas']:
                     levantamiento.generar(dbx, office, conn, formulario, trabajo(), 0, tuple(args.forzar))
         return
+    if args.cmd == 'fibra':
+        from . import fibra
+        if not fibra.configurado():
+            sys.exit('Falta la cola del levantamiento (proyecto.json o PARTE_LEVANTAMIENTO_COLA en .env).')
+        with Office() as office:
+            fibra.ingestar(dbx, conn)
+            conn.commit()
+            for comuna in fibra.COMUNAS:
+                if comuna in fibra.config()['planillas']:
+                    fibra.generar(dbx, office, conn, comuna, trabajo(), 0, tuple(args.forzar))
+        return
     if args.cmd in ('ingestar', 'generar'):
         with Office() as office:
             if args.cmd == 'ingestar':
@@ -155,7 +169,7 @@ def main(argv=None):
     hora_respaldo = os.environ.get('PARTE_RESPALDO_HORA') or '03:30'
     ultimo_respaldo = None
     panel = Publicador()
-    from . import levantamiento
+    from . import fibra, levantamiento
     reposo = int(os.environ.get('PARTE_REPOSO_MIN') or 10)
     if not levantamiento.configurado():
         log.info('Sin cola de levantamiento configurada: el levantamiento no se procesa.')
@@ -173,6 +187,11 @@ def main(argv=None):
                     except Exception:
                         conn.rollback()
                         log.exception('La pasada del levantamiento falló; se reintenta en el próximo ciclo.')
+                    try:
+                        fibra.pasada(dbx, office, conn, trabajo(), reposo)
+                    except Exception:
+                        conn.rollback()
+                        log.exception('La pasada de fibra falló; se reintenta en el próximo ciclo.')
                     try:
                         panel.publicar(conn)
                     except Exception:
