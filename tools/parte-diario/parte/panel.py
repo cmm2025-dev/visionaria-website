@@ -36,7 +36,13 @@ def resumen(conn):
         FROM levantamientos ORDER BY codigo''').fetchall()
     for r in levantamientos:
         r['guardado_en'] = r['guardado_en'].isoformat() if r['guardado_en'] else None
-    return {'comunas': comunas, 'registros': registros, 'levantamientos': levantamientos}
+    # Fibra: el código con que quedó cada registro (un NC puede haberse reasignado) y lo que calculó la planilla.
+    fibra = conn.execute('''
+        SELECT comuna, hoja, codigo, registro_id, calculado, valores->>'Tramo levantado' AS tramo, guardado_en
+        FROM fibra_registros ORDER BY clave''').fetchall()
+    for r in fibra:
+        r['guardado_en'] = r['guardado_en'].isoformat() if r['guardado_en'] else None
+    return {'comunas': comunas, 'registros': registros, 'levantamientos': levantamientos, 'fibra': fibra}
 
 
 class Publicador:

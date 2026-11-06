@@ -165,6 +165,24 @@ def codigo_nc(conn, comuna, codigo, registro_id):
     return libre
 
 
+def renombrar_fotos(dbx, fotos, antes, despues):
+    """Las fotos de un poste cuyo código NC se reasignó pasan a llevar el código nuevo, en la misma carpeta."""
+    out = []
+    for f in fotos:
+        ruta, nombre = f.get('ruta') or '', f.get('nombre') or ''
+        if ruta and nombre.startswith(antes + '_'):
+            nuevo = despues + nombre[len(antes):]
+            destino = ruta.rsplit('/', 1)[0] + '/' + nuevo
+            try:
+                hecho = dbx.mover(ruta, destino)
+                destino = ((hecho or {}).get('metadata') or {}).get('path_display') or destino
+                f = {**f, 'nombre': destino.rsplit('/', 1)[1], 'ruta': destino}
+            except DropboxError as err:
+                log.error('No se pudo renombrar %s a %s: %s', ruta, nuevo, err)
+        out.append(f)
+    return out
+
+
 def recibir(dbx, conn, r, comuna, valores):
     """Guarda el envío y, si es el más reciente del registro, lo deja vigente. Nada se borra."""
     if conn.execute('SELECT 1 FROM fibra_envios WHERE id=%s', (r['id'],)).fetchone():
@@ -177,6 +195,7 @@ def recibir(dbx, conn, r, comuna, valores):
             return {'estado': 'rechazado', 'motivo': str(e)}
         if codigo != r['codigo']:
             extra = {'codigo_pedido': r['codigo'], 'codigo_asignado': codigo}
+            r['fotos'] = renombrar_fotos(dbx, r.get('fotos') or [], r['codigo'], codigo)
             avisar(dbx, conn, comuna, 'Dos registros tomaron el código %s para postes distintos; el de %s quedó como %s.'
                    % (r['codigo'], r.get('registro') or 'sin autor', codigo))
     guardado = datetime.datetime.fromisoformat(r['guardado'].replace('Z', '+00:00'))

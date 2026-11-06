@@ -57,11 +57,39 @@ function valores(h,codigo){
   return v;
 }
 const apoyosDelTramo=t=>[...idx.Apoyos.values()].filter(a=>a['Tramo más próximo']===t||String(a['Todos los tramos próximos']??'').split(/[,;\s]+/).includes(t));
-const levantadosEn=t=>[...registros.values()].filter(r=>r.comuna===comuna&&r.hoja==='Apoyos'&&r.valores['Tramo levantado']===t).map(r=>r.codigo);
-function estadoApoyo(codigo){const v=valores('Apoyos',codigo),c=R.apoyoControl(K,v);return {control:c,veredicto:R.apoyoVeredicto(K,v,c)};}
+// What the office already has (from the panel summary): used where this phone has nothing of its own, so the walk
+// shows poles surveyed by the rest of the team. Kept for offline use.
+let oficina=new Map(),oficinaUid=new Map();
+const deOficina=(h,c)=>!reg(h,c)&&!fotosDe(h,c).length?oficina.get(`${comuna}|${h}|${c}`):null;
+const levantadosEn=t=>[...new Set([...[...registros.values()].filter(r=>r.comuna===comuna&&r.hoja==='Apoyos'&&r.valores['Tramo levantado']===t).map(r=>r.codigo),
+  ...[...oficina.values()].filter(o=>o.comuna===comuna&&o.hoja==='Apoyos'&&o.tramo===t).map(o=>o.codigo)])];
+function estadoApoyo(codigo){const o=deOficina('Apoyos',codigo);if(o)return {control:o.calculado?.Control||'OK',veredicto:o.calculado?.Veredicto||'',oficina:true};
+  const v=valores('Apoyos',codigo),c=R.apoyoControl(K,v);return {control:c,veredicto:R.apoyoVeredicto(K,v,c)};}
 function estadoRuta(t){
-  const aptos=levantadosEn(t).filter(c=>estadoApoyo(c).veredicto==='Apto').length,v=valores('Ruta',t),c=R.rutaControl(K,v,aptos);
-  return {control:c,permisos:R.rutaPermisos(K,v,c),aptos,levantados:levantadosEn(t).filter(c=>estadoApoyo(c).control!=='Sin levantar').length};
+  const aptos=levantadosEn(t).filter(c=>estadoApoyo(c).veredicto==='Apto').length,levantados=levantadosEn(t).filter(c=>estadoApoyo(c).control!=='Sin levantar').length,o=deOficina('Ruta',t);
+  if(o)return {control:o.calculado?.Control||'OK',permisos:o.calculado?.['Permisos del tramo']||'',aptos,levantados,oficina:true};
+  const v=valores('Ruta',t),c=R.rutaControl(K,v,aptos);
+  return {control:c,permisos:R.rutaPermisos(K,v,c),aptos,levantados};
+}
+let oficinaLeida=0;
+async function cargarOficina(){
+  if(Date.now()-oficinaLeida<60000)return;oficinaLeida=Date.now();
+  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)throw new Error();const o=await r.json();try{localStorage.setItem('visionaria-fibra-oficina',JSON.stringify(o.fibra??[]))}catch{}usarOficina(o.fibra??[]);}
+  catch{try{usarOficina(JSON.parse(localStorage.getItem('visionaria-fibra-oficina')||'[]'));}catch{}}
+}
+// A record whose NC code the office reassigned (two phones took the same one) moves to its new code here too, with
+// its photos (the office already renamed them in Dropbox) and every «Siguiente apoyo» that pointed at the old code.
+async function usarOficina(lista){
+  oficina=new Map(lista.map(o=>[`${o.comuna}|${o.hoja}|${o.codigo}`,o]));oficinaUid=new Map(lista.map(o=>[o.registro_id,o]));
+  for(const r of [...registros.values()]){const o=oficinaUid.get(r.uid);if(!o||o.codigo===r.codigo||o.hoja!==r.hoja||o.comuna!==r.comuna)continue;
+    const antes=r.codigo,nueva=`${r.comuna}|${r.hoja}|${o.codigo}`;
+    await del('registros',[r.clave]);registros.delete(r.clave);
+    Object.assign(r,{codigo:o.codigo,clave:nueva});registros.set(nueva,r);await put('registros',[r]);
+    const fs=fotos.filter(f=>f.clave===`${r.comuna}|${r.hoja}|${antes}`);fs.forEach(f=>Object.assign(f,{clave:nueva,codigo:o.codigo}));await put('fotos',fs);
+    for(const x of registros.values())if(x.comuna===r.comuna&&x.valores['Siguiente apoyo (código)']===antes){x.valores['Siguiente apoyo (código)']=o.codigo;await put('registros',[x]);}
+    ctx.toast(`Otro teléfono ya había usado ${antes}: este poste quedó como ${o.codigo}. Revisa y reenvía el poste anterior del tramo.`);
+  }
+  render();
 }
 function estadoEnvio(h,codigo){
   const r=reg(h,codigo),fs=fotosDe(h,codigo);
@@ -285,6 +313,7 @@ export async function setupFibra(context){
   });
 }
 export async function showFibra(c){
+  cargarOficina();
   if(comuna!==c){$('fibra-view').innerHTML='<p class="muted">Cargando la planilla de fibra…</p>';try{await cargar(c);}catch(e){$('fibra-view').innerHTML=`<p class="form-error">${esc(e.message)}</p>`;return;}vista={pantalla:'tramos'};filtro={texto:'',nodo:''};}
   render();
 }

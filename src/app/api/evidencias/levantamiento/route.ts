@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   const snapshot = await getPanelSnapshot().catch(() => null);
   return NextResponse.json(
-    { generado: snapshot?.generado ?? null, levantamientos: snapshot?.levantamientos ?? [] },
+    { generado: snapshot?.generado ?? null, levantamientos: snapshot?.levantamientos ?? [], fibra: snapshot?.fibra ?? [] },
     { headers: { 'Cache-Control': 'private, no-store' } },
   );
 }
