@@ -15,9 +15,11 @@ rangos); los umbrales, de la hoja «Parámetros» por el nombre del parámetro. 
 planilla lea del parámetro que las reglas de la app esperan: si alguien mueve una fila de «Parámetros», el script se
 detiene en vez de producir un contrato que calcule otra cosa. Solo usa la biblioteca estándar:
 
-    python3 tools/parte-diario/contrato_fibra.py Antofagasta=<…_Antofagasta.xlsx> Calama=<…> Tocopilla=<…> <carpeta de salida>
+    python3 tools/parte-diario/contrato_fibra.py --trazado <DPR-02-GIS-001_….geojson> \\
+        Antofagasta=<…_Antofagasta.xlsx> Calama=<…> Tocopilla=<…> <carpeta de salida>
 
-Deja <carpeta>/fibra_<Comuna>.json, uno por comuna."""
+Deja <carpeta>/fibra_<Comuna>.json, uno por comuna. El trazado (la capa GeoJSON del catastro, en la Sala) aporta la
+línea de cada tramo para el mapa de la app, que funciona sin señal; cada tramo de «Ruta» debe estar en la capa."""
 import html
 import json
 import os
@@ -179,7 +181,15 @@ def libro_nombre(libro):
     return os.path.basename(libro.z.filename)
 
 
-def leer_comuna(comuna, ruta):
+def trazados(geojson):
+    """{id de tramo: [[lat, lon], …]} de las líneas de fibra (FO12 y FO24) de la capa; las de radio no son tramos."""
+    with open(geojson, encoding='utf-8') as fh:
+        capa = json.load(fh)
+    return {f['properties']['id']: [[round(lat, 6), round(lon, 6)] for lon, lat, *_ in f['geometry']['coordinates']]
+            for f in capa['features'] if f['geometry']['type'] == 'LineString' and f['properties'].get('tipo') in ('FO12', 'FO24')}
+
+
+def leer_comuna(comuna, ruta, lineas):
     libro = LibroFO(ruta)
     faltan = [h for h in HOJAS + ['Parámetros', 'Fotos'] if h not in libro.hojas]
     if faltan:
@@ -188,20 +198,28 @@ def leer_comuna(comuna, ruta):
     falta = [v for v in PARAMETROS.values() if v not in parametros]
     if falta:
         raise SystemExit('%s: faltan los parámetros %s.' % (ruta, '; '.join(falta)))
+    hojas = {h: leer_hoja(libro, h, por_fila) for h in HOJAS}
+    ruta_h = hojas['Ruta']
+    ids = [f[ruta_h['fijas'].index(ruta_h['codigo']) + 1] for f in ruta_h['filas']]
+    sin = [i for i in ids if i not in lineas]
+    if sin:
+        raise SystemExit('%s: %d tramo(s) sin línea en el trazado: %s.' % (ruta, len(sin), ', '.join(sin[:10])))
     return {'version': 1, 'comuna': comuna, 'prefijo': PREFIJO[comuna], 'archivo': os.path.basename(ruta),
             'filaEncabezado': FILA_ENCABEZADO, 'filaInicio': FILA_INICIO,
             'parametros': parametros, 'claves': PARAMETROS, 'fotos': leer_fotos(libro),
-            'hojas': {h: leer_hoja(libro, h, por_fila) for h in HOJAS}}
+            'trazado': {i: lineas[i] for i in ids}, 'hojas': hojas}
 
 
 def main():
-    *pares, salida = sys.argv[1:]
-    if not pares:
+    args = sys.argv[1:]
+    if len(args) < 4 or args[0] != '--trazado':
         raise SystemExit(__doc__)
+    lineas = trazados(args[1])
+    *pares, salida = args[2:]
     os.makedirs(salida, exist_ok=True)
     for par in pares:
         comuna, ruta = par.split('=', 1)
-        c = leer_comuna(comuna, ruta)
+        c = leer_comuna(comuna, ruta, lineas)
         destino = os.path.join(salida, 'fibra_%s.json' % comuna)
         with open(destino, 'w', encoding='utf-8') as fh:
             json.dump(c, fh, ensure_ascii=False, separators=(',', ':'))
