@@ -260,7 +260,7 @@ def main():
     formularios = [leer_formulario(args.dec020, ['Levantamiento'], 'DEC-020', 'DEC-020 · Puntos MOP Vialidad', 'dec020')]
     for item in args.via_rapida:
         comuna, ruta = item.split('=', 1)
-        formularios.append(leer_formulario(ruta, HOJAS_VIA_RAPIDA, 'VR-' + comuna, 'Vía rápida · ' + comuna, 'via-rapida', comuna))
+        formularios.append(leer_formulario(ruta, HOJAS_VIA_RAPIDA, 'VR-' + comuna, 'Municipales · ' + comuna, 'via-rapida', comuna))
     fechas = {f.pop('_fechaMinima') for f in formularios} - {None}
     levantadores = sorted(set().union(*(set(f.pop('_levantadores')) for f in formularios)))
     codigos = [p['codigo'] for f in formularios for p in f['puntos']]

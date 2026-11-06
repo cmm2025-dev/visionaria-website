@@ -10,7 +10,9 @@ import {gpsLabel,processImage,withExif,requestFix} from './media.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
 const FECHA_BASE=Date.UTC(1899,11,30);
-const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable'];
+const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable','Por ubicar'];
+// «Por ubicar» points are seen only by whoever the server allows (Iván Andaur and management); nobody else lists them.
+const listable=p=>!p.porUbicar||!!ctx?.config().verPorUbicar;
 let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:'',nodo:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
@@ -111,7 +113,7 @@ function coincideEstado(codigo,filtroEstado){const e=situacion(codigo);
   if(filtroEstado==='via-rapida')return String(e.tramite).startsWith('Vía rápida');
   if(filtroEstado==='largo')return !!e.tramite&&!String(e.tramite).startsWith('Vía rápida');
   return e.estado===filtroEstado;}
-const claseGrupo=g=>g==='Vía rápida probable'?'rapida':g==='Revisar'?'revisar':'largo';
+const claseGrupo=g=>g==='Vía rápida probable'?'rapida':g==='Revisar'?'revisar':g==='Por ubicar'?'ubicar':'largo';
 
 // The person comes from the session: the email's surname matched against the form's levantadores.
 const sinTildes=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
@@ -175,7 +177,7 @@ const opcionesRuta=solo=>`<label class="check-label lev-ruta-opcion"><input type
 
 // Right under the filters, so the result of a filter is visible without scrolling to the list.
 function renderConteo(F,n){
-  const total=F.puntos.filter(p=>!p.porUbicar).length,activos=[filtro.comuna&&$('lev-comuna-wrap').hidden===false?filtro.comuna:'',filtro.estado&&ESTADOS.find(([k])=>k===filtro.estado)?.[1],filtro.clasif,filtro.quien&&'asignado a '+filtro.quien,filtro.dia,filtro.nodo,filtro.texto&&`«${filtro.texto}»`].filter(Boolean);
+  const total=F.puntos.filter(listable).length,activos=[filtro.comuna&&$('lev-comuna-wrap').hidden===false?filtro.comuna:'',filtro.estado&&ESTADOS.find(([k])=>k===filtro.estado)?.[1],filtro.clasif,filtro.quien&&'asignado a '+filtro.quien,filtro.dia,filtro.nodo,filtro.texto&&`«${filtro.texto}»`].filter(Boolean);
   $('lev-conteo').innerHTML=`<strong>${n===total?`${total} puntos`:`${n} de ${total} puntos`}</strong>${activos.length?` · ${esc(activos.join(' · '))} <button type="button" class="text-button" data-lev-limpiar>Quitar filtros</button>`:''}${n?' <button type="button" class="text-button" data-lev-ir-lista>Ver lista ↓</button>':''}`;
 }
 
@@ -201,7 +203,7 @@ function renderTablero(){
 // --- Rendering ------------------------------------------------------------------------------------------------------
 const chipClase=t=>t==='OK'||String(t).startsWith('Vía rápida')?'sent':t==='Sin levantar'||!t?'':'error';
 function bandeja(F){
-  let lista=F.puntos.filter(p=>!p.porUbicar&&(!filtro.quien||asignado(F,p,'quien').includes(filtro.quien))&&(!filtro.dia||asignado(F,p,'dia')===filtro.dia)
+  let lista=F.puntos.filter(p=>listable(p)&&(!filtro.quien||asignado(F,p,'quien').includes(filtro.quien))&&(!filtro.dia||asignado(F,p,'dia')===filtro.dia)
     &&(!filtro.comuna||p.comuna===filtro.comuna)&&(!filtro.nodo||p.nodo===filtro.nodo)&&(!filtro.clasif||p.clasificacion===filtro.clasif)&&(!filtro.estado||coincideEstado(p.codigo,filtro.estado))
     &&(!filtro.texto||(p.codigo+' '+(p.pre['Ubicación según el KMZ de las bases']??'')+' '+(p.nodo??'')).toLowerCase().includes(filtro.texto.toLowerCase())));
   if(F.tipo==='via-rapida'){const dist=p=>{const k=kmz(p);return aqui&&k?distanciaM(aqui,k):Infinity;};
@@ -413,7 +415,10 @@ function migrar(p){
 // --- Wiring ---------------------------------------------------------------------------------------------------------
 function poblarFiltros(){
   const F=activo();
-  $('lev-quien').innerHTML='<option value="">Todos</option>'+C.levantadores.map(n=>`<option${n===filtro.quien?' selected':''}>${esc(n)}</option>`).join('');
+  // Whoever the planilla assigns («Lo levanta»): any professional or technician with the role, not a fixed list.
+  const asignados=[...new Set(F.puntos.flatMap(p=>String(asignado(F,p,'quien')).split(/\s*(?:,|;| y )\s*/)).map(x=>x.trim()).filter(Boolean))].sort();
+  if(!asignados.includes(filtro.quien))filtro.quien='';
+  $('lev-quien').innerHTML='<option value="">Todos</option>'+asignados.map(n=>`<option${n===filtro.quien?' selected':''}>${esc(n)}</option>`).join('');
   const dias=[...new Set(F.puntos.map(p=>asignado(F,p,'dia')).filter(Boolean))].sort();
   $('lev-dia').innerHTML='<option value="">Todos los días</option>'+dias.map(d=>`<option${d===filtro.dia?' selected':''}>${esc(d)}</option>`).join('');
   $('lev-cerca').hidden=F.tipo!=='via-rapida';
@@ -422,10 +427,12 @@ function poblarFiltros(){
   $('lev-comuna-wrap').hidden=comunas.length<2;
   $('lev-comuna').innerHTML='<option value="">Todas</option>'+comunas.map(c=>`<option${c===filtro.comuna?' selected':''}>${esc(c)}</option>`).join('');
   $('lev-estado').innerHTML='<option value="">Todos</option>'+ESTADOS.filter(([k])=>F.tipo==='via-rapida'||!['via-rapida','largo'].includes(k)).map(([k,t])=>`<option value="${k}"${k===filtro.estado?' selected':''}>${esc(t)}</option>`).join('');
-  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&!p.porUbicar));
-  if(!clases.includes(filtro.clasif))filtro.clasif='';
+  const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&listable(p)));
+  // A municipal form opens on «Vía rápida probable»; the other groups are one tap away.
+  if(!clases.includes(filtro.clasif))filtro.clasif=clases.includes('Vía rápida probable')&&filtro.clasifPor!==F.id?'Vía rápida probable':'';
+  filtro.clasifPor=F.id;
   $('lev-clasif-wrap').hidden=!clases.length;
-  const nodos=[...new Set(F.puntos.filter(p=>!p.porUbicar&&p.nodo&&p.nodo!=='—').map(p=>p.nodo))].sort((a,b)=>nodoOrden(a)-nodoOrden(b)||a.localeCompare(b));
+  const nodos=[...new Set(F.puntos.filter(p=>listable(p)&&p.nodo&&p.nodo!=='—').map(p=>p.nodo))].sort((a,b)=>nodoOrden(a)-nodoOrden(b)||a.localeCompare(b));
   if(!nodos.includes(filtro.nodo))filtro.nodo='';
   $('lev-nodo-wrap').hidden=nodos.length<2;
   $('lev-nodo').innerHTML='<option value="">Todos</option>'+nodos.map(n=>`<option${n===filtro.nodo?' selected':''}>${esc(n)}</option>`).join('');

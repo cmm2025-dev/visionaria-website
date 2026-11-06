@@ -2367,7 +2367,7 @@
   },
   {
    "id": "VR-Antofagasta",
-   "titulo": "Vía rápida · Antofagasta",
+   "titulo": "Municipales · Antofagasta",
    "tipo": "via-rapida",
    "archivo": "Antofagasta.xlsx",
    "hojas": [
@@ -6787,7 +6787,7 @@
   },
   {
    "id": "VR-Calama",
-   "titulo": "Vía rápida · Calama",
+   "titulo": "Municipales · Calama",
    "tipo": "via-rapida",
    "archivo": "Calama.xlsx",
    "hojas": [
@@ -9017,7 +9017,7 @@
   },
   {
    "id": "VR-Tocopilla",
-   "titulo": "Vía rápida · Tocopilla",
+   "titulo": "Municipales · Tocopilla",
    "tipo": "via-rapida",
    "archivo": "Tocopilla.xlsx",
    "hojas": [
