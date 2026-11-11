@@ -263,6 +263,24 @@ def _valor(hoja, col, fila0):
     return cel.getValue() if tipo == 'VALUE' else cel.getString()
 
 
+# Columns added to the planillas after rows were already written there: rows stored before (as a list, in the old column
+# order) did not have them.
+AGREGADAS = ['¿Hay cámara existente?']
+
+
+def por_encabezado(previo, campos):
+    """What the service wrote in a row, as {header: value}. Rows written before 11-11-2026 were stored as a list in the
+    contract's column order of the time, without the columns added since (AGREGADAS)."""
+    if previo is None or isinstance(previo, dict):
+        return previo
+    antes = [c['key'] for c in campos if c['key'] not in AGREGADAS]
+    if len(previo) == len(antes):
+        return dict(zip(antes, previo))
+    if len(previo) == len(campos):
+        return dict(zip([c['key'] for c in campos], previo))
+    return None   # otra forma: se trata como si nunca se hubiera escrito (se reescribe si la fila está vacía o igual)
+
+
 def generar(dbx, office, conn, formulario, trabajo, reposo_min=10, forzar=()):
     """Escribe los levantamientos vigentes de un formulario en su planilla. Devuelve True si quedó actualizada en Dropbox.
 
@@ -315,14 +333,15 @@ def generar(dbx, office, conn, formulario, trabajo, reposo_min=10, forzar=()):
             with sin_proteccion(hoja):
                 for codigo in presentes:
                     fila0 = filas[codigo] - 1
-                    actual = [_valor(hoja, c, fila0) for c in cols]
-                    esperado = [celda(c, vigentes[codigo]['valores'].get(c['key'])) for c in campos]
-                    previo = base.get(codigo)
-                    a_mano = actual != previo if previo is not None else any(v != '' for v in actual)
+                    # Compared by header, so a column added to the planilla later does not look like a hand edit.
+                    actual = {c['key']: _valor(hoja, col, fila0) for c, col in zip(campos, cols)}
+                    esperado = {c['key']: celda(c, vigentes[codigo]['valores'].get(c['key'])) for c in campos}
+                    previo = por_encabezado(base.get(codigo), campos)
+                    a_mano = any(actual[k] != previo.get(k, '') for k in actual) if previo is not None else any(v != '' for v in actual.values())
                     if a_mano and actual != esperado and codigo not in forzar:
                         tocadas.append(codigo)
                         continue
-                    for col, v in zip(cols, esperado):
+                    for col, v in zip(cols, esperado.values()):
                         cel = hoja.getCellByPosition(col, fila0)
                         if isinstance(v, float):
                             cel.setValue(v)

@@ -34,7 +34,8 @@ const ubicar=codigo=>porCodigo.get(codigo);                      // {F, punto}
 const activo=()=>formulario(prefs.formulario)??C.formularios[0];
 const minFecha=()=>new Date(FECHA_BASE+Number(C.fechaMinima)*86400000).toISOString().slice(0,10);
 const visible=(campo,punto)=>!campo.when||(campo.when==='lpr'?punto.lpr:punto.enlace);
-const tomasDe=(F,punto)=>F.fotos.filter(t=>!t.when||(t.when==='lpr'?punto.lpr:punto.enlace));
+// A photo can depend on the point (LPR, link) or on an answer: «Cámara existente» only when there is one at or near the point.
+const tomasDe=(F,punto,v={})=>F.fotos.filter(t=>(!t.when||(t.when==='lpr'?punto.lpr:punto.enlace))&&(!t.whenCampo||t.whenValores.includes(v[t.whenCampo])));
 const asignado=(F,punto,clave)=>punto.asignacion?.[clave==='quien'?'Lo levanta':F.tipo==='dec020'?'Día (plan de Iván)':'Día']??'';
 
 // --- The planilla's own rules: «Control», «Trámite resultante» and the LPR angles ------------------------------------
@@ -46,7 +47,8 @@ export function angulos(F,v){const r=F.reglas.angulos;if(!r)return {vertical:nul
 // Pure versions of «Control» and «Trámite resultante», exported so they can be checked against the planillas themselves.
 export function controlFormulario(F,punto,v){
   const r=F.reglas,a=angulos(F,v);
-  if(F.campos.every(c=>vacio(v[c.key])||(c.key===r.fotos.campo&&String(v[c.key])==='0')))return 'Sin levantar';
+  // Fields the planilla's formula does not count (fueraDeControl, like «¿Hay cámara existente?») never make a point «en curso».
+  if(F.campos.every(c=>vacio(v[c.key])||c.fueraDeControl||(c.key===r.fotos.campo&&String(v[c.key])==='0')))return 'Sin levantar';
   if(r.obligatorios.some(k=>vacio(v[k])))return 'Faltan datos';
   if(punto.lpr&&r.obligatoriosLpr.some(k=>vacio(v[k])))return 'Faltan datos LPR';
   if(punto.enlace&&vacio(v[r.enlace.campo]))return 'Faltan datos del enlace';
@@ -259,7 +261,7 @@ function renderFicha(){
     ${F.tipo==='via-rapida'?`<fieldset class="lev-grupo lev-rapida"><legend>Ficha rápida</legend>${rapidos.map(x=>campoHTML(F,x,v,punto)).join('')}<div class="lev-tramite ${chipClase(e.tramite)}" id="lev-tramite"><span>Trámite resultante</span><strong>${esc(e.tramite||'Sin levantar')}</strong></div></fieldset>
       <details class="lev-mas"${prefs.abrirResto?' open':''}><summary>Resto del formulario (necesario para «Control» OK)</summary>${fieldsets}</details>`:fieldsets}
     <fieldset class="lev-grupo"><legend>Fotos guiadas</legend><p class="field-hint">Mínimo 3. Cada foto queda estampada con el punto, la toma, la fecha y el GPS.</p>
-      ${tomasDe(F,punto).map(t=>{const fs=fotos.filter(f=>f.codigo===abierto&&f.toma===t.code);return `<div class="proto-slot${fs.length?' done':''}"><div class="proto-head"><div><strong>${esc(t.code)} · ${esc(t.label)}${t.required?' <span class="lev-req">*</span>':''}${fs.length?` · ${fs.length}`:''}</strong><span class="field-hint">${esc(t.hint)}</span></div><div class="proto-actions"><button type="button" class="btn btn-camera" data-lev-foto="${esc(t.code)}|camera"><svg><use href="#i-camera"/></svg>Cámara</button><button type="button" class="btn btn-secondary" data-lev-foto="${esc(t.code)}|gallery"><svg><use href="#i-plus"/></svg>Galería</button></div></div>${fs.length?`<div class="proto-thumbs">${fs.map(f=>{const u=URL.createObjectURL(f.blob);urls.push(u);return `<div class="photo-tile"><img src="${u}" alt="${esc(t.code)}"><code>${esc(nombreFoto(f))} · ${f.status==='sent'?'✓ Dropbox':'○ En el teléfono'}</code>${f.status==='sent'?'':`<button type="button" class="remove-photo" data-lev-quitar="${esc(f.id)}" aria-label="Quitar fotografía">×</button>`}</div>`}).join('')}</div>`:''}</div>`;}).join('')}
+      ${tomasDe(F,punto,v).map(t=>{const fs=fotos.filter(f=>f.codigo===abierto&&f.toma===t.code);return `<div class="proto-slot${fs.length?' done':''}"><div class="proto-head"><div><strong>${esc(t.code)} · ${esc(t.label)}${t.required?' <span class="lev-req">*</span>':''}${fs.length?` · ${fs.length}`:''}</strong><span class="field-hint">${esc(t.hint)}</span></div><div class="proto-actions"><button type="button" class="btn btn-camera" data-lev-foto="${esc(t.code)}|camera"><svg><use href="#i-camera"/></svg>Cámara</button><button type="button" class="btn btn-secondary" data-lev-foto="${esc(t.code)}|gallery"><svg><use href="#i-plus"/></svg>Galería</button></div></div>${fs.length?`<div class="proto-thumbs">${fs.map(f=>{const u=URL.createObjectURL(f.blob);urls.push(u);return `<div class="photo-tile"><img src="${u}" alt="${esc(t.code)}"><code>${esc(nombreFoto(f))} · ${f.status==='sent'?'✓ Dropbox':'○ En el teléfono'}</code>${f.status==='sent'?'':`<button type="button" class="remove-photo" data-lev-quitar="${esc(f.id)}" aria-label="Quitar fotografía">×</button>`}</div>`}).join('')}</div>`:''}</div>`;}).join('')}
     </fieldset>
     ${bloqueConfirmar(p)}
     <div class="lev-acciones"><span id="lev-envio-estado" class="lev-envio ${s.clase}">${esc(s.texto)}${p?.error?' · '+esc(p.error):''}</span><div class="lev-botones">${p?.sent?`<button type="button" class="text-button lev-peligro" data-lev-confirmar="anular" ${busy?'disabled':''}>Anular levantamiento</button>`:p&&s.clase?`<button type="button" class="text-button lev-peligro" data-lev-confirmar="descartar" ${busy?'disabled':''}>Descartar borrador</button>`:''}<button type="button" class="btn btn-primary" data-lev-enviar ${busy?'disabled':''}>Enviar a Dropbox</button></div></div>`;
@@ -489,7 +491,7 @@ export async function setupLevantamiento(context){
   });
   view.addEventListener('toggle',e=>{if(e.target.classList?.contains('lev-mas')){prefs.abrirResto=e.target.open;savePrefs();}},true);
   view.addEventListener('input',e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);const valor=e.target.value;guardarTimer=setTimeout(()=>guardarCampo(clave,valor),300);});
-  view.addEventListener('change',async e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);if(await guardarCampo(clave,e.target.value))render();else actualizarEstado(e.target);});
+  view.addEventListener('change',async e=>{const clave=e.target.dataset?.levCampo;if(!clave)return;clearTimeout(guardarTimer);if(await guardarCampo(clave,e.target.value)||ubicar(abierto).F.fotos.some(t=>t.whenCampo===clave))render();else actualizarEstado(e.target);});
   render();cargarOficina();
 }
 export function showLevantamiento(){abierto=null;confirmando=null;render();cargarOficina();}
