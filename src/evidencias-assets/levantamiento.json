@@ -493,14 +493,27 @@
      "hint": "Se cuenta solo con las fotos guiadas (mínimo 3)."
     },
     {
-     "key": "Observaciones para el expediente",
+     "key": "¿Hay cámara existente?",
      "col": "BT",
+     "type": "list",
+     "group": "Entorno y riesgos",
+     "options": [
+      "Sí",
+      "No",
+      "Cerca (a menos de 20 m)"
+     ],
+     "hint": "Una cámara ya instalada en el mismo lugar o a menos de 20 m (por ejemplo, en la vereda del frente). Si la hay, fotografíala para ver su estado.",
+     "fueraDeControl": true
+    },
+    {
+     "key": "Observaciones para el expediente",
+     "col": "BU",
      "type": "text",
      "group": "Cierre"
     },
     {
      "key": "¿Hay que volver?",
-     "col": "BU",
+     "col": "BV",
      "type": "list",
      "group": "Cierre",
      "options": [
@@ -610,6 +623,16 @@
      "code": "L8",
      "label": "Obstáculos o riesgos",
      "hint": "Árboles, señales, paraderos, accesos o lo que afecte la obra."
+    },
+    {
+     "code": "L9",
+     "label": "Cámara existente",
+     "hint": "La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.",
+     "whenCampo": "¿Hay cámara existente?",
+     "whenValores": [
+      "Sí",
+      "Cerca (a menos de 20 m)"
+     ]
     }
    ],
    "columnaFotos": "Fotos (Dropbox)",
@@ -2744,14 +2767,28 @@
      "hint": "Se cuenta solo con las fotos guiadas (mínimo 3)."
     },
     {
-     "key": "Observaciones para el expediente",
+     "key": "¿Hay cámara existente?",
      "col": "BB",
+     "type": "list",
+     "group": "Entorno y riesgos",
+     "options": [
+      "Sí",
+      "No",
+      "Cerca (a menos de 20 m)"
+     ],
+     "hint": "Una cámara ya instalada en el mismo lugar o a menos de 20 m (por ejemplo, en la vereda del frente). Si la hay, fotografíala para ver su estado.",
+     "fueraDeControl": true,
+     "rapida": 11
+    },
+    {
+     "key": "Observaciones para el expediente",
+     "col": "BC",
      "type": "text",
      "group": "Cierre"
     },
     {
      "key": "¿Hay que volver?",
-     "col": "BC",
+     "col": "BD",
      "type": "list",
      "group": "Cierre",
      "options": [
@@ -2849,6 +2886,16 @@
      "code": "V5",
      "label": "Obstáculos o riesgos",
      "hint": "Árboles, paraderos, accesos o lo que afecte la obra."
+    },
+    {
+     "code": "V6",
+     "label": "Cámara existente",
+     "hint": "La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.",
+     "whenCampo": "¿Hay cámara existente?",
+     "whenValores": [
+      "Sí",
+      "Cerca (a menos de 20 m)"
+     ]
     }
    ],
    "columnaFotos": null,
@@ -7164,14 +7211,28 @@
      "hint": "Se cuenta solo con las fotos guiadas (mínimo 3)."
     },
     {
-     "key": "Observaciones para el expediente",
+     "key": "¿Hay cámara existente?",
      "col": "BB",
+     "type": "list",
+     "group": "Entorno y riesgos",
+     "options": [
+      "Sí",
+      "No",
+      "Cerca (a menos de 20 m)"
+     ],
+     "hint": "Una cámara ya instalada en el mismo lugar o a menos de 20 m (por ejemplo, en la vereda del frente). Si la hay, fotografíala para ver su estado.",
+     "fueraDeControl": true,
+     "rapida": 11
+    },
+    {
+     "key": "Observaciones para el expediente",
+     "col": "BC",
      "type": "text",
      "group": "Cierre"
     },
     {
      "key": "¿Hay que volver?",
-     "col": "BC",
+     "col": "BD",
      "type": "list",
      "group": "Cierre",
      "options": [
@@ -7269,6 +7330,16 @@
      "code": "V5",
      "label": "Obstáculos o riesgos",
      "hint": "Árboles, paraderos, accesos o lo que afecte la obra."
+    },
+    {
+     "code": "V6",
+     "label": "Cámara existente",
+     "hint": "La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.",
+     "whenCampo": "¿Hay cámara existente?",
+     "whenValores": [
+      "Sí",
+      "Cerca (a menos de 20 m)"
+     ]
     }
    ],
    "columnaFotos": null,
@@ -9395,14 +9466,28 @@
      "hint": "Se cuenta solo con las fotos guiadas (mínimo 3)."
     },
     {
-     "key": "Observaciones para el expediente",
+     "key": "¿Hay cámara existente?",
      "col": "BB",
+     "type": "list",
+     "group": "Entorno y riesgos",
+     "options": [
+      "Sí",
+      "No",
+      "Cerca (a menos de 20 m)"
+     ],
+     "hint": "Una cámara ya instalada en el mismo lugar o a menos de 20 m (por ejemplo, en la vereda del frente). Si la hay, fotografíala para ver su estado.",
+     "fueraDeControl": true,
+     "rapida": 11
+    },
+    {
+     "key": "Observaciones para el expediente",
+     "col": "BC",
      "type": "text",
      "group": "Cierre"
     },
     {
      "key": "¿Hay que volver?",
-     "col": "BC",
+     "col": "BD",
      "type": "list",
      "group": "Cierre",
      "options": [
@@ -9500,6 +9585,16 @@
      "code": "V5",
      "label": "Obstáculos o riesgos",
      "hint": "Árboles, paraderos, accesos o lo que afecte la obra."
+    },
+    {
+     "code": "V6",
+     "label": "Cámara existente",
+     "hint": "La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.",
+     "whenCampo": "¿Hay cámara existente?",
+     "whenValores": [
+      "Sí",
+      "Cerca (a menos de 20 m)"
+     ]
     }
    ],
    "columnaFotos": null,

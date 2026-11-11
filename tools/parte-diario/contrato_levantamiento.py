@@ -36,7 +36,11 @@ OBLIGATORIOS_LPR = ['LPR: sentidos a leer', 'LPR: pistas por sentido', 'LPR: pos
 # Ficha rápida de vía rápida: los datos que deciden el trámite, en el orden del prompt (§5.2).
 FICHA_RAPIDA = ['Dónde va la fundación', 'Material', '¿Hay rotura de pavimento?', 'Red BT de CGE',
                 'Poste CGE más cercano (N° de placa)', 'Distancia al poste CGE (m)', 'Dentro de la faja o a menos de 20 m',
-                'Organismo que autoriza (según terreno)', 'Latitud medida', 'Longitud medida']
+                'Organismo que autoriza (según terreno)', 'Latitud medida', 'Longitud medida', '¿Hay cámara existente?']
+# A camera already at the point or within 20 m (decision of 11-11): optional, shown with the surroundings, with its photo.
+CAMARA = '¿Hay cámara existente?'
+CAMARA_SI = ['Sí', 'Cerca (a menos de 20 m)']
+GRUPO_FORZADO = {CAMARA: 'Entorno y riesgos'}
 GRUPOS = [  # por encabezado de inicio; cada campo cae en el último grupo que empezó antes que él (orden de la hoja DEC-020)
     ('Fecha', 'Ubicación'), ('Distancia a la calzada (m)', 'Faja y organismo'), ('Dónde va la fundación', 'Fundación'),
     ('Postes existentes (dueño y N° de placa)', 'Redes y cruces'), ('Alimentación posible', 'Energía'),
@@ -58,6 +62,7 @@ AYUDAS = {
     'LPR: distancia lateral a la pista más lejana (m)': 'Los ángulos deben quedar bajo 30° (mejor bajo 20°).',
     'LPR: altura libre bajo el brazo (m)': 'Solo si el brazo queda sobre la calzada de una ruta.',
     FOTOS_N: 'Se cuenta solo con las fotos guiadas (mínimo 3).',
+    CAMARA: 'Una cámara ya instalada en el mismo lugar o a menos de 20 m (por ejemplo, en la vereda del frente). Si la hay, fotografíala para ver su estado.',
 }
 SIN_SOLUCION_DEC020 = ['ANT-L02', 'ANT-L03', 'ANT-122', 'TOC-L04', 'TOC-L05']
 FOTOS_DEC020 = [
@@ -69,6 +74,7 @@ FOTOS_DEC020 = [
     {'code': 'L6', 'label': 'LPR · vía hacia el poste, sentido 1', 'hint': 'Desde el punto de lectura hacia el poste.', 'when': 'lpr'},
     {'code': 'L7', 'label': 'LPR · vía hacia el poste, sentido 2', 'hint': 'Desde el punto de lectura hacia el poste.', 'when': 'lpr'},
     {'code': 'L8', 'label': 'Obstáculos o riesgos', 'hint': 'Árboles, señales, paraderos, accesos o lo que afecte la obra.'},
+    {'code': 'L9', 'label': 'Cámara existente', 'hint': 'La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.', 'whenCampo': CAMARA, 'whenValores': CAMARA_SI},
 ]
 FOTOS_VIA_RAPIDA = [
     {'code': 'V1', 'label': 'Suelo en el lugar del poste', 'hint': 'Dónde va la fundación: vereda, tierra, área verde…', 'required': True},
@@ -76,6 +82,7 @@ FOTOS_VIA_RAPIDA = [
     {'code': 'V3', 'label': 'Panorámica del sitio', 'hint': 'De pie en el lugar propuesto para el poste.', 'required': True},
     {'code': 'V4', 'label': 'Línea de vista al punto del enlace', 'hint': 'Hacia el punto indicado en «Enlace según la oferta».', 'when': 'enlace'},
     {'code': 'V5', 'label': 'Obstáculos o riesgos', 'hint': 'Árboles, paraderos, accesos o lo que afecte la obra.'},
+    {'code': 'V6', 'label': 'Cámara existente', 'hint': 'La cámara que ya está en el lugar o cerca: que se vea su estado, su soporte y, si se puede, su dueño.', 'whenCampo': CAMARA, 'whenValores': CAMARA_SI},
 ]
 
 
@@ -161,7 +168,7 @@ def leer_formulario(ruta, hojas, id_, titulo, tipo, comuna=None):
             letra = encabezados[h]
             tipo_v, f1 = validaciones.get(letra, (None, ''))
             campo = {'key': h, 'col': letra, 'type': {'list': 'list', 'date': 'date', 'decimal': 'decimal', 'whole': 'whole'}.get(tipo_v, 'text'),
-                     'group': grupo_de(h, orden)}
+                     'group': GRUPO_FORZADO.get(h) or grupo_de(h, orden)}
             if tipo_v == 'list':
                 campo['options'] = [o.strip() for o in f1.strip('"').split(',')]
             if tipo_v == 'date':
@@ -176,6 +183,8 @@ def leer_formulario(ruta, hojas, id_, titulo, tipo, comuna=None):
                 campo['when'] = 'enlace'
             if h in AYUDAS:
                 campo['hint'] = AYUDAS[h]
+            if h == CAMARA:
+                campo['fueraDeControl'] = True   # la fórmula de «Control» no la cuenta: la app tampoco
             if tipo == 'via-rapida' and h in FICHA_RAPIDA:
                 campo['rapida'] = FICHA_RAPIDA.index(h) + 1
             hoja_campos.append(campo)
