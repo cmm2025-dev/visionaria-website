@@ -12,6 +12,7 @@
   parte panel                       envía ahora el resumen al panel ejecutivo de la Intranet
   parte levantamiento [--forzar COD ...]  una pasada del levantamiento (DEC-020 y vía rápida); --forzar reescribe filas cambiadas a mano
   parte fibra [--forzar COD ...]          una pasada del levantamiento de fibra (ruta y apoyos); --forzar igual que arriba
+  parte reenlazar --desde R --hacia R [--aplicar]  tras renombrar una carpeta en Dropbox, actualiza rutas y enlaces a fotos
 """
 import argparse
 import datetime
@@ -94,6 +95,10 @@ def main(argv=None):
     p.add_argument('--forzar', nargs='*', default=[], metavar='CODIGO')
     p = sub.add_parser('fibra')
     p.add_argument('--forzar', nargs='*', default=[], metavar='CODIGO')
+    p = sub.add_parser('reenlazar')
+    p.add_argument('--desde', required=True)
+    p.add_argument('--hacia', required=True)
+    p.add_argument('--aplicar', action='store_true')
     args = ap.parse_args(argv)
 
     conn = db.conectar()
@@ -142,6 +147,11 @@ def main(argv=None):
             for formulario in levantamiento.FORMULARIOS:
                 if formulario in levantamiento.config()['planillas']:
                     levantamiento.generar(dbx, office, conn, formulario, trabajo(), 0, tuple(args.forzar))
+        return
+    if args.cmd == 'reenlazar':
+        from . import reenlazar
+        with Office() as office:
+            reenlazar.correr(dbx, office, conn, args.desde, args.hacia, args.aplicar, trabajo())
         return
     if args.cmd == 'fibra':
         from . import fibra

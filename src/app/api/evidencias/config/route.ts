@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
     parteQueue: completo ? evidenciasParteQueue() : null,
     levantamientoQueue: completo ? evidenciasLevantamientoQueue() : null,
     verTodo: todo,
+    alias: completo ? evidenciasAlias() : [],
     verPorUbicar: todo,
   });
 }
