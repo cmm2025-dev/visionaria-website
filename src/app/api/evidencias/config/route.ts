@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireEvidenciasTech } from '@/lib/evidenciasAuth';
 import { emailInAllowlists } from '@/lib/session';
 import { hasProjectRole } from '@/lib/projects';
-import { evidenciasRoot, evidenciasPilotMode, evidenciasParteQueue, evidenciasLevantamientoQueue } from '@/lib/dropboxServer';
+import { evidenciasRoot, evidenciasPilotMode, evidenciasParteQueue, evidenciasLevantamientoQueue, evidenciasAlias } from '@/lib/dropboxServer';
 
 export const runtime = 'nodejs';
 
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
     parteQueue: evidenciasParteQueue(),
     levantamientoQueue: evidenciasLevantamientoQueue(),
     verTodo: verTodo(email),
+    alias: evidenciasAlias(),
     verPorUbicar: verTodo(email),
   });
 }
