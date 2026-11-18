@@ -61,14 +61,15 @@ def existe(conn, registro_id):
 def insertar_registro(conn, r, fotos=()):
     conn.execute('''INSERT INTO registros (id, comuna, fila, id_planilla, fecha, punto, hecho, tipo, ejecuto, observacion,
                     registrado_por, gps_lat, gps_lon, gps_precision, gps_origen, foto, piloto, origen, detalle_manual, guardado_en,
-                    anulado_en, anulado_por, motivo_anulacion)
+                    anulado_en, anulado_por, motivo_anulacion, foto_tomada_en, carga_diferida)
                     VALUES (%(id)s, %(comuna)s, %(fila)s, %(id_planilla)s, %(fecha)s, %(punto)s, %(hecho)s, %(tipo)s, %(ejecuto)s,
                     %(observacion)s, %(registrado_por)s, %(gps_lat)s, %(gps_lon)s, %(gps_precision)s, %(gps_origen)s, %(foto)s,
-                    %(piloto)s, %(origen)s, %(detalle_manual)s, %(guardado_en)s, %(anulado_en)s, %(anulado_por)s, %(motivo_anulacion)s)''',
+                    %(piloto)s, %(origen)s, %(detalle_manual)s, %(guardado_en)s, %(anulado_en)s, %(anulado_por)s, %(motivo_anulacion)s,
+                    %(foto_tomada_en)s, %(carga_diferida)s)''',
                  {k: r.get(k) for k in ('id', 'comuna', 'fila', 'id_planilla', 'fecha', 'punto', 'hecho', 'tipo', 'ejecuto',
                                         'observacion', 'registrado_por', 'gps_lat', 'gps_lon', 'gps_precision', 'gps_origen', 'foto',
                                         'piloto', 'origen', 'detalle_manual', 'guardado_en', 'anulado_en', 'anulado_por',
-                                        'motivo_anulacion')})
+                                        'motivo_anulacion', 'foto_tomada_en')} | {'carga_diferida': bool(r.get('carga_diferida'))})
     for f in fotos:
         conn.execute('INSERT INTO fotos (registro_id, nombre, ruta, toma, dropbox_id, hash) VALUES (%s,%s,%s,%s,%s,%s)',
                      (r['id'], f.get('nombre') or '', f.get('ruta'), f.get('toma'), f.get('dropbox_id'), f.get('hash')))

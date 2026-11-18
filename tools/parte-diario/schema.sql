@@ -42,6 +42,10 @@ CREATE TABLE IF NOT EXISTS registros (
   UNIQUE (comuna, fila)
 );
 CREATE INDEX IF NOT EXISTS registros_comuna_actualizado ON registros (comuna, actualizado_en);
+-- Respaldo ante la ITO: cuándo se tomó la primera foto (hora local de la cámara, del EXIF si vino de la galería) y si
+-- alguna foto se cargó después desde la galería (carga diferida). La fecha del hecho y guardado_en siguen aparte.
+ALTER TABLE registros ADD COLUMN IF NOT EXISTS foto_tomada_en timestamp;
+ALTER TABLE registros ADD COLUMN IF NOT EXISTS carga_diferida boolean NOT NULL DEFAULT false;
 
 CREATE TABLE IF NOT EXISTS fotos (
   id          bigserial PRIMARY KEY,
