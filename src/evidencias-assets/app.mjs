@@ -1,7 +1,7 @@
 import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,folderFor,validateCapture,csv,makeZip,randomId} from './core.mjs';
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
-import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix} from './media.mjs';
+import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix,datosOriginales} from './media.mjs';
 import {setupLevantamiento,showLevantamiento} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
@@ -44,7 +44,8 @@ function setMode(next){
   formError('');renderContext();renderProtocol();
 }
 async function finalizePhoto(file,m,activityLabel){
-  const lines=[`${m.point} · ${activityLabel} · ${m.commune}`,`Hecho ${m.date.split('-').reverse().join('-')} · Registro ${chileDateTime(file.registeredAt)}`,gpsLabel(file.gps,file.gpsSource),m.author];
+  const tomada=file.diferida?` · Foto ${file.tomadaEn?file.tomadaEn.slice(8,10)+'-'+file.tomadaEn.slice(5,7)+'-'+file.tomadaEn.slice(0,4)+' '+file.tomadaEn.slice(11,16):'sin fecha original'} · CARGA DIFERIDA`:'';
+  const lines=[`${m.point} · ${activityLabel} · ${m.commune}`,`Hecho ${m.date.split('-').reverse().join('-')}${tomada} · Registro ${chileDateTime(file.registeredAt)}`,gpsLabel(file.gps,file.gpsSource),m.author];
   let blob=await processImage(file.blob,lines),extension='jpg';
   if(blob&&file.gps)blob=await withExif(blob,file.gps);
   if(!blob){blob=file.blob;extension=file.originalExtension;}
@@ -59,7 +60,7 @@ async function saveProtocol(){
   const batch=randomId(),folder=currentFolder();
   busy=true;lockComposer(true);renderDraft();
   const prepared=[];for(const slot of slots)for(const file of protoDraft[slot.code])prepared.push({slot,file:await finalizePhoto(file,m,`${slot.code} ${slotTitle(slot)}`)});
-  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const {slot,file} of prepared){const base=baseName(m.point,m.date,slot.quality??`${act.slug}_${slot.slug}`),index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,activity:`Protocolo ${slot.code} ${slotTitle(slot)}`,type:'Protocolo',slot:slot.code,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
+  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];for(const {slot,file} of prepared){const base=baseName(m.point,m.date,slot.quality??`${act.slug}_${slot.slug}`),index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,activity:`Protocolo ${slot.code} ${slotTitle(slot)}`,type:'Protocolo',slot:slot.code,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',tomadaEn:file.tomadaEn??null,diferida:!!file.diferida,savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
   protoDraft={};renderProtocol();await refresh();toast('Protocolo guardado en este dispositivo. Enviando a Dropbox…');showView('records');
   busy=false;lockComposer(false);renderDraft();renderRecords();
   if(navigator.onLine)await syncPhotos(rows.map(r=>r.id));
@@ -108,7 +109,12 @@ async function collectFiles(list,source){formError('');
   const slow=setTimeout(()=>toast('Obteniendo ubicación GPS…'),1500);const fix=await(pendingFix??requestFix());clearTimeout(slow);pendingFix=null;
   const accepted=[];for(const file of list){try{
     if(file.size===0||file.size>25*1024*1024)throw new Error('Cada foto debe pesar entre 1 byte y 25 MB.');
-    accepted.push({blob:file,extension:'jpg',originalExtension:extensionFor(file),registeredAt:new Date().toISOString(),gps:fix,gpsSource:source});
+    // A camera shot is taken now; a gallery photo keeps its own date, time and (if the phone kept it) GPS, and is marked
+    // as a deferred load, so the record shows when it was shot and when it reached the app (respaldo ante la ITO).
+    const registeredAt=new Date().toISOString();
+    if(source==='gallery'){const o=await datosOriginales(file);
+      accepted.push({blob:file,extension:'jpg',originalExtension:extensionFor(file),registeredAt,tomadaEn:o.tomadaEn,diferida:true,gps:o.gps??fix,gpsSource:o.gps?'foto':source});}
+    else accepted.push({blob:file,extension:'jpg',originalExtension:extensionFor(file),registeredAt,tomadaEn:horaLocal(registeredAt),diferida:false,gps:fix,gpsSource:source});
   }catch(error){formError(error.message);}}
   return accepted;}
 async function addFiles(list,source){const accepted=await collectFiles(list,source);
@@ -122,7 +128,7 @@ async function saveCapture(event){event.preventDefault();if(busy)return;formErro
   const prepared=[];for(const file of draft)prepared.push(await finalizePhoto(file,m,m.activity));
   // Without photos there is nothing to upload: a single placeholder row carries the record to the parte diario queue.
   const sinFoto=!prepared.length?{gps:await requestFix(),registeredAt:new Date().toISOString()}:null;
-  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];if(sinFoto)rows.push({id:randomId(),batch,...m,type:act.type,hecho:act.label,parte:'pending',pilot:config.pilot,folder,base,index:0,name:'',extension:'',blob:null,registeredAt:sinFoto.registeredAt,gps:sinFoto.gps,gpsSource:sinFoto.gps?'form':'',savedAt:new Date().toISOString(),status:'sent',error:'',contentHash:''});for(const file of prepared){const index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,type:act.type,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
+  const rows=await locks('visionaria-save',async()=>{const existing=await getAll(),rows=[];if(sinFoto)rows.push({id:randomId(),batch,...m,type:act.type,hecho:act.label,parte:'pending',pilot:config.pilot,folder,base,index:0,name:'',extension:'',blob:null,registeredAt:sinFoto.registeredAt,gps:sinFoto.gps,gpsSource:sinFoto.gps?'form':'',savedAt:new Date().toISOString(),status:'sent',error:'',contentHash:''});for(const file of prepared){const index=nextIndex(base,folder,[...existing,...rows]);rows.push({id:randomId(),batch,...m,type:act.type,hecho:act.label,parte:config.parteQueue?'pending':null,pilot:config.pilot,folder,base,index,name:filename(base,index,file.extension),extension:file.extension,blob:file.blob,registeredAt:file.registeredAt,gps:file.gps??null,gpsSource:file.gpsSource??'',tomadaEn:file.tomadaEn??null,diferida:!!file.diferida,savedAt:new Date().toISOString(),status:'pending',error:'',contentHash:crypto.subtle?await dropbox.contentHash(file.blob):''});}await putMany(rows);return rows;});
   draft=[];await refresh();toast('Guardado en este dispositivo. Enviando a Dropbox…');showView('records');
   busy=false;lockComposer(false);renderDraft();renderRecords();
   if(navigator.onLine)await syncPhotos(rows.map(r=>r.id));
@@ -137,11 +143,16 @@ function renderRecords(){
 }
 // One JSON per saved record, dropped in the Dropbox queue once every photo of it is confirmed there.
 // The office PC (tools/parte-diario/escribir_parte.py) turns each one into a «Parte diario» row.
+// The camera's local time of a moment, as the phone shows it in Chile (YYYY-MM-DDTHH:MM:SS), like a photo's EXIF date.
+function horaLocal(iso){const p=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Santiago',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(iso)),g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')}:${g('second')}`;}
 function parteRecord(group){
-  const p=group[0],fixes=group.filter(x=>x.gps).sort((a,b)=>a.gps.accuracy-b.gps.accuracy),best=fixes.find(x=>x.gpsSource!=='gallery')??fixes[0];
+  const p=group[0],fixes=group.filter(x=>x.gps).sort((a,b)=>(a.gps.accuracy??50)-(b.gps.accuracy??50)),best=fixes.find(x=>x.gpsSource!=='gallery')??fixes[0];
+  const tomas=group.filter(x=>x.blob&&x.tomadaEn).map(x=>x.tomadaEn).sort();
   return {version:1,id:p.batch,comuna:p.commune,punto:p.point,fecha:p.date,hecho:p.hecho,tipo:ACTIVITIES.find(a=>a.label===p.hecho)?.type??'',ejecuto:p.executor||'',observacion:p.note||'',registro:p.author,
     gps:best?{lat:best.gps.lat,lon:best.gps.lon,accuracy:best.gps.accuracy}:null,gpsOrigen:best?.gpsSource??'',
-    fotos:group.filter(x=>x.blob).map(x=>({nombre:x.name,ruta:x.dropboxPath??x.folder+'/'+x.name,toma:x.slot??null})),piloto:!!p.pilot,guardado:p.savedAt,app:'evidencias'};
+    fotos:group.filter(x=>x.blob).map(x=>({nombre:x.name,ruta:x.dropboxPath??x.folder+'/'+x.name,toma:x.slot??null,tomadaEn:x.tomadaEn??null,diferida:!!x.diferida})),piloto:!!p.pilot,guardado:p.savedAt,app:'evidencias',
+    // When the first photo was shot (camera local time) and whether any photo was loaded later from the gallery.
+    tomadaEn:tomas[0]??null,cargaDiferida:group.some(x=>x.diferida)};
 }
 async function queueParte(){
   if(!config.parteQueue)return 0;
@@ -247,7 +258,7 @@ async function init(){
   $('executor').innerHTML='<option value="">Selecciona quién ejecutó</option>'+EXECUTORS.map(x=>`<option>${esc(x)}</option>`).join('');if(EXECUTORS.includes(lastExecutor))$('executor').value=lastExecutor;
   $('activity').innerHTML='<option value="">Selecciona una actividad</option>'+['Etapa','Novedad'].map(type=>`<optgroup label="${type==='Etapa'?'Etapas de obra':'Novedades'}">${ACTIVITIES.filter(a=>a.type===type).map(a=>`<option>${esc(a.label)}</option>`).join('')}</optgroup>`).join('');
   network();
-  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null,verPorUbicar:!!cfg.verPorUbicar,verTodo:!!cfg.verTodo};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
+  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();dropbox.configurarAlias(cfg.alias);config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null,verPorUbicar:!!cfg.verPorUbicar,verTodo:!!cfg.verTodo};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
   setupLevantamiento({toast,config:()=>config}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));

@@ -2,8 +2,40 @@
 // This is a verification control, not forensic photography -- resolution past this is never needed,
 // and shrinking every photo keeps uploads fast on weak field signal.
 const MAX_DIMENSION=1600,JPEG_QUALITY=0.8;
-// Gallery photos get the phone's position when they are added, not where they were shot -- say so.
-export function gpsLabel(gps,source){if(!gps)return 'Sin GPS';return `${source==='gallery'?'Ubicación al registrar':'GPS'} ${gps.lat.toFixed(6)}, ${gps.lon.toFixed(6)} ±${gps.accuracy} m`;}
+// Where the position came from: the camera at capture, the photo's own GPS (a gallery photo that kept it), or the phone
+// when a gallery photo was added (not where it was shot) -- the stamp says which.
+export function gpsLabel(gps,source){if(!gps)return 'Sin GPS';const rotulo=source==='gallery'?'Ubicación al registrar':source==='foto'?'GPS original de la foto':'GPS';return `${rotulo} ${gps.lat.toFixed(6)}, ${gps.lon.toFixed(6)}${gps.accuracy!=null?` ±${gps.accuracy} m`:''}`;}
+// A photo taken outside the app (the phone's camera, then the gallery) keeps when and where it was shot in its EXIF:
+// read the original date and time (DateTimeOriginal, the camera's local time) and GPS, if the phone kept them. Android
+// may withhold the GPS from the browser for privacy; the date usually survives. Nothing here throws.
+export async function datosOriginales(file){
+  try{
+    const v=new DataView(await file.slice(0,256*1024).arrayBuffer());
+    if(v.byteLength<4||v.getUint16(0)!==0xFFD8)return {tomadaEn:null,gps:null};
+    for(let o=2;o+10<v.byteLength;){
+      const marca=v.getUint16(o),largo=v.getUint16(o+2);
+      if((marca&0xFF00)!==0xFF00)break;
+      if(marca===0xFFE1&&v.getUint32(o+4)===0x45786966)return leerTiff(v,o+10);
+      o+=2+largo;
+    }
+  }catch{}
+  return {tomadaEn:null,gps:null};
+}
+function leerTiff(v,t){
+  const le=v.getUint16(t)===0x4949,u16=p=>v.getUint16(p,le),u32=p=>v.getUint32(p,le);
+  const ifd=p=>{const n=u16(p),out={};for(let i=0;i<n;i++){const e=p+2+i*12;out[u16(e)]={count:u32(e+4),val:e+8};}return out;};
+  const texto=e=>{const off=e.count>4?t+u32(e.val):e.val;let s='';for(let i=0;i<e.count-1;i++)s+=String.fromCharCode(v.getUint8(off+i));return s;};
+  const racionales=e=>{const off=t+u32(e.val),r=[];for(let i=0;i<e.count;i++){const d=u32(off+i*8+4);r.push(d?u32(off+i*8)/d:NaN);}return r;};
+  const fecha=s=>{const m=String(s).match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})/);return m&&m[1]!=='0000'?`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}`:null;};
+  const cero=ifd(t+u32(t+4));let tomadaEn=null,gps=null;
+  if(cero[0x8769]){const ex=ifd(t+u32(cero[0x8769].val)),d=ex[0x9003]??ex[0x9004];if(d)tomadaEn=fecha(texto(d));}
+  if(!tomadaEn&&cero[0x0132])tomadaEn=fecha(texto(cero[0x0132]));
+  if(cero[0x8825]){const g=ifd(t+u32(cero[0x8825].val));
+    if(g[2]&&g[4]){const gms=a=>a[0]+a[1]/60+a[2]/3600,ref=e=>e?String.fromCharCode(v.getUint8(e.val)):'';
+      let lat=gms(racionales(g[2])),lon=gms(racionales(g[4]));if(ref(g[1])==='S')lat=-lat;if(ref(g[3])==='W')lon=-lon;
+      if(Number.isFinite(lat)&&Number.isFinite(lon)&&(lat||lon))gps={lat:Math.round(lat*1e6)/1e6,lon:Math.round(lon*1e6)/1e6,accuracy:null};}}
+  return {tomadaEn,gps};
+}
 // Resize, burn in the visible stamp and re-encode in a single pass, so there is only one generation of JPEG loss.
 export function processImage(file,lines){
   return new Promise(resolve=>{

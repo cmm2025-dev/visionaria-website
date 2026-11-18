@@ -9,6 +9,21 @@
 
 export const COMMUNES = ['Antofagasta', 'Calama', 'Tocopilla'] as const;
 
+/**
+ * Folder aliases (EVIDENCIAS_DROPBOX_ALIAS): «/Proyectos/2026-DPR-ANF_OPERACIONES=id:Wx3r…», several separated by «;».
+ * The app sends any path under the left folder relative to that folder's fixed Dropbox id, so renaming the folder in
+ * Dropbox needs no change to the other variables (EVIDENCIAS_DROPBOX_ROOT, the queues) and pending records still land.
+ */
+export function evidenciasAlias(): { desde: string; hacia: string }[] {
+  return (process.env.EVIDENCIAS_DROPBOX_ALIAS ?? '')
+    .split(';')
+    .map(par => {
+      const [desde, hacia] = par.split('=').map(x => x?.trim() ?? '');
+      return { desde: desde.replace(/\/+$/, ''), hacia };
+    })
+    .filter(a => a.desde.startsWith('/') && a.hacia.startsWith('id:') && !a.desde.includes('..'));
+}
+
 export function evidenciasRoot(): string {
   return process.env.EVIDENCIAS_DROPBOX_ROOT ?? '/2026-DPR-ANF_OPERACIONES';
 }

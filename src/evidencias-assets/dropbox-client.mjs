@@ -12,7 +12,14 @@ async function ensureToken(){
 export function session(){return cached();}
 export class DropboxError extends Error{constructor(message,status,detail){super(message);this.status=status;this.detail=detail;}}
 function asciiJson(value){return JSON.stringify(value).replace(/[\u007f-\uffff]/g,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0'));}
+// Folder aliases from the server config: a path that starts with an aliased folder goes to Dropbox relative to that
+// folder's fixed id, so renaming the folder in Dropbox breaks nothing (pending records keep their old paths and still land).
+let alias=[];
+export function configurarAlias(lista){alias=(lista||[]).filter(a=>a&&typeof a.desde==='string'&&String(a.hacia).startsWith('id:')).map(a=>({desde:a.desde.replace(/\/+$/,'').toLowerCase(),hacia:a.hacia})).sort((x,y)=>y.desde.length-x.desde.length);}
+export function resolver(p){if(typeof p!=='string')return p;const b=p.toLowerCase();for(const a of alias){if(b===a.desde)return a.hacia;if(b.startsWith(a.desde+'/'))return a.hacia+p.slice(a.desde.length);}return p;}
+const conAlias=o=>{if(!o||typeof o!=='object')return o;const r={...o};for(const k of ['path','from_path','to_path'])if(k in r)r[k]=resolver(r[k]);return r;};
 export async function api(route,body,{root=true,binary=null,args=null,retried=false}={}){
+  body=conAlias(body);args=conAlias(args);
   const s=await ensureToken();
   const headers={Authorization:'Bearer '+s.token,'Content-Type':binary?'application/octet-stream':'application/json'};
   if(root&&s.pathRoot)headers['Dropbox-API-Path-Root']=asciiJson({'.tag':'root',root:s.pathRoot});
