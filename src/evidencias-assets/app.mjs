@@ -2,7 +2,7 @@ import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,f
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix,datosOriginales} from './media.mjs';
-import {setupLevantamiento,showLevantamiento,contarPendientes,enviarTodoPendiente,masAntiguoPendiente} from './levantamiento.mjs';
+import {setupLevantamiento,showLevantamiento,contarPendientes,enviarTodoPendiente,masAntiguoPendiente,actualizarOficina,estadoOficina} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
 const chileDateTime=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
@@ -266,7 +266,7 @@ async function latido(){
   if(huella===ultimoLatido.huella&&Date.now()-ultimoLatido.at<10*60*1000)return;
   try{const r=await fetch('/api/evidencias/latido',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(cuerpo)});if(r.ok)ultimoLatido={at:Date.now(),huella};}catch{}
 }
-function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';avisoPendientes();}
+function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';avisoPendientes();estadoDatos();}
 // Sends what is pending on its own when the signal comes back, when the app opens or returns, and every 5 minutes while
 // something is pending: the same as «Enviar pendientes», so nobody has to remember.
 let autoEnviando=false;
@@ -282,7 +282,56 @@ async function autoEnviar(motivo){
   }catch{}finally{autoEnviando=false;network();latido();}
 }
 let configLista=false;
-window.addEventListener('online',()=>{network();autoEnviar('online');});window.addEventListener('offline',network);
+// How current the office data on this phone is. The office writes its summary every few minutes, so a summary much older
+// than the moment the phone fetched it means the office stopped, not the phone.
+const OFICINA_ATRASADA=30*60*1000,DATOS_VIEJOS=12*60*60*1000,PREPARADO='visionaria-preparado';
+function cuando(iso){const d=new Date(iso),f=x=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Santiago'}).format(x),hoy=f(new Date()),ayer=f(new Date(Date.now()-864e5)),dia=f(d);
+  const hora=new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);
+  return `${dia===hoy?'hoy':dia===ayer?'ayer':dia.slice(8,10)+'-'+dia.slice(5,7)} ${hora}`;}
+function situacionDatos(){const {generado,descargado}=estadoOficina();
+  if(!config.levantamientoQueue)return {aviso:false,texto:''};
+  if(!generado||!descargado)return {aviso:true,texto:'Este teléfono aún no tiene los datos de la oficina: ábrelo con señal o toca «Preparar».'};
+  if(Date.now()-Date.parse(descargado)>DATOS_VIEJOS)return {aviso:true,texto:`Datos de la oficina de ${cuando(generado)}: busca señal o toca «Preparar» antes de salir.`};
+  if(Date.parse(descargado)-Date.parse(generado)>OFICINA_ATRASADA)return {aviso:true,atrasada:true,texto:`La oficina no actualiza desde ${cuando(generado)}. Puedes seguir trabajando: lo que envíes queda en Dropbox y se procesa cuando vuelva.`};
+  return {aviso:false,texto:`Datos de la oficina: ${cuando(generado)}`};}
+function estadoDatos(){const s=situacionDatos();let prep='';try{const p=localStorage.getItem(PREPARADO);if(p)prep=` · preparado ${cuando(p)}`;}catch{}
+  $('estado-datos').classList.toggle('aviso',s.aviso);$('estado-datos-texto').textContent=s.texto+(s.aviso?'':prep);}
+function guardarApp(){
+  const sw=navigator.serviceWorker?.controller;if(!sw)return Promise.resolve({ok:false});
+  return new Promise(resolve=>{const canal=new MessageChannel(),tope=setTimeout(()=>resolve({ok:false}),60000);
+    canal.port1.onmessage=e=>{clearTimeout(tope);resolve(e.data);};sw.postMessage({tipo:'preparar'},[canal.port2]);});}
+// «Preparar para trabajar sin señal»: everything a phone needs before leaving coverage, checked in one go.
+let preparando=false;
+async function preparar(){
+  if(preparando)return;if(!navigator.onLine){toast('Necesitas señal para preparar el teléfono. Hazlo antes de salir a terreno.');return;}
+  preparando=true;$('preparar').disabled=true;$('preparar').textContent='Preparando…';
+  const res=[],paso=(clase,texto)=>res.push({clase,texto});
+  try{
+    const sesion=await fetch('/api/evidencias/config',{cache:'no-store'}).then(r=>r.ok).catch(()=>false);
+    paso(sesion?'ok':'error',sesion?'Sesión de la Intranet vigente.':'Tu sesión venció: vuelve a iniciar sesión en la Intranet antes de salir.');
+    const app=await guardarApp();
+    paso(app.ok?'ok':'error',app.ok?'App, catálogo y formularios guardados en el teléfono.':'No se pudo guardar la app para usarla sin señal: recarga la página e inténtalo de nuevo.');
+    if(config.levantamientoQueue){const ok=await actualizarOficina(),s=situacionDatos();
+      paso(!ok?'error':s.atrasada?'aviso':'ok',!ok?'No se pudieron descargar los datos de la oficina.':s.atrasada?s.texto:`Datos de la oficina al día (${cuando(estadoOficina().generado)}).`);}
+    await autoEnviar('silencioso');const n=totalPendientes();
+    paso(n?'aviso':'ok',n?`${n} registro${n===1?'':'s'} no se pudo enviar: revísalo en «Mis registros» o en Levantamiento.`:'Nada pendiente por enviar.');
+    const persistente=navigator.storage?.persist?await navigator.storage.persist().catch(()=>false):false;
+    let libre=null;try{const e=await navigator.storage.estimate();libre=(e.quota-e.usage)/1048576;}catch{}
+    if(libre!==null&&libre<300)paso('aviso',`Queda poco espacio para fotos (${Math.round(libre)} MB): libera espacio en el teléfono.`);
+    else paso(persistente?'ok':'aviso',persistente?'El teléfono conservará lo guardado aunque falte espacio.':'El navegador podría borrar datos si falta espacio: agrega la app a la pantalla de inicio.');
+    const permiso=await navigator.permissions?.query({name:'geolocation'}).then(p=>p.state).catch(()=>null);
+    const gps=permiso==='denied'?null:await requestFix();
+    paso(gps?'ok':'error',gps?`GPS activo (precisión ${gps.accuracy} m).`:permiso==='denied'?'La ubicación está bloqueada: actívala en los ajustes del navegador para este sitio.':'No se obtuvo ubicación GPS: revisa que esté activada.');
+    if(!res.some(r=>r.clase==='error')){try{localStorage.setItem(PREPARADO,new Date().toISOString());}catch{}}
+  }finally{
+    preparando=false;$('preparar').disabled=false;$('preparar').textContent='Preparar para trabajar sin señal';
+    $('preparar-resultado').innerHTML=res.map(r=>`<li class="${r.clase}">${esc(r.texto)}</li>`).join('');$('preparar-resultado').hidden=!res.length;
+    toast(res.some(r=>r.clase==='error')?'Falta algo antes de trabajar sin señal: revisa la lista.':'Listo para trabajar sin señal.');network();
+  }
+}
+$('preparar').addEventListener('click',preparar);
+setInterval(()=>{estadoDatos();if(navigator.onLine&&!document.hidden)actualizarOficina();},5*60*1000);
+window.addEventListener('online',()=>{network();autoEnviar('online');actualizarOficina();});window.addEventListener('offline',network);
 setInterval(()=>autoEnviar('periodico'),5*60*1000);
 window.addEventListener('beforeunload',e=>{if(draft.length||protoTotal()||busy){e.preventDefault();e.returnValue='';}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();setTimeout(()=>autoEnviar('vuelta'),1500);}});

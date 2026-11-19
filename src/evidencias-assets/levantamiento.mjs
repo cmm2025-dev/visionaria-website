@@ -18,8 +18,8 @@ let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
 // What the office already has, per point (from the panel summary): read when the screen opens, kept for offline use.
-let oficina={generado:null,puntos:new Map()};
-try{const o=JSON.parse(localStorage.getItem(OFICINA)||'null');if(o)oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(r=>[r.codigo,r]))};}catch{}
+let oficina={generado:null,descargado:null,puntos:new Map()};
+try{const o=JSON.parse(localStorage.getItem(OFICINA)||'null');if(o)oficina={generado:o.generado,descargado:o.descargado??null,puntos:new Map(o.levantamientos.map(r=>[r.codigo,r]))};}catch{}
 
 // --- Storage: its own database, so a levantamiento never mixes with the evidence records ---------------------------
 let dbp;
@@ -127,12 +127,17 @@ function levantoSesion(F){const campo=F.campos.find(c=>c.key==='Levantó'),nombr
   if(campo?.type==='list')return nombre&&campo.options.includes(nombre)?nombre:null;
   return nombre||ctx?.config().email||null;}
 
+// «generado» is when the office service wrote the summary; «descargado» when this phone last got it. Both are shown,
+// so a phone that has not refreshed and an office that has stopped writing look different.
 async function cargarOficina(){
-  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)return;const o=await r.json();
-    oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
+  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)return false;const o=await r.json();
+    o.descargado=new Date().toISOString();
+    oficina={generado:o.generado,descargado:o.descargado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
     try{localStorage.setItem(OFICINA,JSON.stringify(o))}catch{}
-    if(!abierto)render();}catch{}
+    if(!abierto)render();ctx?.alCambiar?.();return true;}catch{return false;}
 }
+export const actualizarOficina=()=>cargarOficina();
+export const estadoOficina=()=>({generado:oficina.generado,descargado:oficina.descargado});
 
 // --- Route: the listed points in a short order, opened in Google Maps --------------------------------------------
 // The order is computed here from straight-line distances (nearest neighbour, then 2-opt), starting where the
