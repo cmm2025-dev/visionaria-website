@@ -288,7 +288,7 @@ async function guardarCampo(clave,valor){
   if(!p.valores['Fecha']&&chileDate()>=minFecha()){p.valores['Fecha']=chileDate();auto=true;}
   const quien=levantoSesion(ubicar(abierto).F);
   if(quien&&p.valores['Levantó']!==quien){p.valores['Levantó']=quien;auto=true;}
-  p.error='';p.updatedAt=new Date().toISOString();puntos.set(abierto,p);await put('puntos',[p]);
+  p.error='';p.updatedAt=new Date().toISOString();puntos.set(abierto,p);await put('puntos',[p]);ctx.alCambiar?.();
   return auto;
 }
 // After a field changes, refresh only what depends on it, so the next field the technician taps keeps its focus.
@@ -351,10 +351,10 @@ async function subirFoto(f){
   }
   throw new Error('No se pudo asignar un nombre libre a la foto.');
 }
-async function enviar(codigo){
+async function enviar(codigo,{silencioso=false}={}){
   const cfg=ctx.config();
-  if(!cfg.levantamientoQueue){ctx.toast('El envío del levantamiento no está activado todavía. Todo queda guardado en el teléfono.');return;}
-  if(!navigator.onLine){ctx.toast('Sin señal. Todo queda guardado en el teléfono; envía cuando haya cobertura.');return;}
+  if(!cfg.levantamientoQueue){if(!silencioso)ctx.toast('El envío del levantamiento no está activado todavía. Todo queda guardado en el teléfono.');return false;}
+  if(!navigator.onLine){if(!silencioso)ctx.toast('Sin señal. Todo queda guardado en el teléfono; envía cuando haya cobertura.');return false;}
   if(busy)return;busy=true;render();
   const {F,punto}=ubicar(codigo),p=puntos.get(codigo)??nuevoPunto(codigo);
   try{
@@ -365,9 +365,9 @@ async function enviar(codigo){
     const path=`${cfg.levantamientoQueue}/${cfg.pilot?'_PILOTO/':''}${punto.comuna}/${codigo}_${guardado.replace(/[:.]/g,'-')}_${id.slice(0,8)}.json`;
     await dropbox.api('files/upload',null,{binary:new Blob([JSON.stringify(cuerpo,null,1)],{type:'application/json'}),args:{path,mode:'add',autorename:false,strict_conflict:true}});
     p.sent={id,at:guardado,path,huella:huella({v:valores,f:fs.map(f=>f.id).sort(),g:p.gpsPoste?.at??''})};p.error='';
-    ctx.toast(`${codigo} enviado. La planilla se actualiza en el próximo ciclo del servicio.`);
+    if(!silencioso)ctx.toast(`${codigo} enviado. La planilla se actualiza en el próximo ciclo del servicio.`);
   }catch(error){p.error=error.name==='TimeoutError'?'La respuesta tardó demasiado. Reintenta.':error.message;ctx.toast('No se pudo enviar: '+p.error);}
-  finally{puntos.set(codigo,p);await put('puntos',[p]);busy=false;render();}
+  finally{puntos.set(codigo,p);await put('puntos',[p]);busy=false;render();ctx.alCambiar?.();}
 }
 async function descartar(codigo){
   const ids=fotos.filter(f=>f.codigo===codigo).map(f=>f.id);
@@ -375,7 +375,7 @@ async function descartar(codigo){
   const p=puntos.get(codigo);
   if(p?.anulado){const limpio={...nuevoPunto(codigo),anulado:p.anulado};puntos.set(codigo,limpio);await put('puntos',[limpio]);}
   else{puntos.delete(codigo);await del('puntos',[codigo]);}
-  confirmando=null;ctx.toast(`Borrador de ${codigo} descartado.`);render();
+  confirmando=null;ctx.toast(`Borrador de ${codigo} descartado.`);render();ctx.alCambiar?.();
 }
 async function anular(codigo,motivo){
   const cfg=ctx.config();
@@ -393,9 +393,13 @@ async function anular(codigo,motivo){
     const p={...nuevoPunto(codigo),anulado:{id,at:guardado,path,motivo}};puntos.set(codigo,p);await put('puntos',[p]);
     confirmando=null;ctx.toast(`${codigo} anulado. La planilla se actualiza en el próximo ciclo del servicio.`);
   }catch(error){ctx.toast('No se pudo anular: '+(error.name==='TimeoutError'?'la respuesta tardó demasiado. Reintenta.':error.message));}
-  finally{busy=false;render();}
+  finally{busy=false;render();ctx.alCambiar?.();}
 }
-async function enviarPendientes(){for(const p of activo().puntos)if(['pending','error'].includes(estadoEnvio(p.codigo).clase))await enviar(p.codigo);}
+async function enviarPendientes(){for(const p of activo().puntos)if(['pending','error'].includes(estadoEnvio(p.codigo).clase))await enviar(p.codigo);ctx.alCambiar?.();}
+// For the app's pending counter and automatic send: every form's points saved on this phone and not yet in the queue.
+const pendientesDeTodo=()=>C?C.formularios.flatMap(F=>F.puntos).filter(p=>['pending','error'].includes(estadoEnvio(p.codigo).clase)):[];
+export function contarPendientes(){return pendientesDeTodo().length;}
+export async function enviarTodoPendiente(){let enviados=0;for(const p of pendientesDeTodo()){if(!navigator.onLine)break;await enviar(p.codigo,{silencioso:true});if(estadoEnvio(p.codigo).clase==='sent')enviados++;}ctx.alCambiar?.();return enviados;}
 
 // The same columns as the form, by header, so the file can be pasted into the planilla if something fails in the field.
 function descargarCSV(){
