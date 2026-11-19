@@ -38,5 +38,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ file
   if (!contentType) return NextResponse.json({ error: 'not_found' }, { status: 404 });
 
   const body = readFileSync(path.join(ASSETS_DIR, file));
-  return new NextResponse(body, { headers: { 'Content-Type': contentType, 'Cache-Control': 'private, no-cache' } });
+  const headers: Record<string, string> = { 'Content-Type': contentType, 'Cache-Control': 'private, no-cache' };
+  // Lets the worker control the app page at /api/evidencias/app, above the folder it is served from.
+  if (file === 'sw.js') headers['Service-Worker-Allowed'] = '/api/evidencias/';
+  return new NextResponse(body, { headers });
 }

@@ -295,9 +295,13 @@ function situacionDatos(){const {generado,descargado}=estadoOficina();
   if(Date.parse(descargado)-Date.parse(generado)>OFICINA_ATRASADA)return {aviso:true,atrasada:true,texto:`La oficina no actualiza desde ${cuando(generado)}. Puedes seguir trabajando: lo que envíes queda en Dropbox y se procesa cuando vuelva.`};
   return {aviso:false,texto:`Datos de la oficina: ${cuando(generado)}`};}
 function estadoDatos(){const s=situacionDatos();let prep='';try{const p=localStorage.getItem(PREPARADO);if(p)prep=` · preparado ${cuando(p)}`;}catch{}
-  $('estado-datos').classList.toggle('aviso',s.aviso);$('estado-datos-texto').textContent=s.texto+(s.aviso?'':prep);}
-function guardarApp(){
-  const sw=navigator.serviceWorker?.controller;if(!sw)return Promise.resolve({ok:false});
+  $('estado-datos').classList.toggle('aviso',s.aviso);$('estado-datos-texto').textContent=s.texto+(s.aviso||!s.texto?'':prep);}
+// Asks the active worker of this page's registration (not the controller, which is still empty on the first visit
+// after an update) to store every app file.
+async function guardarApp(){
+  if(!('serviceWorker'in navigator))return {ok:false};
+  const reg=await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),15000))]);
+  const sw=reg?.active;if(!sw)return {ok:false};
   return new Promise(resolve=>{const canal=new MessageChannel(),tope=setTimeout(()=>resolve({ok:false}),60000);
     canal.port1.onmessage=e=>{clearTimeout(tope);resolve(e.data);};sw.postMessage({tipo:'preparar'},[canal.port2]);});}
 // «Preparar para trabajar sin señal»: everything a phone needs before leaving coverage, checked in one go.
@@ -321,7 +325,7 @@ async function preparar(){
     else paso(persistente?'ok':'aviso',persistente?'El teléfono conservará lo guardado aunque falte espacio.':'El navegador podría borrar datos si falta espacio: agrega la app a la pantalla de inicio.');
     const permiso=await navigator.permissions?.query({name:'geolocation'}).then(p=>p.state).catch(()=>null);
     const gps=permiso==='denied'?null:await requestFix();
-    paso(gps?'ok':'error',gps?`GPS activo (precisión ${gps.accuracy} m).`:permiso==='denied'?'La ubicación está bloqueada: actívala en los ajustes del navegador para este sitio.':'No se obtuvo ubicación GPS: revisa que esté activada.');
+    paso(!gps?'error':gps.accuracy>100?'aviso':'ok',gps?(gps.accuracy>100?`GPS impreciso (${gps.accuracy} m): activa «Ubicación precisa» para el navegador y prueba al aire libre.`:`GPS activo (precisión ${gps.accuracy} m).`):permiso==='denied'?'La ubicación está bloqueada: actívala en los ajustes del navegador para este sitio.':'No se obtuvo ubicación GPS: revisa que esté activada.');
     if(!res.some(r=>r.clase==='error')){try{localStorage.setItem(PREPARADO,new Date().toISOString());}catch{}}
   }finally{
     preparando=false;$('preparar').disabled=false;$('preparar').textContent='Preparar para trabajar sin señal';
@@ -335,17 +339,27 @@ window.addEventListener('online',()=>{network();autoEnviar('online');actualizarO
 setInterval(()=>autoEnviar('periodico'),5*60*1000);
 window.addEventListener('beforeunload',e=>{if(draft.length||protoTotal()||busy){e.preventDefault();e.returnValue='';}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();setTimeout(()=>autoEnviar('vuelta'),1500);}});
+// The last config this phone got, so the app also opens without signal. A refused session (not ok) is never replaced
+// by it: only a request that could not reach the server is.
+const CONFIG_GUARDADA='visionaria-evidence-config';
+async function cargarConfig(){
+  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();try{localStorage.setItem(CONFIG_GUARDADA,JSON.stringify(cfg));}catch{}return cfg;}
+  catch(error){let g=null;if(error instanceof TypeError){try{g=JSON.parse(localStorage.getItem(CONFIG_GUARDADA)||'null');}catch{}}if(!g)throw error;return g;}
+}
 async function init(){
   $('date').value=chileDate();$('date').max=chileDate();
   $('today-label').textContent=new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'numeric',month:'long',year:'numeric'}).format(new Date());
   $('executor').innerHTML='<option value="">Selecciona quién ejecutó</option>'+EXECUTORS.map(x=>`<option>${esc(x)}</option>`).join('');if(EXECUTORS.includes(lastExecutor))$('executor').value=lastExecutor;
   $('activity').innerHTML='<option value="">Selecciona una actividad</option>'+['Etapa','Novedad'].map(type=>`<optgroup label="${type==='Etapa'?'Etapas de obra':'Novedades'}">${ACTIVITIES.filter(a=>a.type===type).map(a=>`<option>${esc(a.label)}</option>`).join('')}</optgroup>`).join('');
   network();
-  try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();dropbox.configurarAlias(cfg.alias);config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null,verPorUbicar:!!cfg.verPorUbicar,verTodo:!!cfg.verTodo};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
+  try{const cfg=await cargarConfig();dropbox.configurarAlias(cfg.alias);config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null,verPorUbicar:!!cfg.verPorUbicar,verTodo:!!cfg.verTodo};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
   await setupLevantamiento({toast,config:()=>config,alCambiar:network}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));
   configLista=!!(config.parteQueue||config.levantamientoQueue);network();setTimeout(()=>autoEnviar('inicio'),2000);
-  if('serviceWorker'in navigator)navigator.serviceWorker.register('/api/evidencias/assets/sw.js').catch(()=>{});
+  // Scoped to /api/evidencias/ so it also controls this page, not only the assets; the old /assets/ registration
+  // never did, so the app could not open without signal.
+  if('serviceWorker'in navigator){navigator.serviceWorker.register('/api/evidencias/assets/sw.js',{scope:'/api/evidencias/'}).catch(()=>{});
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.filter(r=>r.scope.endsWith('/api/evidencias/assets/')).forEach(r=>r.unregister())).catch(()=>{});}
 }
 init();
