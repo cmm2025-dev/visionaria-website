@@ -64,18 +64,32 @@ function secret(): string {
 }
 
 const key = () => createHash('sha256').update(`${secret()}:panel-key`).digest();
-const blobPath = () => `intranet/panel/${createHash('sha256').update(`${secret()}:panel-path`).digest('hex').slice(0, 32)}.bin`;
+const blobPath = () => `intranet/panel/${panelName('panel-path')}.bin`;
 
 export function isPanelSnapshot(value: unknown): value is PanelSnapshot {
   const v = value as PanelSnapshot;
   return !!v && typeof v.generado === 'string' && Array.isArray(v.comunas) && Array.isArray(v.registros);
 }
 
-export async function savePanelSnapshot(snapshot: PanelSnapshot): Promise<void> {
+/** AES-256-GCM under the panel key: iv (12) | tag (16) | ciphertext. Also used for the phones' heartbeats. */
+export function sealJson(value: unknown): Buffer {
   const iv = randomBytes(12);
   const cipher = createCipheriv('aes-256-gcm', key(), iv);
-  const body = Buffer.concat([cipher.update(JSON.stringify(snapshot), 'utf8'), cipher.final()]);
-  await put(blobPath(), Buffer.concat([iv, cipher.getAuthTag(), body]), {
+  const body = Buffer.concat([cipher.update(JSON.stringify(value), 'utf8'), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), body]);
+}
+
+export function openJson<T>(raw: Buffer): T {
+  const decipher = createDecipheriv('aes-256-gcm', key(), raw.subarray(0, 12));
+  decipher.setAuthTag(raw.subarray(12, 28));
+  return JSON.parse(Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]).toString('utf8')) as T;
+}
+
+/** A name under intranet/panel/ that reveals nothing without PANEL_INGEST_TOKEN. */
+export const panelName = (label: string) => createHash('sha256').update(`${secret()}:${label}`).digest('hex').slice(0, 32);
+
+export async function savePanelSnapshot(snapshot: PanelSnapshot): Promise<void> {
+  await put(blobPath(), sealJson(snapshot), {
     access: 'private',
     contentType: 'application/octet-stream',
     allowOverwrite: true,
@@ -88,9 +102,5 @@ export async function getPanelSnapshot(): Promise<PanelSnapshot | null> {
   // useCache: false reads from origin, so a new summary shows up on the next poll.
   const res = await get(blobPath(), { access: 'private', useCache: false }).catch(() => null);
   if (res?.statusCode !== 200) return null;
-  const raw = Buffer.from(await new Response(res.stream).arrayBuffer());
-  const decipher = createDecipheriv('aes-256-gcm', key(), raw.subarray(0, 12));
-  decipher.setAuthTag(raw.subarray(12, 28));
-  const json = Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]).toString('utf8');
-  return JSON.parse(json) as PanelSnapshot;
+  return openJson<PanelSnapshot>(Buffer.from(await new Response(res.stream).arrayBuffer()));
 }

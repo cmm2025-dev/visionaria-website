@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type FocusEvent, type PointerEvent, type 
 import Link from 'next/link';
 import { ArrowLeft, AlertTriangle, CheckCircle2, ExternalLink, Table2, BarChart3 } from 'lucide-react';
 import type { PanelRegistro, PanelSnapshot } from '@/lib/panelStore';
+import type { Latido } from '@/lib/latidos';
 
 // The executive panel is internal and Spanish-only, like the Evidencias app it reports on.
 
@@ -19,6 +20,8 @@ const CRITICAL = '#d03b3b';
 const GOOD = '#0ca30c';
 const POLL_MS = 60_000;
 const STALE_MIN = 10;
+// A record waiting on a phone longer than this is flagged, in the panel and in the app.
+const PENDIENTE_ALERTA_MIN = 24 * 60;
 
 const chileDate = (d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(d);
 const shortDate = (iso: string) => iso.slice(8, 10) + '-' + iso.slice(5, 7);
@@ -62,6 +65,7 @@ export default function PanelClient({ locale }: { locale: string }) {
   const [error, setError] = useState('');
   const [snapshot, setSnapshot] = useState<PanelSnapshot | null>(null);
   const [puntos, setPuntos] = useState<Punto[]>([]);
+  const [telefonos, setTelefonos] = useState<Latido[]>([]);
   const [comuna, setComuna] = useState<'Todas' | (typeof COMUNAS)[number]>('Todas');
   const [periodo, setPeriodo] = useState<Periodo>('7');
   const [now, setNow] = useState(() => Date.now());
@@ -84,6 +88,7 @@ export default function PanelClient({ locale }: { locale: string }) {
           }
           setSnapshot(data.snapshot);
           setPuntos(data.puntos);
+          setTelefonos(data.telefonos ?? []);
           setNow(Date.now());
           setStatus('ready');
         })
@@ -400,6 +405,40 @@ export default function PanelClient({ locale }: { locale: string }) {
             ))}</tbody>
           </table>
         </div>
+      </div>
+
+      {/* Teléfonos */}
+      <div className={card} style={cardStyle}>
+        <h2 className="text-white font-semibold mb-1">Teléfonos</h2>
+        <p className="text-xs text-slate-500 mb-3">Registros guardados en cada teléfono que aún no llegan a la oficina. La app los envía sola al tener señal; se marca lo que lleva más de 24 horas.</p>
+        {telefonos.length === 0 ? <p className="text-sm text-slate-500">Ningún teléfono ha informado todavía.</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-slate-300">
+              <thead>
+                <tr className="text-left text-slate-500 text-xs">
+                  <th className="py-1.5 pr-4">Técnico</th><th className="py-1.5 pr-4">Dispositivo</th><th className="py-1.5 pr-4">Pendientes</th>
+                  <th className="py-1.5 pr-4">Más antiguo sin enviar</th><th className="py-1.5">Último contacto</th>
+                </tr>
+              </thead>
+              <tbody>{telefonos.map(t => {
+                const n = t.evidencias + t.levantamiento;
+                const viejo = n > 0 && !!t.masAntiguo && minutesSince(t.masAntiguo, now) > PENDIENTE_ALERTA_MIN;
+                return (
+                  <tr key={t.email + t.dispositivo} className="border-t" style={{ borderColor: 'var(--border)' }}>
+                    <td className="py-2 pr-4 whitespace-nowrap">{t.email.split('@')[0]}</td>
+                    <td className="py-2 pr-4 whitespace-nowrap text-slate-400">{t.etiqueta || '—'} · {t.dispositivo.slice(0, 4)}</td>
+                    <td className="py-2 pr-4 whitespace-nowrap">{n === 0 ? <span className="inline-flex items-center gap-1.5"><CheckCircle2 size={13} style={{ color: GOOD }} />Al día</span>
+                      : <span className="text-white font-medium">{n} <span className="text-xs font-normal text-slate-400">({[t.evidencias && `${t.evidencias} parte diario`, t.levantamiento && `${t.levantamiento} levantamiento`].filter(Boolean).join(' · ')})</span></span>}</td>
+                    <td className="py-2 pr-4 whitespace-nowrap">{n === 0 || !t.masAntiguo ? '—' : (
+                      <span className={viejo ? 'inline-flex items-center gap-1.5 text-white font-medium' : ''}>{viejo && <AlertTriangle size={13} style={{ color: CRITICAL }} />}{dateTime(t.masAntiguo)}{viejo && ' · más de 24 h'}</span>
+                    )}</td>
+                    <td className="py-2 whitespace-nowrap text-slate-400">{ago(minutesSince(t.visto, now))}</td>
+                  </tr>
+                );
+              })}</tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">

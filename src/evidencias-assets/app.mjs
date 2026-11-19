@@ -2,7 +2,7 @@ import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,f
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix,datosOriginales} from './media.mjs';
-import {setupLevantamiento,showLevantamiento,contarPendientes,enviarTodoPendiente} from './levantamiento.mjs';
+import {setupLevantamiento,showLevantamiento,contarPendientes,enviarTodoPendiente,masAntiguoPendiente} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
 const chileDateTime=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
@@ -251,12 +251,27 @@ for(const id of ['proto-camera-input','proto-gallery-input'])$(id).addEventListe
 // What is still only on this phone: evidence photos not in Dropbox or records not yet queued, plus levantamiento points.
 function pendientesEvidencia(){return new Set(photos.filter(p=>p.status!=='sent'||(p.parte&&p.parte!=='queued')).map(p=>p.batch)).size;}
 function totalPendientes(){return pendientesEvidencia()+contarPendientes();}
-function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';}
+function pendienteDesde(){let min=masAntiguoPendiente();for(const p of photos)if((p.status!=='sent'||(p.parte&&p.parte!=='queued'))&&p.savedAt&&(!min||p.savedAt<min))min=p.savedAt;return min;}
+const DIA=24*60*60*1000;
+function avisoPendientes(){const desde=pendienteDesde(),viejo=!!desde&&Date.now()-Date.parse(desde)>DIA;$('aviso-pendientes').hidden=!viejo;
+  if(viejo)$('aviso-pendientes').textContent=`Hay registros guardados en este teléfono hace más de 24 horas que aún no llegan a la oficina (desde ${new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(desde))}). Busca señal y abre la app para que se envíen; si alguno da error, revísalo en «Mis registros» o en Levantamiento.`;}
+// Heartbeat: tells the office how many records this phone still holds and since when, so nothing waits unnoticed.
+// Only counts and dates travel, never the records. At most every 10 minutes unless the count changed.
+const DISPOSITIVO=(()=>{try{let id=localStorage.getItem('visionaria-dispositivo');if(!id){id=randomId();localStorage.setItem('visionaria-dispositivo',id);}return id;}catch{return 'sin-almacenamiento';}})();
+let ultimoLatido={at:0,huella:''};
+async function latido(){
+  if(!navigator.onLine||!configLista)return;
+  const cuerpo={dispositivo:DISPOSITIVO,etiqueta:(navigator.userAgentData?.platform||navigator.platform||'').slice(0,40),evidencias:pendientesEvidencia(),levantamiento:contarPendientes(),masAntiguo:pendienteDesde()};
+  const huella=JSON.stringify([cuerpo.evidencias,cuerpo.levantamiento,cuerpo.masAntiguo]);
+  if(huella===ultimoLatido.huella&&Date.now()-ultimoLatido.at<10*60*1000)return;
+  try{const r=await fetch('/api/evidencias/latido',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(cuerpo)});if(r.ok)ultimoLatido={at:Date.now(),huella};}catch{}
+}
+function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';avisoPendientes();}
 // Sends what is pending on its own when the signal comes back, when the app opens or returns, and every 5 minutes while
 // something is pending: the same as «Enviar pendientes», so nobody has to remember.
 let autoEnviando=false;
 async function autoEnviar(motivo){
-  if(autoEnviando||busy||!navigator.onLine||!configLista||!totalPendientes())return;
+  if(autoEnviando||busy||!navigator.onLine||!configLista||!totalPendientes()){latido();return;}
   autoEnviando=true;
   try{
     const antes=totalPendientes();
@@ -264,7 +279,7 @@ async function autoEnviar(motivo){
     const lev=await enviarTodoPendiente();
     const quedan=totalPendientes(),enviados=antes-quedan;
     if(motivo!=='silencioso'&&enviados>0)toast(`${motivo==='online'?'Volvió la conexión: s':'S'}e enviaron ${enviados} registro${enviados===1?'':'s'} pendiente${enviados===1?'':'s'} a la oficina.${quedan?` Quedan ${quedan} con error: revísalos en «Mis registros» o en Levantamiento.`:''}`);
-  }catch{}finally{autoEnviando=false;network();}
+  }catch{}finally{autoEnviando=false;network();latido();}
 }
 let configLista=false;
 window.addEventListener('online',()=>{network();autoEnviar('online');});window.addEventListener('offline',network);
