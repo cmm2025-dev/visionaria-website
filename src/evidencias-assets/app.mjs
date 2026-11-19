@@ -2,7 +2,7 @@ import {ACTIVITIES,EXECUTORS,PROTOCOL,chileDate,baseName,filename,extensionFor,f
 import {getAll,putMany,removeMany,database} from './storage.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix as sharedRequestFix,datosOriginales} from './media.mjs';
-import {setupLevantamiento,showLevantamiento} from './levantamiento.mjs';
+import {setupLevantamiento,showLevantamiento,contarPendientes,enviarTodoPendiente} from './levantamiento.mjs';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-evidence-settings-v1';
 const chileDateTime=iso=>new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(iso));
@@ -104,7 +104,7 @@ function renderDraft(){
 }
 function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
 function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';$('levantamiento-view').hidden=view!=='levantamiento';if(view==='levantamiento')showLevantamiento();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
-async function refresh(){photos=await getAll();$('nav-count').textContent=photos.filter(p=>p.blob).length;renderRecords();renderDraft();}
+async function refresh(){photos=await getAll();network();$('nav-count').textContent=photos.filter(p=>p.blob).length;renderRecords();renderDraft();}
 async function collectFiles(list,source){formError('');
   const slow=setTimeout(()=>toast('Obteniendo ubicación GPS…'),1500);const fix=await(pendingFix??requestFix());clearTimeout(slow);pendingFix=null;
   const accepted=[];for(const file of list){try{
@@ -248,10 +248,29 @@ for(const id of ['proto-camera-input','proto-gallery-input'])$(id).addEventListe
   if(!protoSlot||!items.length)return;
   if(protoTotal()+items.length>20){formError('Puedes guardar hasta 20 fotografías por registro. Guarda este grupo antes de continuar.');return;}
   (protoDraft[protoSlot]??=[]).push(...items);renderProtocol();});
-function network(){const online=navigator.onLine;$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}`;}
-window.addEventListener('online',()=>{network();toast('Volvió la conexión. Puedes enviar las evidencias pendientes.');});window.addEventListener('offline',network);
+// What is still only on this phone: evidence photos not in Dropbox or records not yet queued, plus levantamiento points.
+function pendientesEvidencia(){return new Set(photos.filter(p=>p.status!=='sent'||(p.parte&&p.parte!=='queued')).map(p=>p.batch)).size;}
+function totalPendientes(){return pendientesEvidencia()+contarPendientes();}
+function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';}
+// Sends what is pending on its own when the signal comes back, when the app opens or returns, and every 5 minutes while
+// something is pending: the same as «Enviar pendientes», so nobody has to remember.
+let autoEnviando=false;
+async function autoEnviar(motivo){
+  if(autoEnviando||busy||!navigator.onLine||!configLista||!totalPendientes())return;
+  autoEnviando=true;
+  try{
+    const antes=totalPendientes();
+    if(pendientesEvidencia())await syncPhotos();
+    const lev=await enviarTodoPendiente();
+    const quedan=totalPendientes(),enviados=antes-quedan;
+    if(motivo!=='silencioso'&&enviados>0)toast(`${motivo==='online'?'Volvió la conexión: s':'S'}e enviaron ${enviados} registro${enviados===1?'':'s'} pendiente${enviados===1?'':'s'} a la oficina.${quedan?` Quedan ${quedan} con error: revísalos en «Mis registros» o en Levantamiento.`:''}`);
+  }catch{}finally{autoEnviando=false;network();}
+}
+let configLista=false;
+window.addEventListener('online',()=>{network();autoEnviar('online');});window.addEventListener('offline',network);
+setInterval(()=>autoEnviar('periodico'),5*60*1000);
 window.addEventListener('beforeunload',e=>{if(draft.length||protoTotal()||busy){e.preventDefault();e.returnValue='';}});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();setTimeout(()=>autoEnviar('vuelta'),1500);}});
 async function init(){
   $('date').value=chileDate();$('date').max=chileDate();
   $('today-label').textContent=new Intl.DateTimeFormat('es-CL',{timeZone:'America/Santiago',day:'numeric',month:'long',year:'numeric'}).format(new Date());
@@ -261,7 +280,8 @@ async function init(){
   try{const response=await fetch('/api/evidencias/config');if(!response.ok)throw new Error('No se pudo verificar tu sesión.');const cfg=await response.json();dropbox.configurarAlias(cfg.alias);config={...config,root:cfg.root,pilot:cfg.pilot,email:cfg.email,parteQueue:cfg.parteQueue??null,levantamientoQueue:cfg.levantamientoQueue??null,verPorUbicar:!!cfg.verPorUbicar,verTodo:!!cfg.verTodo};if(config.parteQueue)$('storage-note').textContent='Los registros locales pertenecen a este navegador. No borres sus datos antes de enviarlos. Cada registro recibido en Dropbox queda en cola para el parte diario de la planilla, y el proceso de la oficina lo escribe en su siguiente pasada.';$('author').value=cfg.email;$('author').disabled=true;}catch(error){formError('No se pudo verificar tu acceso: '+error.message+' Vuelve a iniciar sesión en la Intranet.');$('take-photo').disabled=true;$('add-files').disabled=true;}
   renderConnection();
   try{const response=await fetch('/api/evidencias/assets/catalogue.json');if(!response.ok)throw new Error('No se pudo cargar el catálogo.');points=await response.json();loadPoints();await database();storageReady=true;await refresh();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});}catch(error){formError('No se pudo preparar el almacenamiento o el catálogo. '+error.message);$('take-photo').disabled=true;$('add-files').disabled=true;}
-  setupLevantamiento({toast,config:()=>config}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));
+  await setupLevantamiento({toast,config:()=>config,alCambiar:network}).catch(error=>toast('No se pudo preparar el levantamiento: '+error.message));
+  configLista=!!(config.parteQueue||config.levantamientoQueue);network();setTimeout(()=>autoEnviar('inicio'),2000);
   if('serviceWorker'in navigator)navigator.serviceWorker.register('/api/evidencias/assets/sw.js').catch(()=>{});
 }
 init();
