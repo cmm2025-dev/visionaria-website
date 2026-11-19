@@ -37,7 +37,16 @@ def a_registro(r, comuna, fila, prefijo):
         'gps_precision': int(round(gps['accuracy'])) if gps.get('accuracy') is not None else None,
         'gps_origen': r.get('gpsOrigen') or None, 'foto': 'Sí' if r.get('fotos') else 'No', 'piloto': bool(r.get('piloto')),
         'origen': 'app', 'detalle_manual': None, 'guardado_en': r.get('guardado') or None,
+        'foto_tomada_en': hora_de_foto(r.get('tomadaEn')), 'carga_diferida': bool(r.get('cargaDiferida')),
     }
+
+
+def hora_de_foto(v):
+    """La fecha y hora en que se tomó la primera foto, en la hora local de la cámara (como la guarda el EXIF)."""
+    try:
+        return datetime.datetime.fromisoformat(str(v)) if v else None
+    except ValueError:
+        return None
 
 
 def ingestar_comuna(dbx, conn, c):

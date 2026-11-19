@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
-import { requireEvidenciasTech } from '@/lib/evidenciasAuth';
+import { accesoEvidencias } from '@/lib/evidenciasAuth';
 
 export const runtime = 'nodejs';
 
@@ -16,6 +16,11 @@ const ASSETS: Record<string, string> = {
   'dropbox-client.mjs': 'application/javascript; charset=utf-8',
   'catalogue.json': 'application/json; charset=utf-8',
   'levantamiento.json': 'application/json; charset=utf-8',
+  'fibra.mjs': 'application/javascript; charset=utf-8',
+  'fibra-reglas.mjs': 'application/javascript; charset=utf-8',
+  'fibra_Antofagasta.json': 'application/json; charset=utf-8',
+  'fibra_Calama.json': 'application/json; charset=utf-8',
+  'fibra_Tocopilla.json': 'application/json; charset=utf-8',
   'styles.css': 'text/css; charset=utf-8',
   'icon.svg': 'image/svg+xml',
   'manifest.webmanifest': 'application/manifest+json',
@@ -25,8 +30,8 @@ const ASSETS: Record<string, string> = {
 const ASSETS_DIR = path.join(process.cwd(), 'src', 'evidencias-assets');
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ file: string }> }) {
-  const email = requireEvidenciasTech(req);
-  if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const acceso = await accesoEvidencias(req);
+  if (!acceso) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const { file } = await params;
   const contentType = ASSETS[file];

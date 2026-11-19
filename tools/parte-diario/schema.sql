@@ -42,6 +42,10 @@ CREATE TABLE IF NOT EXISTS registros (
   UNIQUE (comuna, fila)
 );
 CREATE INDEX IF NOT EXISTS registros_comuna_actualizado ON registros (comuna, actualizado_en);
+-- Respaldo ante la ITO: cuándo se tomó la primera foto (hora local de la cámara, del EXIF si vino de la galería) y si
+-- alguna foto se cargó después desde la galería (carga diferida). La fecha del hecho y guardado_en siguen aparte.
+ALTER TABLE registros ADD COLUMN IF NOT EXISTS foto_tomada_en timestamp;
+ALTER TABLE registros ADD COLUMN IF NOT EXISTS carga_diferida boolean NOT NULL DEFAULT false;
 
 CREATE TABLE IF NOT EXISTS fotos (
   id          bigserial PRIMARY KEY,
@@ -108,6 +112,47 @@ CREATE TABLE IF NOT EXISTS planillas_levantamiento (
   rev_generada    text,
   generada_en     timestamptz,
   filas_generadas jsonb,                       -- {codigo: [campos]} tal como quedó escrito; detecta ediciones a mano
+  ultimo_aviso    text
+);
+
+-- Fibra óptica, levantamiento de ruta y apoyos: un registro vigente por fila de «Ruta» o «Apoyos»; cada envío queda.
+CREATE TABLE IF NOT EXISTS fibra_registros (
+  clave           text PRIMARY KEY,            -- <comuna>|<hoja>|<código>
+  comuna          text NOT NULL,
+  hoja            text NOT NULL,               -- Ruta o Apoyos
+  codigo          text NOT NULL,
+  valores         jsonb NOT NULL,              -- {encabezado: valor} de las columnas amarillas, validados contra el contrato
+  fotos           jsonb NOT NULL DEFAULT '[]',
+  gps             jsonb,
+  registrado_por  text,
+  registro_id     text NOT NULL,               -- identidad del registro en el teléfono (resuelve choques de códigos NC)
+  envio_id        text NOT NULL,
+  guardado_en     timestamptz NOT NULL,
+  recibido_en     timestamptz NOT NULL DEFAULT now(),
+  actualizado_en  timestamptz NOT NULL DEFAULT now(),
+  calculado       jsonb                        -- Control, Veredicto, Permisos del tramo tal como los calculó la planilla
+);
+CREATE TABLE IF NOT EXISTS fibra_envios (
+  id           text PRIMARY KEY,
+  comuna       text NOT NULL,
+  hoja         text NOT NULL,
+  codigo       text NOT NULL,                  -- el código con que quedó (puede ser otro NC si hubo choque)
+  contenido    jsonb NOT NULL,
+  estado       text NOT NULL,                  -- vigente / reemplazado / anterior
+  recibido_en  timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS fibra_nc (
+  comuna       text NOT NULL,
+  codigo       text NOT NULL,
+  registro_id  text NOT NULL,
+  asignado_en  timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (comuna, codigo)
+);
+CREATE TABLE IF NOT EXISTS planillas_fibra (
+  comuna          text PRIMARY KEY,
+  rev_generada    text,
+  generada_en     timestamptz,
+  filas_generadas jsonb,                       -- {"<hoja>|<código>": [columnas amarillas]} tal como quedó escrito
   ultimo_aviso    text
 );
 

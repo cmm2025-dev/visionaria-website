@@ -8,10 +8,11 @@ HOJA = 'Parte diario'
 FILA_INICIO, FILA_FIN = 5, 3004          # filas de datos (1-based), según la planilla
 COL_B, COL_H = 1, 7                      # columnas de ingreso B..H (0-based: 1..7)
 FECHA_BASE = datetime.date(1899, 12, 30)  # día 0 de las fechas de Excel y LibreOffice
-# Columnas que agrega el sistema a la derecha de la planilla (L..N). Solo las escribe el servicio: coordenadas sueltas
-# para exportar el recorrido a KML/KMZ, y quién registró.
+# Columnas que agrega el sistema a la derecha de la planilla (L..P). Solo las escribe el servicio: coordenadas sueltas
+# para exportar el recorrido a KML/KMZ, quién registró, y para el respaldo ante la ITO cuándo se tomó la foto (hora de la
+# cámara) y si se cargó después desde la galería (O y P, agregadas el 19-11-2026).
 COL_EXTRA = 11
-EXTRA = (('Latitud', 12), ('Longitud', 12), ('Registró', 30))
+EXTRA = (('Latitud', 12), ('Longitud', 12), ('Registró', 30), ('Foto tomada', 17), ('Carga diferida', 14))
 
 
 def serial(fecha):
@@ -39,9 +40,12 @@ def valores(r):
 
 
 def extra(r):
-    """Latitud, Longitud y Registró (L..N). Vacías si no hay GPS o el registro se escribió a mano."""
+    """Latitud, Longitud, Registró, Foto tomada y Carga diferida (L..P). Vacías si no hay dato o la fila es manual."""
     sin_gps = r.get('gps_lat') is None or r.get('gps_lon') is None
-    return ['' if sin_gps else float(r['gps_lat']), '' if sin_gps else float(r['gps_lon']), r.get('registrado_por') or '']
+    tomada = r.get('foto_tomada_en')
+    hora = float(serial(tomada.date())) + (tomada.hour * 3600 + tomada.minute * 60 + tomada.second) / 86400 if tomada else ''
+    return ['' if sin_gps else float(r['gps_lat']), '' if sin_gps else float(r['gps_lon']), r.get('registrado_por') or '',
+            hora, 'Sí' if r.get('carga_diferida') else '']
 
 
 @contextlib.contextmanager
@@ -59,25 +63,32 @@ def sin_proteccion(hoja):
 
 
 def preparar_extra(doc):
-    """Agrega L..N con el formato de K (encabezado y celdas grises) y extiende el filtro hasta N. Solo la primera vez."""
+    """Agrega las columnas de EXTRA que falten (L..P) con el formato de K (encabezado y celdas grises) y extiende el filtro
+    hasta la última. Una planilla que ya tenía L..N recibe solo O y P; las que ya están no se tocan."""
     hoja = doc.Sheets.getByName(HOJA)
-    if hoja.getCellByPosition(COL_EXTRA, FILA_INICIO - 2).getString() == EXTRA[0][0]:
+    faltan = [i for i, (titulo, _) in enumerate(EXTRA) if hoja.getCellByPosition(COL_EXTRA + i, FILA_INICIO - 2).getString() != titulo]
+    if not faltan:
         return
     fin = COL_EXTRA + len(EXTRA) - 1
     with sin_proteccion(hoja):
         modelo = hoja.getCellRangeByPosition(COL_EXTRA - 1, FILA_INICIO - 2, COL_EXTRA - 1, FILA_FIN - 1).RangeAddress
-        for i, (titulo, ancho) in enumerate(EXTRA):
+        formatos, local = doc.NumberFormats, doc.CharLocale
+        def formato(codigo):
+            clave = formatos.queryKey(codigo, local, False)
+            return clave if clave != -1 else formatos.addNew(codigo, local)
+        for i in faltan:
+            titulo, ancho = EXTRA[i]
             col = COL_EXTRA + i
             destino = hoja.getCellByPosition(col, FILA_INICIO - 2).CellAddress
             hoja.copyRange(destino, modelo)   # trae formato, bloqueo y fórmula de K; la fórmula se borra abajo
             hoja.getCellByPosition(col, FILA_INICIO - 2).setString(titulo)
             hoja.Columns.getByIndex(col).Width = ancho * 250   # 1/100 mm; ~ el ancho en caracteres de Excel
-        datos = hoja.getCellRangeByPosition(COL_EXTRA, FILA_INICIO - 1, fin, FILA_FIN - 1)
-        datos.clearContents(1 | 2 | 4 | 16)
-        coords = hoja.getCellRangeByPosition(COL_EXTRA, FILA_INICIO - 1, COL_EXTRA + 1, FILA_FIN - 1)
-        formatos, local = doc.NumberFormats, doc.CharLocale
-        clave = formatos.queryKey('0.000000', local, False)
-        coords.NumberFormat = clave if clave != -1 else formatos.addNew('0.000000', local)
+            datos = hoja.getCellRangeByPosition(col, FILA_INICIO - 1, col, FILA_FIN - 1)
+            datos.clearContents(1 | 2 | 4 | 16)
+            if titulo in ('Latitud', 'Longitud'):
+                datos.NumberFormat = formato('0.000000')
+            elif titulo == 'Foto tomada':
+                datos.NumberFormat = formato('DD-MM-YYYY HH:MM')
         rangos = doc.getPropertyValue('UnnamedDatabaseRanges')
         if rangos.hasByTable(hoja.RangeAddress.Sheet):
             rango = rangos.getByTable(hoja.RangeAddress.Sheet)

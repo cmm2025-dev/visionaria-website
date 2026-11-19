@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { encodeIntranetMagicLink, isStaffEmail, safeIntranetNext } from '@/lib/session';
+import { PROJECTS } from '@/lib/projects';
+import { personaVigente } from '@/lib/personas';
+
+/** Staff by domain, or an outside person a project lists in «Personas del proyecto», active and in date. */
+async function puedeEntrar(email: string): Promise<boolean> {
+  if (isStaffEmail(email)) return true;
+  for (const p of PROJECTS) if (await personaVigente(p.slug, email)) return true;
+  return false;
+}
 
 export const runtime = 'nodejs';
 
@@ -33,7 +42,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid_email' }, { status: 400 });
   }
 
-  if (isStaffEmail(email)) {
+  if (await puedeEntrar(email)) {
     try {
       const token = encodeIntranetMagicLink({ email, locale, next });
       const magicUrl = `${req.nextUrl.origin}/api/intranet/auth/verify?token=${encodeURIComponent(token)}`;

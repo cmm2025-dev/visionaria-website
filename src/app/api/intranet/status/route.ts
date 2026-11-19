@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeIntranetSession, isIntranetAdmin, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { decodeIntranetSession, isIntranetAdmin, isStaffEmail, INTRANET_SESSION_COOKIE } from '@/lib/session';
 import { projectsFor } from '@/lib/projects';
 
 export const runtime = 'nodejs';
@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     email: session.email,
     isAdmin: isIntranetAdmin(session.email),
-    projects: projectsFor(session.email, locale),
+    /** Outside staff (an external contractor) only sees its project modules, never the staff content. */
+    externo: !isStaffEmail(session.email),
+    projects: await projectsFor(session.email, locale),
   });
 }

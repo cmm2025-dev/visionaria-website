@@ -6,19 +6,20 @@
 import {chileDate,csv,randomId} from './core.mjs';
 import * as dropbox from './dropbox-client.mjs';
 import {gpsLabel,processImage,withExif,requestFix} from './media.mjs';
+import {COMUNAS as COMUNAS_FO,setupFibra,showFibra} from './fibra.mjs';
 
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='visionaria-levantamiento-v1',PREFS='visionaria-levantamiento-prefs',OFICINA='visionaria-levantamiento-oficina';
 const FECHA_BASE=Date.UTC(1899,11,30);
 const ORDEN_CLASIFICACION=['Vía rápida probable','Revisar','Trámite largo probable','Por ubicar'];
-// «Por ubicar» points are seen only by whoever the server allows (Iván Andaur and management); nobody else lists them.
+// «Por ubicar» points are seen only by whoever the server allows (prompt of 02-11: Iván Andaur); nobody else lists them.
 const listable=p=>!p.porUbicar||!!ctx?.config().verPorUbicar;
 let C=null,ctx=null,puntos=new Map(),fotos=[],abierto=null,filtro={quien:'',dia:'',texto:'',comuna:'',estado:'',clasif:'',nodo:''},busy=false,urls=[],guardarTimer=null,aqui=null,confirmando=null;
 let prefs={};try{prefs=JSON.parse(localStorage.getItem(PREFS)||'{}')}catch{}
 const savePrefs=()=>{try{localStorage.setItem(PREFS,JSON.stringify(prefs))}catch{}};
 // What the office already has, per point (from the panel summary): read when the screen opens, kept for offline use.
-let oficina={generado:null,puntos:new Map()};
-try{const o=JSON.parse(localStorage.getItem(OFICINA)||'null');if(o)oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(r=>[r.codigo,r]))};}catch{}
+let oficina={generado:null,descargado:null,puntos:new Map()};
+try{const o=JSON.parse(localStorage.getItem(OFICINA)||'null');if(o)oficina={generado:o.generado,descargado:o.descargado??null,puntos:new Map(o.levantamientos.map(r=>[r.codigo,r]))};}catch{}
 
 // --- Storage: its own database, so a levantamiento never mixes with the evidence records ---------------------------
 let dbp;
@@ -126,12 +127,17 @@ function levantoSesion(F){const campo=F.campos.find(c=>c.key==='Levantó'),nombr
   if(campo?.type==='list')return nombre&&campo.options.includes(nombre)?nombre:null;
   return nombre||ctx?.config().email||null;}
 
+// «generado» is when the office service wrote the summary; «descargado» when this phone last got it. Both are shown,
+// so a phone that has not refreshed and an office that has stopped writing look different.
 async function cargarOficina(){
-  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)return;const o=await r.json();
-    oficina={generado:o.generado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
+  try{const r=await fetch('/api/evidencias/levantamiento',{cache:'no-store'});if(!r.ok)return false;const o=await r.json();
+    o.descargado=new Date().toISOString();
+    oficina={generado:o.generado,descargado:o.descargado,puntos:new Map(o.levantamientos.map(x=>[x.codigo,x]))};
     try{localStorage.setItem(OFICINA,JSON.stringify(o))}catch{}
-    if(!abierto)render();}catch{}
+    if(!abierto)render();ctx?.alCambiar?.();return true;}catch{return false;}
 }
+export const actualizarOficina=()=>cargarOficina();
+export const estadoOficina=()=>({generado:oficina.generado,descargado:oficina.descargado});
 
 // --- Route: the listed points in a short order, opened in Google Maps --------------------------------------------
 // The order is computed here from straight-line distances (nearest neighbour, then 2-opt), starting where the
@@ -276,7 +282,11 @@ function bloqueConfirmar(p){
   return '';
 }
 const angulosTexto=a=>`Ángulo vertical: <strong>${a.vertical??'—'}°</strong> · Ángulo horizontal: <strong>${a.horizontal??'—'}°</strong>${(a.vertical??0)>30||(a.horizontal??0)>30?' · <span class="lev-req">sobre 30°</span>':''}`;
-function render(){if(!C)return;$('lev-lista-wrap').hidden=!!abierto;$('lev-ficha').hidden=!abierto;if(abierto)renderFicha();else renderLista();}
+// «Fibra · <comuna>» shares the form selector but has its own screens (fibra.mjs).
+const esFibra=()=>String(prefs.formulario).startsWith('FO-');
+function render(){if(!C)return;const fo=esFibra();$('fibra-view').hidden=!fo;$('lev-selector').hidden=!!abierto&&!fo;
+  if(fo){$('lev-lista-wrap').hidden=true;$('lev-ficha').hidden=true;$('lev-resumen').textContent=`Fibra · ${prefs.formulario.slice(3)}: levantamiento de ruta y apoyos para la factibilidad de CGE.`;showFibra(prefs.formulario.slice(3));return;}
+  $('lev-lista-wrap').hidden=!!abierto;$('lev-ficha').hidden=!abierto;if(abierto)renderFicha();else renderLista();}
 
 // --- Editing --------------------------------------------------------------------------------------------------------
 const nuevoPunto=codigo=>({codigo,formulario:ubicar(codigo).F.id,valores:{},gps:null,gpsPoste:null,sent:null,error:''});
@@ -438,7 +448,7 @@ function poblarFiltros(){
   $('lev-comuna').innerHTML='<option value="">Todas</option>'+comunas.map(c=>`<option${c===filtro.comuna?' selected':''}>${esc(c)}</option>`).join('');
   $('lev-estado').innerHTML='<option value="">Todos</option>'+ESTADOS.filter(([k])=>F.tipo==='via-rapida'||!['via-rapida','largo'].includes(k)).map(([k,t])=>`<option value="${k}"${k===filtro.estado?' selected':''}>${esc(t)}</option>`).join('');
   const clases=ORDEN_CLASIFICACION.filter(c=>F.puntos.some(p=>p.clasificacion===c&&listable(p)));
-  // A municipal form opens on «Vía rápida probable»; the other groups are one tap away.
+  // A municipal form opens on «Vía rápida probable» (prompt of 02-11); the other groups are one tap away.
   if(!clases.includes(filtro.clasif))filtro.clasif=clases.includes('Vía rápida probable')&&filtro.clasifPor!==F.id?'Vía rápida probable':'';
   filtro.clasifPor=F.id;
   $('lev-clasif-wrap').hidden=!clases.length;
@@ -459,10 +469,12 @@ export async function setupLevantamiento(context){
   const sinN=fotos.filter(f=>!f.n).sort((a,b)=>a.registeredAt.localeCompare(b.registeredAt));
   for(const f of sinN){f.n=Math.max(0,...fotos.filter(x=>x.codigo===f.codigo&&x.n).map(x=>x.n))+1;f.formulario??='DEC-020';}
   if(sinN.length)await put('fotos',sinN);
-  if(!formulario(prefs.formulario))prefs.formulario=C.formularios[0].id;
-  $('lev-formulario').innerHTML=C.formularios.map(F=>`<option value="${esc(F.id)}"${F.id===prefs.formulario?' selected':''}>${esc(F.titulo)}</option>`).join('');
+  if(!formulario(prefs.formulario)&&!COMUNAS_FO.some(c=>prefs.formulario==='FO-'+c))prefs.formulario=C.formularios[0].id;
+  $('lev-formulario').innerHTML=C.formularios.map(F=>`<option value="${esc(F.id)}"${F.id===prefs.formulario?' selected':''}>${esc(F.titulo)}</option>`).join('')
+    +COMUNAS_FO.map(c=>`<option value="FO-${c}"${prefs.formulario==='FO-'+c?' selected':''}>Fibra · ${c}</option>`).join('');
+  await setupFibra(ctx);
   poblarFiltros();
-  $('lev-formulario').addEventListener('change',e=>{prefs.formulario=e.target.value;savePrefs();filtro.dia='';poblarFiltros();render();});
+  $('lev-formulario').addEventListener('change',e=>{prefs.formulario=e.target.value;savePrefs();filtro.dia='';if(!esFibra())poblarFiltros();render();});
   $('lev-quien').addEventListener('change',e=>{filtro.quien=e.target.value;render();});
   $('lev-dia').addEventListener('change',e=>{filtro.dia=e.target.value;render();});
   $('lev-comuna').addEventListener('change',e=>{filtro.comuna=e.target.value;render();});

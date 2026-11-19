@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeIntranetSession, isIntranetAdmin, INTRANET_SESSION_COOKIE } from '@/lib/session';
+import { decodeIntranetSession, isIntranetAdmin, isStaffEmail, INTRANET_SESSION_COOKIE } from '@/lib/session';
 import { getIntranetLinks, saveIntranetLinks, type IntranetLink } from '@/lib/intranetContent';
 
 export const runtime = 'nodejs';
@@ -13,6 +13,8 @@ function requireSession(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const session = requireSession(req);
   if (!session) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+  // Staff content: an outside person (external contractor) with a project account never reads it.
+  if (!isStaffEmail(session.email)) return NextResponse.json({ links: [] });
   const links = await getIntranetLinks();
   return NextResponse.json({ links });
 }

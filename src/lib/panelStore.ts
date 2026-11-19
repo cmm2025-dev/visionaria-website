@@ -50,11 +50,23 @@ export interface PanelLevantamiento {
   guardado_en: string | null;
 }
 
+/** One fiber survey record as the office has it: the code it ended with and what the planilla computed. */
+export interface PanelFibra {
+  comuna: string;
+  hoja: string;
+  codigo: string;
+  registro_id: string;
+  calculado: Record<string, string> | null;
+  tramo: string | null;
+  guardado_en: string | null;
+}
+
 export interface PanelSnapshot {
   generado: string;
   comunas: PanelComuna[];
   registros: PanelRegistro[];
   levantamientos?: PanelLevantamiento[];
+  fibra?: PanelFibra[];
 }
 
 function secret(): string {

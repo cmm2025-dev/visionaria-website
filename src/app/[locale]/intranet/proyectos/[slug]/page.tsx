@@ -3,12 +3,12 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { ArrowLeft, BarChart3, Camera, ChevronRight, ExternalLink, FileText, LogOut, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, BarChart3, Camera, ChevronRight, ExternalLink, FileText, LogOut, ShieldCheck, Users } from 'lucide-react';
 import IntranetLogin from '@/components/IntranetLogin';
 import SupportHeroCarousel from '@/components/SupportHeroCarousel';
 import type { ProjectView } from '@/lib/projects';
 
-const MODULE_ICON: Record<string, typeof FileText> = { evidencias: Camera, panel: BarChart3 };
+const MODULE_ICON: Record<string, typeof FileText> = { evidencias: Camera, panel: BarChart3, personas: Users };
 
 export default function ProjectPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = use(params);
