@@ -288,7 +288,7 @@ async function guardarCampo(clave,valor){
   if(!p.valores['Fecha']&&chileDate()>=minFecha()){p.valores['Fecha']=chileDate();auto=true;}
   const quien=levantoSesion(ubicar(abierto).F);
   if(quien&&p.valores['Levantó']!==quien){p.valores['Levantó']=quien;auto=true;}
-  p.error='';p.updatedAt=new Date().toISOString();puntos.set(abierto,p);await put('puntos',[p]);ctx.alCambiar?.();
+  p.error='';p.updatedAt=new Date().toISOString();p.pendienteDesde??=p.updatedAt;puntos.set(abierto,p);await put('puntos',[p]);ctx.alCambiar?.();
   return auto;
 }
 // After a field changes, refresh only what depends on it, so the next field the technician taps keeps its focus.
@@ -364,7 +364,7 @@ async function enviar(codigo,{silencioso=false}={}){
       valores,gps:p.gps??null,gpsPosteCGE:p.gpsPoste??null,fotos:fs.map(f=>({toma:f.toma,nombre:nombreFoto(f),ruta:f.path,gps:f.gps??null}))};
     const path=`${cfg.levantamientoQueue}/${cfg.pilot?'_PILOTO/':''}${punto.comuna}/${codigo}_${guardado.replace(/[:.]/g,'-')}_${id.slice(0,8)}.json`;
     await dropbox.api('files/upload',null,{binary:new Blob([JSON.stringify(cuerpo,null,1)],{type:'application/json'}),args:{path,mode:'add',autorename:false,strict_conflict:true}});
-    p.sent={id,at:guardado,path,huella:huella({v:valores,f:fs.map(f=>f.id).sort(),g:p.gpsPoste?.at??''})};p.error='';
+    p.sent={id,at:guardado,path,huella:huella({v:valores,f:fs.map(f=>f.id).sort(),g:p.gpsPoste?.at??''})};p.error='';p.pendienteDesde=null;
     if(!silencioso)ctx.toast(`${codigo} enviado. La planilla se actualiza en el próximo ciclo del servicio.`);
   }catch(error){p.error=error.name==='TimeoutError'?'La respuesta tardó demasiado. Reintenta.':error.message;ctx.toast('No se pudo enviar: '+p.error);}
   finally{puntos.set(codigo,p);await put('puntos',[p]);busy=false;render();ctx.alCambiar?.();}
@@ -399,6 +399,10 @@ async function enviarPendientes(){for(const p of activo().puntos)if(['pending','
 // For the app's pending counter and automatic send: every form's points saved on this phone and not yet in the queue.
 const pendientesDeTodo=()=>C?C.formularios.flatMap(F=>F.puntos).filter(p=>['pending','error'].includes(estadoEnvio(p.codigo).clase)):[];
 export function contarPendientes(){return pendientesDeTodo().length;}
+// Since when the oldest unsent change waits on this phone (ISO), for the office heartbeat and the 24-hour warning.
+export function masAntiguoPendiente(){let min=null;for(const punto of pendientesDeTodo()){const p=puntos.get(punto.codigo);
+  for(const t of [p?.pendienteDesde??p?.updatedAt,...fotos.filter(f=>f.codigo===punto.codigo&&f.status!=='sent').map(f=>f.registeredAt)])if(t&&(!min||t<min))min=t;}
+  return min;}
 export async function enviarTodoPendiente(){let enviados=0;for(const p of pendientesDeTodo()){if(!navigator.onLine)break;await enviar(p.codigo,{silencioso:true});if(estadoEnvio(p.codigo).clase==='sent')enviados++;}ctx.alCambiar?.();return enviados;}
 
 // The same columns as the form, by header, so the file can be pasted into the planilla if something fails in the field.
