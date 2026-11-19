@@ -102,7 +102,8 @@ function renderDraft(){
   $('save-capture').innerHTML=(busy?'Guardando…':'Guardar y enviar')+'<svg><use href="#i-arrow"/></svg>';
   $('submit-detail').textContent='Primero se guarda aquí; luego se confirma la recepción en Dropbox.';
 }
-function renderConnection(){$('connection').querySelector('span').textContent='Dropbox conectado';$('cloud-state').innerHTML='<span class="dot"></span>Conectado · cuenta de la empresa';renderDraft();}
+// Without signal nothing reaches Dropbox: say so instead of «conectado», and say where the records wait.
+function renderConnection(){const on=navigator.onLine;$('connection').querySelector('span').textContent=on?'Dropbox conectado':'Dropbox en espera';$('cloud-state').innerHTML=on?'<span class="dot"></span>Conectado · cuenta de la empresa':'<span class="dot amber"></span>Sin señal · se guarda en este teléfono y se envía al volver la señal';renderDraft();}
 function showView(view){$('capture-view').hidden=view!=='capture';$('records-view').hidden=view!=='records';$('levantamiento-view').hidden=view!=='levantamiento';if(view==='levantamiento')showLevantamiento();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='records')renderRecords();window.scrollTo({top:0,behavior:'instant'});}
 async function refresh(){photos=await getAll();network();$('nav-count').textContent=photos.filter(p=>p.blob).length;renderRecords();renderDraft();}
 async function collectFiles(list,source){formError('');
@@ -266,7 +267,7 @@ async function latido(){
   if(huella===ultimoLatido.huella&&Date.now()-ultimoLatido.at<10*60*1000)return;
   try{const r=await fetch('/api/evidencias/latido',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(cuerpo)});if(r.ok)ultimoLatido={at:Date.now(),huella};}catch{}
 }
-function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';avisoPendientes();estadoDatos();}
+function network(){const online=navigator.onLine,n=totalPendientes();$('network').innerHTML=`<span class="dot ${online?'':'amber'}"></span>${online?'Con señal':'Sin conexión'}${n?` · <strong class="pendientes">${n} pendiente${n===1?'':'s'}</strong>`:''}`;$('network').title=n?'Registros guardados en este teléfono que aún no llegan a la oficina':'';avisoPendientes();estadoDatos();$('preparar').hidden=!online;if(!online)$('preparar-resultado').hidden=true;}
 // Sends what is pending on its own when the signal comes back, when the app opens or returns, and every 5 minutes while
 // something is pending: the same as «Enviar pendientes», so nobody has to remember.
 let autoEnviando=false;
@@ -305,7 +306,7 @@ async function guardarApp(){
   return new Promise(resolve=>{const canal=new MessageChannel(),tope=setTimeout(()=>resolve({ok:false}),60000);
     canal.port1.onmessage=e=>{clearTimeout(tope);resolve(e.data);};sw.postMessage({tipo:'preparar'},[canal.port2]);});}
 // «Preparar para trabajar sin señal»: everything a phone needs before leaving coverage, checked in one go.
-let preparando=false;
+let preparando=false,ocultarResultado=null;
 async function preparar(){
   if(preparando)return;if(!navigator.onLine){toast('Necesitas señal para preparar el teléfono. Hazlo antes de salir a terreno.');return;}
   preparando=true;$('preparar').disabled=true;$('preparar').textContent='Preparando…';
@@ -330,12 +331,13 @@ async function preparar(){
   }finally{
     preparando=false;$('preparar').disabled=false;$('preparar').textContent='Preparar para trabajar sin señal';
     $('preparar-resultado').innerHTML=res.map(r=>`<li class="${r.clase}">${esc(r.texto)}</li>`).join('');$('preparar-resultado').hidden=!res.length;
+    clearTimeout(ocultarResultado);if(!res.some(r=>r.clase!=='ok'))ocultarResultado=setTimeout(()=>{$('preparar-resultado').hidden=true;},15000);
     toast(res.some(r=>r.clase==='error')?'Falta algo antes de trabajar sin señal: revisa la lista.':'Listo para trabajar sin señal.');network();
   }
 }
-$('preparar').addEventListener('click',preparar);
+$('preparar').addEventListener('click',preparar);$('preparar-resultado').addEventListener('click',()=>{$('preparar-resultado').hidden=true;});
 setInterval(()=>{estadoDatos();if(navigator.onLine&&!document.hidden)actualizarOficina();},5*60*1000);
-window.addEventListener('online',()=>{network();autoEnviar('online');actualizarOficina();});window.addEventListener('offline',network);
+window.addEventListener('online',()=>{network();renderConnection();autoEnviar('online');actualizarOficina();});window.addEventListener('offline',()=>{network();renderConnection();});
 setInterval(()=>autoEnviar('periodico'),5*60*1000);
 window.addEventListener('beforeunload',e=>{if(draft.length||protoTotal()||busy){e.preventDefault();e.returnValue='';}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy){refresh().catch(()=>{});renderConnection();setTimeout(()=>autoEnviar('vuelta'),1500);}});
